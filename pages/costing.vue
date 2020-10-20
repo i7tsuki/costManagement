@@ -2,9 +2,27 @@
   <div class="container">
     <div>
       <Logo />
-      <router-link to="materialAndManufacturing">材料・外注</router-link>
-      <router-link to="inwork">内作</router-link>
-      <router-link to="costing">原価計算</router-link>
+      <table>
+        <tr>
+          <td>工事番号</td>
+          <td>11-1111</td>
+        <tr>
+        	<td>材料</td>
+        	<td>9000</td>
+        </tr>
+        <tr>
+        	<td>外注</td>
+        	<td>3000</td>
+        </tr>
+       	<tr>
+        	<td>内作</td>
+        	<td>5000</td>
+        </tr>
+        <tr>
+          <td>合計</td>
+          <td>17000</td>
+        </tr>
+      </table>
     </div>
   </div>
 </template>
