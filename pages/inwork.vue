@@ -2,9 +2,9 @@
   <div class="container">
     <div>
       <Logo />
-      <label>工事番号</label><input type="text">
-      <label>作業内容</label><input type="text">
-      <label>金額</label><input type="text">
+      <label>工事番号</label><input type="text" v-model="constructionNo">
+      <label>作業内容</label><input type="text" v-model="name">
+      <label>金額</label><input type="text" v-model="money">
       <button @click="add">追加</button>
       <table>
       	<tr>
@@ -35,7 +35,7 @@ export default {
 		      money: 100
 		    },
 		    {
-		      no: 1,
+		      no: 2,
 		      constructionNo: '11-1111',
 		      name: '作業内容２',
 		      money: 300
@@ -45,6 +45,11 @@ export default {
   },
   methods: {
   	add() {
+  		this.$store.commit('addInWork', {
+  			constructionNo: this.constructionNo,
+  			name: this.name,
+  			money: this.money
+  		});
   	}, 
   	edit() {
   	}

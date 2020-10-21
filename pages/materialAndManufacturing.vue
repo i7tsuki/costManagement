@@ -5,22 +5,25 @@
       <label>工事番号</label><input type="text" v-model="constructionNo">
       <label>名称</label><input type="text" v-model="name">
       <label>金額</label><input type="text" v-model="money">
-      <input type="radio" value="material" name="class" v-model="classification">材料
-      <input type="radio" value="manufacturing" name="class" v-model="classification">外注
+      <input type="radio" value="材料" name="class" v-model="classification">材料
+      <input type="radio" value="外注" name="class" v-model="classification">外注
       <button @click="add">追加</button>
       <table>
       	<tr>
+      	  <th>No</th>
       		<th>工事番号</th>
       		<th>名称</th>
       		<th>金額</th>
       		<th>区分</th>
       	</tr>
       	<tr v-for="m in materialAndManufacturing" v-bind:key="m.no">
+	      	<td>{{ m.no }}</td>
       		<td>{{ m.constructionNo }}</td>
       		<td>{{ m.name }}</td>
       		<td>{{ m.money }}
       		<td>{{ m.classification }}</td>
       		<td><button @click="edit">編集</button></td>
+      		<td><button @click="del(m.no)">削除</button></td>
       	</tr>
       </table>
     </div>
@@ -34,51 +37,38 @@ export default {
 			constructionNo: '',
 			name: '',
 			money: 0,
-			classification: 'material',
-			materialAndManufacturing: [
-				{
-	        no: 1, 
-	        constructionNo: '11-1111', 
-	        name: '材料1',
-	        money: 100,
-	        classification: '材料'
-	      },
-        {
-        	no: 2, 
-        	constructionNo: '11-1111', 
-        	name: '材料2', 
-        	money: 200, 
-        	classification: '材料'
-        },
-				{
-	        no: 3, 
-	        constructionNo: '11-1111', 
-	        name: '外注1',
-	        money: 100, 
-	        classification: '外注'
-	      },
-        {
-        	no: 4, 
-        	constructionNo: '11-1111', 
-        	name: '外注2', 
-        	money: 200,
-        	classification: '外注'
-        },
-      ]
+			classification: '材料',
     }
   },
   methods: {
   	add() {
-  		this.$store.commit('addMaterialAndManufacturing', {
+  	  if (this.name === '' || this.money <= 0) {
+  	    console.log('正しく入力されていません。');
+  	    return ;
+  	  }
+  		this.$store.dispatch('addMaterialAndManufacturing', {
   			constructionNo: this.constructionNo,
   			name: this.name,
   			money: this.money,
   			classification: this.classification
   		});
+  		this.$store.dispatch('getMaterialAndManufacturing');
   	}, 
   	edit() {
+  	}, 
+  	del(no) {
+  	  this.$store.dispatch('delMaterialAndManufacturing', no);
+  	  this.$store.dispatch('getMaterialAndManufacturing');
   	}
-  }
+  },
+	created() {
+		this.$store.dispatch('getMaterialAndManufacturing');
+	},
+	computed: {
+	  materialAndManufacturing: function() {
+	    return this.$store.state.materialAndManufacturing
+	  }
+	}
 }
 </script>
 
