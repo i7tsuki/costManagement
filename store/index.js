@@ -9,29 +9,6 @@ export const state = () => ({
   inWorks: null,
 })
 export const mutations = {
-	addInWork(state, arg) {
-	  let noMax = 0;
-	  //既に登録されているNoの最大値取得
-		Firebase.database().ref(dbInWork)
-		  .orderByChild('no').on('value', function(snapshot) {
-		    snapshot.forEach(function(childSnapshot) {
-		      if (noMax < childSnapshot.val().no) {
-		      	noMax = childSnapshot.val().no;
-		      }
-		    })
-		  });
-	  
-	  //新規登録用No（＋1）
-	  noMax += 1;
-		
-	  //データ登録
-    Firebase.database().ref(dbInWork).push({
-      no: noMax,
-      constructionNo: arg.constructionNo,
-      name: arg.name, 
-      money: parseFloat(arg.money)
-	  });
-	},
 	setMaterialAndManufacturing(state, arg) {
 	  state.materialAndManufacturing.push({
 	  	no: arg.no, 
@@ -95,5 +72,43 @@ export const actions = {
 		  });
 		});
 	  Firebase.database().ref(dbMaterialAndManufacturing).child(key).remove();
-	}
+	},
+	editMaterialAndManufacturing(state, arg) {
+		Firebase.database().ref(dbMaterialAndManufacturing)
+			.orderByChild('no')
+			.startAt(arg.no).endAt(arg.no)
+			.once('value', function(snapshot) {
+			  snapshot.forEach(function(childSnapshot) {
+		      Firebase.database().ref(dbMaterialAndManufacturing).child(childSnapshot.key).update({
+		        constructionNo: arg.constructionNo,
+		        name: arg.name,
+		        money: arg.money,
+		        classification: arg.classification
+		      });
+			  });
+			});
+	},
+	addInWork(state, arg) {
+	  let noMax = 0;
+	  //既に登録されているNoの最大値取得
+		Firebase.database().ref(dbInWork)
+		  .orderByChild('no').on('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      if (noMax < childSnapshot.val().no) {
+		      	noMax = childSnapshot.val().no;
+		      }
+		    })
+		  });
+	  
+	  //新規登録用No（＋1）
+	  noMax += 1;
+		
+	  //データ登録
+    Firebase.database().ref(dbInWork).push({
+      no: noMax,
+      constructionNo: arg.constructionNo,
+      name: arg.name, 
+      money: parseFloat(arg.money)
+	  });
+	},
 }

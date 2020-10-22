@@ -45,7 +45,7 @@ export default {
   },
   methods: {
   	add() {
-  		this.$store.commit('addInWork', {
+  		this.$store.dispatch('addInWork', {
   			constructionNo: this.constructionNo,
   			name: this.name,
   			money: this.money
