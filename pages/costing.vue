@@ -5,22 +5,22 @@
       <table>
         <tr>
           <td>工事番号</td>
-          <td>11-1111</td>
+          <td>{{ constructionNo }}</td>
         <tr>
         	<td>材料</td>
-        	<td>9000</td>
+        	<td>{{ material }}</td>
         </tr>
         <tr>
         	<td>外注</td>
-        	<td>3000</td>
+        	<td>{{ manufacturing }}</td>
         </tr>
        	<tr>
         	<td>内作</td>
-        	<td>5000</td>
+        	<td>{{ inWork }}</td>
         </tr>
         <tr>
           <td>合計</td>
-          <td>17000</td>
+          <td>{{ totalCost }}</td>
         </tr>
       </table>
     </div>
@@ -28,7 +28,30 @@
 </template>
 
 <script>
-export default {}
+export default {
+	data: function() {
+		return {
+		  constructionNo: '11-1111',
+    }
+  },
+	created() {
+		this.$store.dispatch('getCost', this.constructionNo);
+	},
+	computed: {
+	  material: function() {
+	    return this.$store.state.costMaterial;
+	  },
+	  manufacturing: function() {
+	    return this.$store.state.costManufacturing;
+	  },
+	  inWork: function() {
+	    return this.$store.state.costInWork;
+	  },
+	  totalCost: function() {
+	    return this.material + this.manufacturing + this.inWork;
+	  }
+	}
+}
 </script>
 
 <style>

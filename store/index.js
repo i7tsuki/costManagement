@@ -7,6 +7,9 @@ const dbInWork = 'inWork'
 export const state = () => ({
   materialAndManufacturing: [],
   inWorks: null,
+  costMaterial: 0,
+  costManufacturing: 0,
+  costInWork: 0
 })
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
@@ -20,6 +23,11 @@ export const mutations = {
   }, 
   clearMaterialAndManufacturing(state) {
   	state.materialAndManufacturing = []
+  },
+  setCost(state, arg) {
+	  state.costMaterial = arg.material;
+	  state.costManufacturing = arg.manufacturing;
+	  state.costInWork = arg.inWork;
   }
 }
 
@@ -39,7 +47,7 @@ export const actions = {
 		    });
 	  });
   },
-	addMaterialAndManufacturing(state, arg) {
+	addMaterialAndManufacturing(context, arg) {
 	  let noMax = 0;
 	  //既に登録されているNoの最大値取得
 		Firebase.database().ref(dbMaterialAndManufacturing)
@@ -61,7 +69,7 @@ export const actions = {
       classification: arg.classification,
 	  });
 	},
-	delMaterialAndManufacturing(state, no) {
+	delMaterialAndManufacturing(context, no) {
 	  let key;
 		Firebase.database().ref(dbMaterialAndManufacturing)
 		.orderByChild('no')
@@ -73,7 +81,7 @@ export const actions = {
 		});
 	  Firebase.database().ref(dbMaterialAndManufacturing).child(key).remove();
 	},
-	editMaterialAndManufacturing(state, arg) {
+	editMaterialAndManufacturing(context, arg) {
 		Firebase.database().ref(dbMaterialAndManufacturing)
 			.orderByChild('no')
 			.startAt(arg.no).endAt(arg.no)
@@ -88,7 +96,7 @@ export const actions = {
 			  });
 			});
 	},
-	addInWork(state, arg) {
+	addInWork(context, arg) {
 	  let noMax = 0;
 	  //既に登録されているNoの最大値取得
 		Firebase.database().ref(dbInWork)
@@ -111,4 +119,37 @@ export const actions = {
       money: parseFloat(arg.money)
 	  });
 	},
+	getCost(context, constructionNo) {
+	  let material = 0, manufacturing = 0, inWork = 0;
+	
+		const getCostMaterial =
+		   Firebase.database().ref(dbMaterialAndManufacturing)
+			  .orderByChild('constructionNo')
+			  .startAt(constructionNo).endAt(constructionNo)
+			  .once('value', function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+		        if (childSnapshot.classification = '材料') {
+		          material += childSnapshot.val().money;
+		        } else if (childSnapshot.classification = '外注') {
+		          manufacturing += childSnapshot.val().money;
+		        }
+			    });
+			  });
+		const getCostManufacturing =
+		  Firebase.database().ref(dbInWork)
+			  .orderByChild('constructionNo')
+			  .startAt(constructionNo).endAt(constructionNo)
+			  .once('value', function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+		        inWork += childSnapshot.val().money;
+			    });
+			  });
+	  Promise.all([getCostMaterial, getCostManufacturing]).then(() => {
+			context.commit('setCost', {
+			  material: material,
+			  manufacturing: manufacturing,
+			  inWork: inWork,
+			});
+		});
+	}
 }
