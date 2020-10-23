@@ -8,7 +8,6 @@
       <button @click="add">追加</button>
       <table>
       	<tr>
-      	  <th>No</th>
       		<th>工事番号</th>
       		<th>名称</th>
       		<th>受注金額</th>
@@ -17,8 +16,31 @@
       		<td>{{ c.constructionNo }}</td>
       		<td>{{ c.name }}</td>
       		<td>{{ c.money }}
+      		<td><button @click="cost(c.constructionNo)">原価</button></td>
+      		<EditModal v-if="isShowCostModal" @close="isShowCostModal = false">
+      		  <h3 slot="header">
+      		    <p>{{ c.constructionNo }}</p>
+      		  </h3>
+      		  <h3 slot="body">
+      		    <p></p>
+      		    <p>材料</p>
+      		    <p>{{ costMaterial }}</p>
+      		    <p>外注</p>
+      		    <p>{{ costManufacturing }}</p>
+      		    <p>内作</p>
+      		    <p>{{ costInWork }}</p>
+      		    <p>合計</p>
+      		    <p>{{ totalCost }}</p>
+				    </h3>
+            <h3 slot="footer">
+              <button @click="costClose">閉じる</button>
+            </h3>
+          </EditModal>
       		<td><button @click="edit(c.constructionNo, c.name, c.money)">編集</button></td>
-      		<EditModal v-if="isShowModal" @close="isShowModal = false">
+      		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
+      		  <h3 slot="header">
+      		    <p></p>
+      		  </h3>
       		  <h3 slot="body">
       		    <p>工事番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
@@ -49,7 +71,8 @@ export default {
 			constructionNo: '',
 			name: '',
 			money: 0,
-			isShowModal: false,
+			isShowEditModal: false,
+			isShowCostModal: false,
     }
   },
   methods: {
@@ -65,23 +88,31 @@ export default {
   		});
   		this.$store.dispatch('getConstructionNo');
   	}, 
+  	cost(constructionNo) {
+     	this.$store.dispatch('getCost', constructionNo);
+  		this.isShowCostModal = true;		
+  	},
+  	costClose() {
+  	  this.isShowCostModal = false;
+  	},
   	edit(constructionNo, name, money) {
   		this.editConstructionNo = constructionNo;
   		this.editName = name;
   		this.editMoney = money;
-  		this.isShowModal = true;
+  		this.isShowEditModal = true;
   	}, 
   	editOK(constructionNo) {
   	  this.$store.dispatch('editConstructionNo', {
-  	  	constructionNo: this.editConstructionNo,
+  	    beforeConstructionNo: constructionNo,
+  	  	afterConstructionNo: this.editConstructionNo,
   	  	name: this.editName,
   	  	money: this.editMoney,
   	  });
-  		this.isShowModal = false;
+  		this.isShowEditModal = false;
   		this.$store.dispatch('getConstructionNo');
   	},
   	editCancel() {
-  		this.isShowModal = false;
+  		this.isShowEditModal = false;
   	},
   	del(constructionNo) {
   	  this.$store.dispatch('delConstructionNo', constructionNo);
@@ -94,7 +125,19 @@ export default {
 	computed: {
 	  construction: function() {
 	    return this.$store.state.construction
-	  }
+	  },
+	  costMaterial: function() {
+	    return this.$store.state.costMaterial;
+	  },
+	  costManufacturing: function() {
+	    return this.$store.state.costManufacturing;
+	  },
+	  costInWork: function() {
+	    return this.$store.state.costInWork;
+	  },
+	  totalCost: function() {
+	    return this.costMaterial + this.costManufacturing + this.costInWork;
+	  },
 	}
 }
 </script>

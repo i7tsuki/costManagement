@@ -4,7 +4,6 @@
       <Logo />
       <router-link to="materialAndManufacturing">材料・外注</router-link>
       <router-link to="inwork">内作</router-link>
-      <router-link to="costing">原価計算</router-link>
       <router-link to="construction">工事一覧</router-link>
     </div>
   </div>

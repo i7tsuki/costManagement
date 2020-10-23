@@ -186,18 +186,20 @@ export const actions = {
 	  });
   },
 	editConstructionNo(context, arg) {
+	  let key;
 		Firebase.database().ref(dbConstruction)
 			.orderByChild('constructionNo')
-			.startAt(arg.constructionNo).endAt(arg.constructionNo)
+			.startAt(arg.beforeConstructionNo).endAt(arg.beforeConstructionNo)
 			.once('value', function(snapshot) {
 			  snapshot.forEach(function(childSnapshot) {
-		      Firebase.database().ref(dbConstruction).child(childSnapshot.key).update({
-		        constructionNo: arg.constructionNo,
-		        name: arg.name,
-		        money: arg.money,
-		      });
+		      key = childSnapshot.key;
 			  });
 			});
+		Firebase.database().ref(dbConstruction).child(key).update({
+			constructionNo: arg.afterConstructionNo,
+			name: arg.name,
+			money: arg.money,
+		});
 	},
 	delConstructionNo(context, constructionNo) {
 	  let key;
