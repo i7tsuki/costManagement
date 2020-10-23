@@ -3,13 +3,15 @@ import Vuex from 'vuex'
 
 const dbMaterialAndManufacturing = 'materialAndManufacturing'
 const dbInWork = 'inWork'
+const dbConstruction = 'construction'
 
 export const state = () => ({
   materialAndManufacturing: [],
   inWorks: null,
   costMaterial: 0,
   costManufacturing: 0,
-  costInWork: 0
+  costInWork: 0,
+  construction: [],
 })
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
@@ -28,7 +30,17 @@ export const mutations = {
 	  state.costMaterial = arg.material;
 	  state.costManufacturing = arg.manufacturing;
 	  state.costInWork = arg.inWork;
-  }
+  },
+  clearConstruction(state) {
+  	state.construction = [];
+  },
+	setConstruction(state, arg) {
+	  state.construction.push({
+	  	constructionNo: arg.constructionNo, 
+	  	name: arg.name, 
+	  	money: arg.money, 
+	  });
+  }, 
 }
 
 export const actions = {
@@ -151,5 +163,52 @@ export const actions = {
 			  inWork: inWork,
 			});
 		});
-	}
+	},
+	addConstructionNo(context, arg) {
+	  //データ登録
+    Firebase.database().ref(dbConstruction).push({
+      constructionNo: arg.constructionNo,
+      name: arg.name,
+      money: parseFloat(arg.money)
+	  });
+  },
+	getConstructionNo(context) {
+	  context.commit('clearConstruction');
+		Firebase.database().ref(dbConstruction)
+		  .orderByChild('constructionNo').on('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      context.commit('setConstruction', {
+		      	constructionNo: childSnapshot.val().constructionNo, 
+		      	name: childSnapshot.val().name, 
+		      	money: childSnapshot.val().money, 
+		      });
+		    });
+	  });
+  },
+	editConstructionNo(context, arg) {
+		Firebase.database().ref(dbConstruction)
+			.orderByChild('constructionNo')
+			.startAt(arg.constructionNo).endAt(arg.constructionNo)
+			.once('value', function(snapshot) {
+			  snapshot.forEach(function(childSnapshot) {
+		      Firebase.database().ref(dbConstruction).child(childSnapshot.key).update({
+		        constructionNo: arg.constructionNo,
+		        name: arg.name,
+		        money: arg.money,
+		      });
+			  });
+			});
+	},
+	delConstructionNo(context, constructionNo) {
+	  let key;
+		Firebase.database().ref(dbConstruction)
+		.orderByChild('constructionNo')
+		.startAt(constructionNo).endAt(constructionNo)
+		.once('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+		    key = childSnapshot.key;
+		  });
+		});
+	  Firebase.database().ref(dbConstruction).child(key).remove();
+	},
 }
