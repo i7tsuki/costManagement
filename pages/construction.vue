@@ -33,6 +33,7 @@
       		    <p>{{ totalCost }}</p>
 				    </h3>
             <h3 slot="footer">
+              <router-link to="costDetails"><button @click="costDetail(c.constructionNo)">明細</button></router-link>
               <button @click="costClose">閉じる</button>
             </h3>
           </EditModal>
@@ -117,7 +118,10 @@ export default {
   	del(constructionNo) {
   	  this.$store.dispatch('delConstructionNo', constructionNo);
   	  this.$store.dispatch('getConstructionNo');
-  	}
+  	},
+  	costDetail(constructionNo) {
+  		this.$store.commit('setconstructionNo', constructionNo);
+  	},
   },
 	created() {
 		this.$store.dispatch('getConstructionNo');

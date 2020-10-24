@@ -4,6 +4,8 @@ import Vuex from 'vuex'
 const dbMaterialAndManufacturing = 'materialAndManufacturing'
 const dbInWork = 'inWork'
 const dbConstruction = 'construction'
+const dbOrder = 'order'
+const dbOrderDetails = 'orderDetails'
 
 export const state = () => ({
   materialAndManufacturing: [],
@@ -12,6 +14,10 @@ export const state = () => ({
   costManufacturing: 0,
   costInWork: 0,
   construction: [],
+  constructionNo: null,
+  costDetailMaterial: [],
+  costDetailManufacturing: [],
+  costDetailInWork: []
 })
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
@@ -41,6 +47,17 @@ export const mutations = {
 	  	money: arg.money, 
 	  });
   }, 
+  setconstructionNo(state, constructionNo) {
+  	state.constructionNo = constructionNo;
+  },
+	setCostDetail(state, arg) {
+	  state.costMaterial = arg.material;
+	  state.costManufacturing = arg.manufacturing;
+	  state.costInWork = arg.inWork;
+	  state.costDetailMaterial = arg.materialData;
+	  state.costDetailManufacturing = arg.manufacturingData;
+	  state.costDetailInWork = arg.inWorkData;
+	},
 }
 
 export const actions = {
@@ -119,10 +136,8 @@ export const actions = {
 		      }
 		    })
 		  });
-	  
 	  //新規登録用No（＋1）
 	  noMax += 1;
-		
 	  //データ登録
     Firebase.database().ref(dbInWork).push({
       no: noMax,
@@ -133,7 +148,6 @@ export const actions = {
 	},
 	getCost(context, constructionNo) {
 	  let material = 0, manufacturing = 0, inWork = 0;
-	
 		const getCostMaterial =
 		   Firebase.database().ref(dbMaterialAndManufacturing)
 			  .orderByChild('constructionNo')
@@ -212,5 +226,115 @@ export const actions = {
 		  });
 		});
 	  Firebase.database().ref(dbConstruction).child(key).remove();
+	},
+	getCostDetails(context, constructionNo) {
+	  let material = 0, manufacturing = 0, inWork = 0;
+		let materialData =[], manufacturingData = [], inWorkData = [];
+		const getCostMaterial =
+		   Firebase.database().ref(dbMaterialAndManufacturing)
+			  .orderByChild('constructionNo')
+			  .startAt(constructionNo).endAt(constructionNo)
+			  .once('value', function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+		        if (childSnapshot.classification = '材料') {
+		          material += childSnapshot.val().money;
+		          materialData.push({
+		          	name: childSnapshot.val().name,
+		          	money: childSnapshot.val().money
+		          });
+		        } else if (childSnapshot.classification = '外注') {
+		          manufacturing += childSnapshot.val().money;
+		          manufacturingData.push({
+		          	name: childSnapshot.val().name,
+		          	money: childSnapshot.val().money
+		          });
+		        }
+			    });
+			  });
+		const getCostManufacturing =
+		  Firebase.database().ref(dbInWork)
+			  .orderByChild('constructionNo')
+			  .startAt(constructionNo).endAt(constructionNo)
+			  .once('value', function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+		        inWork += childSnapshot.val().money;
+	          inWorkData.push({
+	          	name: childSnapshot.val().name,
+	          	money: childSnapshot.val().money
+	          });
+			    });
+			  });
+	  Promise.all([getCostMaterial, getCostManufacturing]).then(() => {
+			context.commit('setCostDetail', {
+			  material: material,
+			  manufacturing: manufacturing,
+			  inWork: inWork,
+			  materialData: materialData,
+			  manufacturingData: manufacturingData,
+			  inWorkData: inWorkData
+			});
+		});
+	},
+	async commitOrder(context, arg) {
+	  let updateFlag = 0, no = 1;
+	  let key, keys = [];
+	  //既に登録されている注文番号かどうか確認
+		await Firebase.database().ref(dbOrder)
+		  .orderByChild('orderNo')
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
+		  .once('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      if (arg.orderNo === childSnapshot.val().orderNo) {
+		      	updateFlag = 1;
+		      }
+		    })
+		  });
+		//既に登録されている場合、データを削除する。
+		if (updateFlag === 1) {
+		  //１　dbOrder
+		  let key;
+			await Firebase.database().ref(dbOrder)
+			.orderByChild('orderNo')
+			.startAt(arg.orderNo).endAt(arg.orderNo)
+			.once('value', function(snapshot) {
+	      snapshot.forEach(function(childSnapshot) {
+			    key = childSnapshot.key;
+			  });
+			});
+		  await Firebase.database().ref(dbOrder).child(key).remove();
+		  //２　dbOrderDetails
+			await Firebase.database().ref(dbOrderDetails)
+			.orderByChild('orderNo')
+			.startAt(arg.orderNo).endAt(arg.orderNo)
+			.once('value', function(snapshot) {
+	      snapshot.forEach(function(childSnapshot) {
+	        keys.push(childSnapshot.key);
+			  });
+			});
+			for (let i = 0; i < keys.length; i++) {
+			  await Firebase.database().ref(dbOrderDetails).child(keys[i]).remove();
+			}
+	  }
+	  //登録する
+	  //１　dbOrder
+    await Firebase.database().ref(dbOrder).push({
+      orderNo: arg.orderNo,
+      orderDay: arg.orderDay,
+      orderName: arg.orderName,
+	  });
+	  //２　dbOrderDetails　連番
+	  for (let i = 0; i < arg.orderData.length; i++) {	
+	    await Firebase.database().ref(dbOrderDetails).push({
+	      no: no,
+	      orderNo: arg.orderNo,
+	      materialAndManufacturingName: arg.orderData[i].materialAndManufacturingName,
+	      unitPrice: parseFloat(arg.orderData[i].unitPrice),
+	      num: parseFloat(arg.orderData[i].num),
+	      money: parseFloat(arg.orderData[i].money),
+	      classification: arg.orderData[i].classification,
+	      constructionNo: arg.orderData[i].constructionNo,
+		  });
+		  no++;
+    }
 	},
 }

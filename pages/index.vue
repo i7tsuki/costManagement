@@ -2,6 +2,7 @@
   <div class="container">
     <div>
       <Logo />
+      <router-link to="order">注文</router-link>
       <router-link to="materialAndManufacturing">材料・外注</router-link>
       <router-link to="inwork">内作</router-link>
       <router-link to="construction">工事一覧</router-link>
