@@ -6,16 +6,34 @@
       <table>
       	<tr>
       	  <th>注文番号</th>
+      	  <th>注文日</th>
       		<th>名称</th>
       		<th>金額</th>
       		<th>区分</th>
+      		<th>納品日</th>
       	</tr>
-      	<tr v-for="o in orderNum" v-bind:key="o.orderNo">
+      	<tr v-for="o in order" v-bind:key="o.orderNo">
 	      	<td>{{ o.orderNo }}</td>
+	      	<td>{{ o.orderDay }}</td>
       		<td>{{ o.orderName }}</td>
       		<td>{{ o.orderMoney }}
       		<td>{{ o.constructionNo }}</td>
-      		<td><button @click="edit(o.orderNo)">編集</button></td>
+      		<td>{{ o.deliveryDay }}</td>
+      		<td><button @click="deliver()">納品</button></td>
+      		<EditModal v-if="isShowModal" @close="isShowModal = false">
+      		  <h3 slot="header" v-model="editOrderNo">注文番号: {{ o.orderNo }}</h3>
+      		  <h3 slot="body">
+      		    <p>納品日</p>
+      		    <p><input type="text" v-model="editDeliveryDay"></p>
+				    </h3>
+            <h3 slot="footer">
+              <button @click="editOK(m.no)">更新</button>
+              <button @click="editCancel">キャンセル</button>
+            </h3>
+          </EditModal>
+      		<td>
+      		  <router-link to="orderDetails"><button @click="orderEdit(o.orderNo)">注文変更</button></router-link>
+      		</td>
       		<td><button @click="del(o.orderNo)">削除</button></td>
       	</tr>
       </table>
@@ -24,13 +42,40 @@
 </template>
 
 <script>
+import EditModal from '~/components/EditModal';
+
 export default {
+  components: { EditModal },
+	data: function() {
+		return {
+			constructionNo: '',
+			name: '',
+			money: 0,
+			classification: '材料',
+			isShowModal: false,
+    }
+  },
   methods: {
-  	newOrder() {
+  	deliver(orderNo) {
+  	  this.isShowModal = true;
   	}, 
-  	edit(orderNo) {
+  	editOK(orderNo) {
+  	  this.$store.dispatch('setDeliverDay', {
+  	    orderNo: orderNo, 
+  	    deliveryDay: this.editDeliveryDay,
+  	  });
+  	  this.$store.dispatch('getOrder');
+  	  this.isShowModal = false;
+  	},
+  	orderEdit(orderNo) {
+  	  this.$store.state.orderNo = orderNo;
   	}, 
   	del(orderNo) {
+  	  this.$store.dispatch('delOrder', orderNo);
+  	  this.$store.dispatch('getOrder');
+  	},
+  	editCancel() {
+  	  this.isShowModal = false;
   	},
   },
 	created() {

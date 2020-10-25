@@ -4,7 +4,7 @@
       <Logo />
       <button @click="commit()">登録</button>
       <p>注文日</p>
-      <input type="text" v-model="orderDay">
+      <input type="date" v-model="orderDay">
       <p>注文番号</p>
       <input type="text" v-model="orderNo">
       <p>注文名</p>
@@ -19,7 +19,7 @@
       		<th>区分</th>
       		<th>工事番号</th>
       	</tr>
-      	<tr v-for="(o, index) in order" v-bind:key="o.orderNo">
+      	<tr v-for="(o, index) in order" v-bind:key="index">
       	  <td>{{ index + 1 }}</td>
       		<td>{{ o.materialAndManufacturingName }}</td>
       		<td>{{ o.unitPrice }}</td>
@@ -90,6 +90,7 @@ export default {
 			newClassification: '材料',
 			newConstructionNo: '',
 			isShowModal: false,
+			selectRow: null,
     }
   },
   methods: {
@@ -115,6 +116,7 @@ export default {
   		  orderData: this.order
   		});
   		console.log('登録しました。');
+  		this.$router.push('/order');
   	},
   	del(index) {
   		this.order.splice(index, 1);
@@ -126,18 +128,20 @@ export default {
 			this.editMoney = this.order[index].money;
 			this.editClassification = this.order[index].classification;
 			this.editConstructionNo = this.order[index].constructionNo;
+			this.selectRow = index;
   		this.isShowModal = true;
   	},
   	editCancel() {
   	  this.isShowModal = false;
   	},
   	editOK(index) {
-			this.order[index].materialAndManufacturingName = this.editName;
-			this.order[index].unitPrice = this.editUnitPrice;
-			this.order[index].num = this.editNum;
-			this.order[index].money = this.editMoney;
-			this.order[index].classification = this.editClassification;
-			this.order[index].constructionNo = this.editConstructionNo;
+  	  console.log(this.selectRow);
+			this.order[this.selectRow].materialAndManufacturingName = this.editName;
+			this.order[this.selectRow].unitPrice = this.editUnitPrice;
+			this.order[this.selectRow].num = this.editNum;
+			this.order[this.selectRow].money = this.editMoney;
+			this.order[this.selectRow].classification = this.editClassification;
+			this.order[this.selectRow].constructionNo = this.editConstructionNo;
   	  this.isShowModal = false;
   	},
   },

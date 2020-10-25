@@ -17,7 +17,9 @@ export const state = () => ({
   constructionNo: null,
   costDetailMaterial: [],
   costDetailManufacturing: [],
-  costDetailInWork: []
+  costDetailInWork: [],
+  order: [],
+  orderNo: null,
 })
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
@@ -58,6 +60,20 @@ export const mutations = {
 	  state.costDetailManufacturing = arg.manufacturingData;
 	  state.costDetailInWork = arg.inWorkData;
 	},
+  clearOrder(state) {
+  	state.order = [];
+  },
+  setStateDeliverDay(state, deliveryDay) {
+    state.deliveryDay = deliveryDay;  
+  },
+  setOrder(state, arg) {
+    state.order.push({
+      orderNo: arg.orderNo,
+      orderDay: arg.orderDay,
+      orderName: arg.orderName,
+      deliveryDay: arg.deliveryDay,
+    });
+  },
 }
 
 export const actions = {
@@ -292,7 +308,6 @@ export const actions = {
 		//既に登録されている場合、データを削除する。
 		if (updateFlag === 1) {
 		  //１　dbOrder
-		  let key;
 			await Firebase.database().ref(dbOrder)
 			.orderByChild('orderNo')
 			.startAt(arg.orderNo).endAt(arg.orderNo)
@@ -336,5 +351,122 @@ export const actions = {
 		  });
 		  no++;
     }
+	},
+	getOrder(context) {
+	  context.commit('clearOrder');
+		Firebase.database().ref(dbOrder)
+		  .orderByChild('orderNo').on('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      context.commit('setOrder', {
+		      	orderNo: childSnapshot.val().orderNo, 
+		      	orderDay: childSnapshot.val().orderDay, 
+		      	orderName: childSnapshot.val().orderName, 
+		      	deliveryDay: childSnapshot.val().deliveryDay
+		      });
+		    });
+	  });
+  },
+	async delOrder(context, orderNo) {
+	  let key;
+	  let keys = [];
+	  //１　dbOrder
+		await Firebase.database().ref(dbOrder)
+		  .orderByChild('orderNo')
+		  .startAt(orderNo).endAt(orderNo)
+		  .once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+		      key = childSnapshot.key;
+		    });
+		  });
+	  await Firebase.database().ref(dbOrder).child(key).remove();
+	  //２　dbOrderDetails
+		await Firebase.database().ref(dbOrderDetails)
+      .orderByChild('orderNo')
+		  .startAt(orderNo).endAt(orderNo)
+		  .once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+          keys.push(childSnapshot.key);
+		    });
+		  });
+	  for (let i = 0; i < keys.length; i++) {
+	    await Firebase.database().ref(dbOrderDetails).child(keys[i]).remove();
+  	}
+	},
+	setDeliverDay(context, deliveryDay) {
+	  let key, noMax;
+	  let orderDetails = [];
+	  let keys = [];
+		Firebase.database().ref(dbOrder)
+			.orderByChild('orderNo')
+			.startAt(arg.orderNo).endAt(arg.orderNo)
+			.once('value', function(snapshot) {
+			  snapshot.forEach(function(childSnapshot) {
+		      key = childSnapshot.key;
+			  });
+			});
+		Firebase.database().ref(dbOrder).child(key).update({
+			deliveryDay: arg.deliveryDay,
+		});
+    //材料外注データを作成する。
+    //既にデータがあれば、特に処理無し。
+    //なお、納品日が空の場合は材料外注データを削除する。
+    if (arg.deliveryDay === '') {
+			Firebase.database().ref(dbMaterialAndManufacturing)
+			.orderByChild('orderNo')
+			.startAt(arg.orderNo).endAt(arg.orderNo)
+			.once('value', function(snapshot) {
+	      snapshot.forEach(function(childSnapshot) {
+			    keys.push(childSnapshot.key);
+			  });
+			});
+			for (let i = 0; i < keys.length; i++) {
+			  Firebase.database().ref(dbConstruction).child(keys[i]).remove();
+			}
+    } else {
+			Firebase.database().ref(dbOrderDetails)
+			  .orderByChild('orderNo')
+			  .startAt(arg.orderNo).endAt(arg.orderNo)
+			  .once('value', function(snapshot) {
+	        snapshot.forEach(function(childSnapshot) {
+			      orderDetails.push({
+			        orderNo: childSnapshot.orderNo,
+			        orderDetailNo: childSnapshot.no,
+			        materialAndManufacturingName: childSnapshot.materialAndManufacturingName,
+			        unitPrice: childSnapshot.unitPrice,
+			        num: childSnapshot.num,
+			        money: childSnapshot.money,
+			        classification: childSnapshot.classification,
+			        constructionNo: childSnapshot.constructionNo,
+			    });
+			  });
+			});
+      //材料外注データの最大連番を取得
+			Firebase.database().ref(dbMaterialAndManufacturing)
+			  .orderByChild('no').on('value', function(snapshot) {
+			    snapshot.forEach(function(childSnapshot) {
+			      if (noMax < childSnapshot.val().no) {
+			      	noMax = childSnapshot.val().no;
+			      }
+			    })
+			  });
+		  //新規登録用No（＋1）
+		  noMax += 1;
+      //材料外注データを追加する。
+      for (let i = 0; i < orderDetail.length; i++) {
+		    Firebase.database().ref(dbMaterialAndManufacturing).push({
+		      no: noMax,
+	        orderNo: orderDetails[i].orderNo,
+	        orderDetailNo: orderDetails[i].no,
+	        materialAndManufacturingName: orderDetails[i].materialAndManufacturingName,
+	        unitPrice: orderDetails[i].unitPrice,
+	        num: orderDetails[i].num,
+	        money: orderDetails[i].money,
+	        classification: orderDetails[i].classification,
+	        constructionNo: orderDetails[i].constructionNo,
+			  });
+			  noMax += 1;
+	    }
+	  }
+	  context.commit('setStateDeliverDay', arg.deliveryDay);
 	},
 }
