@@ -1,26 +1,27 @@
-import Firebase from '../assets/firebase-config'
-import Vuex from 'vuex'
+import Firebase from '../assets/firebase-config';
+import Vuex from 'vuex';
 
-const dbMaterialAndManufacturing = 'materialAndManufacturing'
-const dbInWork = 'inWork'
-const dbConstruction = 'construction'
-const dbOrder = 'order'
-const dbOrderDetails = 'orderDetails'
+const dbMaterialAndManufacturing = 'materialAndManufacturing';
+const dbInWork = 'inWork';
+const dbConstruction = 'construction';
+const dbOrder = 'order';
+const dbOrderDetails = 'orderDetails';
 
 export const state = () => ({
   materialAndManufacturing: [],
-  inWorks: null,
+  inWorks: [],
   costMaterial: 0,
   costManufacturing: 0,
   costInWork: 0,
   construction: [],
-  constructionNo: null,
+  constructionNo: '',
   costDetailMaterial: [],
   costDetailManufacturing: [],
   costDetailInWork: [],
   order: [],
-  orderNo: null,
-})
+  orderNo: '',
+  orderDetails: [],
+});
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
 	  state.materialAndManufacturing.push({
@@ -74,7 +75,10 @@ export const mutations = {
       deliveryDay: arg.deliveryDay,
     });
   },
-}
+  setStateOrderDetails(state, arg) {
+    state.orderDetails = arg;
+  },
+};
 
 export const actions = {
 	getMaterialAndManufacturing(context) {
@@ -336,26 +340,28 @@ export const actions = {
       orderNo: arg.orderNo,
       orderDay: arg.orderDay,
       orderName: arg.orderName,
+      deliveryDay: null,
 	  });
 	  //２　dbOrderDetails　連番
-	  for (let i = 0; i < arg.orderData.length; i++) {	
+	  for (let i = 0; i < arg.orderDetails.length; i++) {	
 	    await Firebase.database().ref(dbOrderDetails).push({
-	      no: no,
 	      orderNo: arg.orderNo,
-	      materialAndManufacturingName: arg.orderData[i].materialAndManufacturingName,
-	      unitPrice: parseFloat(arg.orderData[i].unitPrice),
-	      num: parseFloat(arg.orderData[i].num),
-	      money: parseFloat(arg.orderData[i].money),
-	      classification: arg.orderData[i].classification,
-	      constructionNo: arg.orderData[i].constructionNo,
+	      orderDetailNo: no,
+	      materialAndManufacturingName: arg.orderDetails[i].materialAndManufacturingName,
+	      unitPrice: parseFloat(arg.orderDetails[i].unitPrice),
+	      num: parseFloat(arg.orderDetails[i].num),
+	      money: parseFloat(arg.orderDetails[i].money),
+	      classification: arg.orderDetails[i].classification,
+	      constructionNo: arg.orderDetails[i].constructionNo,
 		  });
 		  no++;
     }
 	},
-	getOrder(context) {
+	async getOrder(context) {
 	  context.commit('clearOrder');
-		Firebase.database().ref(dbOrder)
-		  .orderByChild('orderNo').on('value', function(snapshot) {
+		await Firebase.database().ref(dbOrder)
+		  .orderByChild('orderNo')
+		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
 		      context.commit('setOrder', {
 		      	orderNo: childSnapshot.val().orderNo, 
@@ -365,6 +371,26 @@ export const actions = {
 		      });
 		    });
 	  });
+  },
+	async getOrderDetails(context, orderNo) {
+	  let orderDetails = [];
+		await Firebase.database().ref(dbOrderDetails)
+		  .orderByChild('orderNo')
+		  .startAt(orderNo).endAt(orderNo)
+		  .on('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      orderDetails.push({
+		        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
+		        unitPrice: childSnapshot.val().unitPrice,
+		        num: childSnapshot.val().num,
+		        money: childSnapshot.val().money,
+		        classification: childSnapshot.val().classification,
+		        constructionNo: childSnapshot.val().constructionNo,
+		      });
+		    });
+	    });
+	  context.commit('setStateOrderDetails', orderDetails);
+	  context.commit('setStateOrderDetails', orderDetails);
   },
 	async delOrder(context, orderNo) {
 	  let key;
@@ -392,7 +418,7 @@ export const actions = {
 	    await Firebase.database().ref(dbOrderDetails).child(keys[i]).remove();
   	}
 	},
-	setDeliverDay(context, deliveryDay) {
+	setDeliverDay(context, arg) {
 	  let key, noMax;
 	  let orderDetails = [];
 	  let keys = [];
@@ -407,6 +433,7 @@ export const actions = {
 		Firebase.database().ref(dbOrder).child(key).update({
 			deliveryDay: arg.deliveryDay,
 		});
+		
     //材料外注データを作成する。
     //既にデータがあれば、特に処理無し。
     //なお、納品日が空の場合は材料外注データを削除する。
@@ -456,7 +483,7 @@ export const actions = {
 		    Firebase.database().ref(dbMaterialAndManufacturing).push({
 		      no: noMax,
 	        orderNo: orderDetails[i].orderNo,
-	        orderDetailNo: orderDetails[i].no,
+	        orderDetailNo: orderDetails[i].orderDetailNo,
 	        materialAndManufacturingName: orderDetails[i].materialAndManufacturingName,
 	        unitPrice: orderDetails[i].unitPrice,
 	        num: orderDetails[i].num,
@@ -469,4 +496,4 @@ export const actions = {
 	  }
 	  context.commit('setStateDeliverDay', arg.deliveryDay);
 	},
-}
+};

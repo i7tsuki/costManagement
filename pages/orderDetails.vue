@@ -19,7 +19,7 @@
       		<th>区分</th>
       		<th>工事番号</th>
       	</tr>
-      	<tr v-for="(o, index) in order" v-bind:key="index">
+      	<tr v-for="(o, index) in orderDetails" v-bind:key="index">
       	  <td>{{ index + 1 }}</td>
       		<td>{{ o.materialAndManufacturingName }}</td>
       		<td>{{ o.unitPrice }}</td>
@@ -79,10 +79,10 @@ export default {
   components: { EditModal },
 	data: function() {
 		return {
-			order: [],
-			orderDay: '',
 			orderNo: '',
+			orderDay: '',
 			orderName: '',
+			orderDetails: [],
 			newName: '',
 			newUnitPrice: 0,
 			newNum: 0,
@@ -93,9 +93,22 @@ export default {
 			selectRow: null,
     }
   },
+  beforeCreate() {
+    if (this.$store.state.orderNo !== '') {
+      this.orderNo = this.$store.state.orderNo;
+      this.$store.dispatch('getOrder');
+      this.$store.dispatch('getOrderDetails', this.$store.state.orderNo);
+      this.orderDetails = this.$store.state.orderDetails;
+      this.orderName = this.$store.state.orderName;
+      this.orderDay = this.$store.state.orderDay;
+    }
+  },
+  destroyed() {
+    this.$store.state.orderNo = '';
+  },
   methods: {
   	addOrder() {
-  	  this.order.push({
+  	  this.orderDetails.push({
   	    materialAndManufacturingName: this.newName,
   	    unitPrice: this.newUnitPrice,
   	    num: this.newNum,
@@ -113,21 +126,21 @@ export default {
   		  orderDay: this.orderDay,
   		  orderNo: this.orderNo, 
   		  orderName: this.orderName,
-  		  orderData: this.order
+  		  orderDetails: this.orderDetails
   		});
   		console.log('登録しました。');
   		this.$router.push('/order');
   	},
   	del(index) {
-  		this.order.splice(index, 1);
+  		this.orderDetails.splice(index, 1);
   	},
   	edit(index) {
-			this.editName = this.order[index].materialAndManufacturingName;
-			this.editUnitPrice = this.order[index].unitPrice;
-			this.editNum = this.order[index].num;
-			this.editMoney = this.order[index].money;
-			this.editClassification = this.order[index].classification;
-			this.editConstructionNo = this.order[index].constructionNo;
+			this.editName = this.orderDetails[index].materialAndManufacturingName;
+			this.editUnitPrice = this.orderDetails[index].unitPrice;
+			this.editNum = this.orderDetails[index].num;
+			this.editMoney = this.orderDetails[index].money;
+			this.editClassification = this.orderDetails[index].classification;
+			this.editConstructionNo = this.orderDetails[index].constructionNo;
 			this.selectRow = index;
   		this.isShowModal = true;
   	},
@@ -136,12 +149,12 @@ export default {
   	},
   	editOK(index) {
   	  console.log(this.selectRow);
-			this.order[this.selectRow].materialAndManufacturingName = this.editName;
-			this.order[this.selectRow].unitPrice = this.editUnitPrice;
-			this.order[this.selectRow].num = this.editNum;
-			this.order[this.selectRow].money = this.editMoney;
-			this.order[this.selectRow].classification = this.editClassification;
-			this.order[this.selectRow].constructionNo = this.editConstructionNo;
+			this.orderDetails[this.selectRow].materialAndManufacturingName = this.editName;
+			this.orderDetails[this.selectRow].unitPrice = this.editUnitPrice;
+			this.orderDetails[this.selectRow].num = this.editNum;
+			this.orderDetails[this.selectRow].money = this.editMoney;
+			this.orderDetails[this.selectRow].classification = this.editClassification;
+			this.orderDetails[this.selectRow].constructionNo = this.editConstructionNo;
   	  this.isShowModal = false;
   	},
   },

@@ -24,10 +24,10 @@
       		  <h3 slot="header" v-model="editOrderNo">注文番号: {{ o.orderNo }}</h3>
       		  <h3 slot="body">
       		    <p>納品日</p>
-      		    <p><input type="text" v-model="editDeliveryDay"></p>
+      		    <p><input type="date" v-model="editDeliveryDay"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(m.no)">更新</button>
+              <button @click="editOK(editOrderNo)">更新</button>
               <button @click="editCancel">キャンセル</button>
             </h3>
           </EditModal>
@@ -53,8 +53,14 @@ export default {
 			money: 0,
 			classification: '材料',
 			isShowModal: false,
+			editOrderNo: '',
+			editDeliveryDay: '',
     }
   },
+	created() {
+		this.$store.dispatch('getOrder');
+		this.order = this.$store.state.order;
+	},
   methods: {
   	deliver(orderNo) {
   	  this.isShowModal = true;
@@ -64,8 +70,11 @@ export default {
   	    orderNo: orderNo, 
   	    deliveryDay: this.editDeliveryDay,
   	  });
+  	  console.log('b');
   	  this.$store.dispatch('getOrder');
+  	  console.log('c');
   	  this.isShowModal = false;
+  	  this.order = this.$store.state.order;
   	},
   	orderEdit(orderNo) {
   	  this.$store.state.orderNo = orderNo;
@@ -73,19 +82,12 @@ export default {
   	del(orderNo) {
   	  this.$store.dispatch('delOrder', orderNo);
   	  this.$store.dispatch('getOrder');
+  	  this.order = this.$store.state.order;
   	},
   	editCancel() {
   	  this.isShowModal = false;
   	},
   },
-	created() {
-		this.$store.dispatch('getOrder');
-	},
-	computed: {
-	  order: function() {
-	    return this.$store.state.order
-	  }
-	}
 }
 </script>
 
