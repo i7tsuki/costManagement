@@ -433,7 +433,6 @@ export const actions = {
 		Firebase.database().ref(dbOrder).child(key).update({
 			deliveryDay: arg.deliveryDay,
 		});
-		
     //材料外注データを作成する。
     //既にデータがあれば、特に処理無し。
     //なお、納品日が空の場合は材料外注データを削除する。
@@ -479,7 +478,7 @@ export const actions = {
 		  //新規登録用No（＋1）
 		  noMax += 1;
       //材料外注データを追加する。
-      for (let i = 0; i < orderDetail.length; i++) {
+      for (let i = 0; i < orderDetails.length; i++) {
 		    Firebase.database().ref(dbMaterialAndManufacturing).push({
 		      no: noMax,
 	        orderNo: orderDetails[i].orderNo,
