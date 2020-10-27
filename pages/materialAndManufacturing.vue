@@ -16,15 +16,15 @@
       		<th>金額</th>
       		<th>区分</th>
       	</tr>
-      	<tr v-for="m in materialAndManufacturing" v-bind:key="m.no">
-	      	<td>{{ m.no }}</td>
+      	<tr v-for="m in materialAndManufacturing" v-bind:key="m.materialAndManufacturingNo">
+	      	<td>{{ m.materialAndManufacturingNo }}</td>
       		<td>{{ m.constructionNo }}</td>
       		<td>{{ m.name }}</td>
       		<td>{{ m.money }}
       		<td>{{ m.classification }}</td>
-      		<td><button @click="edit(m.no, m.constructionNo, m.name, m.money, m.classification)">編集</button></td>
+      		<td><button @click="edit(m.materialAndManufacturingNo, m.constructionNo, m.name, m.money, m.classification)">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header" v-model="editNo">No: {{ m.no }}</h3>
+      		  <h3 slot="header" v-model="editNo">No: {{ m.materialAndManufacturingNo }}</h3>
       		  <h3 slot="body">
       		    <p>工事番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
@@ -37,11 +37,11 @@
 				      <input type="radio" value="外注" name="editClass" v-model="editClassification">外注
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(m.no)">更新</button>
+              <button @click="editOK(m.materialAndManufacturingNo)">更新</button>
               <button @click="editCancel">キャンセル</button>
             </h3>
           </EditModal>
-      		<td><button @click="del(m.no)">削除</button></td>
+      		<td><button @click="del(m.materialAndManufacturingNo)">削除</button></td>
       	</tr>
       </table>
     </div>
@@ -76,16 +76,16 @@ export default {
   		});
   		this.$store.dispatch('getMaterialAndManufacturing');
   	}, 
-  	edit(no, constructionNo, name, money, classification) {
+  	edit(constructionNo, name, money, classification) {
   		this.editConstructionNo = constructionNo;
   		this.editName = name;
   		this.editMoney = money;
   		this.editClassification = classification;
   		this.isShowModal = true;
   	}, 
-  	editOK(no) {
+  	editOK(materialAndManufacturingNo) {
   	  this.$store.dispatch('editMaterialAndManufacturing', {
-  	  	no: no, 
+  	  	materialAndManufacturingNo: materialAndManufacturingNo, 
   	  	constructionNo: this.editConstructionNo,
   	  	name: this.editName,
   	  	money: this.editMoney,
@@ -97,8 +97,8 @@ export default {
   	editCancel() {
   		this.isShowModal = false;
   	},
-  	del(no) {
-  	  this.$store.dispatch('delMaterialAndManufacturing', no);
+  	del(materialAndManufacturingNo) {
+  	  this.$store.dispatch('delMaterialAndManufacturing', materialAndManufacturingNo);
   	  this.$store.dispatch('getMaterialAndManufacturing');
   	}
   },

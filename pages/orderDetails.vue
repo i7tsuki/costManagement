@@ -82,7 +82,6 @@ export default {
 			orderNo: '',
 			orderDay: '',
 			orderName: '',
-			orderDetails: [],
 			newName: '',
 			newUnitPrice: 0,
 			newNum: 0,
@@ -91,20 +90,21 @@ export default {
 			newConstructionNo: '',
 			isShowModal: false,
 			selectRow: null,
+			orderDetails: [],
     }
   },
-  beforeCreate() {
+  created() {
     if (this.$store.state.orderNo !== '') {
       this.orderNo = this.$store.state.orderNo;
       this.$store.dispatch('getOrder');
-      this.$store.dispatch('getOrderDetails', this.$store.state.orderNo);
+      this.$store.dispatch('getOrderDetails', this.orderNo);
       this.orderDetails = this.$store.state.orderDetails;
       this.orderName = this.$store.state.orderName;
       this.orderDay = this.$store.state.orderDay;
     }
   },
   destroyed() {
-    this.$store.state.orderNo = '';
+    this.$store.commit('setOrderNo', '');
   },
   methods: {
   	addOrder() {

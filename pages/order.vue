@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <Logo />
-      <router-link to="orderDetails"><button>新規</button></router-link>
+      <router-link to="orderDetails"><button @click="newOrder">新規</button></router-link>
       <table>
       	<tr>
       	  <th>注文番号</th>
@@ -63,6 +63,9 @@ export default {
 		this.order = this.$store.state.order;
 	},
   methods: {
+    newOrder() {
+      this.$store.commit('setOrderNo', '');
+    },
   	deliver(deliveryDay) {
   	  this.editDeliveryDay = deliveryDay;
   	  this.isShowModal = true;
@@ -77,7 +80,7 @@ export default {
   	  this.order = this.$store.state.order;
   	},
   	orderEdit(orderNo) {
-  	  this.$store.state.orderNo = orderNo;
+  	  this.$store.commit('setOrderNo', orderNo);
   	}, 
   	del(orderNo) {
   	  this.$store.dispatch('delOrder', orderNo);
