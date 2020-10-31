@@ -93,11 +93,11 @@ export default {
 			orderDetails: [],
     }
   },
-  created() {
+  async created() {
     if (this.$store.state.orderNo !== '') {
       this.orderNo = this.$store.state.orderNo;
-      this.$store.dispatch('getOrder');
-      this.$store.dispatch('getOrderDetails', this.orderNo);
+      await this.$store.dispatch('getOrder');
+      await this.$store.dispatch('getOrderDetails', this.orderNo);
       this.orderDetails = this.$store.state.orderDetails;
       this.orderName = this.$store.state.orderName;
       this.orderDay = this.$store.state.orderDay;

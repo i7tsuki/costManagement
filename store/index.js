@@ -9,7 +9,7 @@ const dbOrderDetails = 'orderDetails';
 
 export const state = () => ({
   materialAndManufacturing: [],
-  inWorks: [],
+  inWork: [],
   costMaterial: 0,
   costManufacturing: 0,
   costInWork: 0,
@@ -26,8 +26,11 @@ export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
 	  state.materialAndManufacturing.push({
 	  	materialAndManufacturingNo: arg.materialAndManufacturingNo, 
+	  	orderNo: arg.orderNo, 
 	  	constructionNo: arg.constructionNo, 
-	  	name: arg.name, 
+	  	materialAndManufacturingName: arg.materialAndManufacturingName, 
+	  	unitPrice: arg.unitPrice,
+	  	num: arg.num,
 	  	money: arg.money, 
 	  	classification: arg.classification
 	  });
@@ -78,48 +81,73 @@ export const mutations = {
   setStateOrderDetails(state, orderDetails) {
     state.orderDetails = [];
     for(let i = 0; i < orderDetails.length; i++) {
-      state.orderDetails.push(orderDetails[i]);
+      state.orderDetails.push({
+	      materialAndManufacturingName: orderDetails[i].materialAndManufacturingName,
+	      unitPrice: orderDetails[i].unitPrice,
+	      num: orderDetails[i].num,
+	      money: orderDetails[i].money,
+	      classification: orderDetails[i].classification,
+	      constructionNo: orderDetails[i].constructionNo,
+      });
     }
   },
   setOrderNo(state, orderNo) {
     state.orderNo = orderNo;
   },
+  clearInWork(state) {
+  	state.inWork = [];
+  },
+	setInWork(state, arg) {
+	  state.inWork.push({
+	  	workNo: arg.workNo, 
+	  	constructionNo: arg.constructionNo, 
+	  	workName: arg.workName, 
+	  	money: arg.money, 
+	  });
+	},
 };
 
 export const actions = {
 	getMaterialAndManufacturing(context) {
-	  context.commit('clearMaterialAndManufacturing');
 		Firebase.database().ref(dbMaterialAndManufacturing)
-		  .orderByChild('materialAndManufacturingNo').on('value', function(snapshot) {
+		  .orderByChild('materialAndManufacturingNo')
+		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
 		      context.commit('setMaterialAndManufacturing', {
 		      	materialAndManufacturingNo: childSnapshot.val().materialAndManufacturingNo, 
+		      	orderNo: childSnapshot.val().orderNo, 
 		      	constructionNo: childSnapshot.val().constructionNo, 
-		      	name: childSnapshot.val().name, 
+		      	materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName, 
+		      	unitPrice: childSnapshot.val().unitPrice, 
+		      	num: childSnapshot.val().num, 
 		      	money: childSnapshot.val().money, 
 		      	classification: childSnapshot.val().classification
 		      });
 		    });
 	  });
   },
-	addMaterialAndManufacturing(context, arg) {
+	async addMaterialAndManufacturing(context, arg) {
 	  let materialAndManufacturingNoMax = 0;
 	  //既に登録されているNoの最大値取得
-		Firebase.database().ref(dbMaterialAndManufacturing)
-		  .orderByChild('materialAndManufacturingNo').on('value', function(snapshot) {
+		await Firebase.database().ref(dbMaterialAndManufacturing)
+		  .orderByChild('materialAndManufacturingNo')
+		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      if (noMax < childSnapshot.val().no) {
-		      	noMax = childSnapshot.val().no;
+		      if (materialAndManufacturingNoMax < childSnapshot.val().materialAndManufacturingNo) {
+		      	materialAndManufacturingNoMax = childSnapshot.val().materialAndManufacturingNo;
 		      }
 		    })
 		  });
 	  //新規登録用No（＋1）
 	  materialAndManufacturingNoMax += 1;
 	  //データ登録
-    Firebase.database().ref(dbMaterialAndManufacturing).push({
+    await Firebase.database().ref(dbMaterialAndManufacturing).push({
       materialAndManufacturingNo: materialAndManufacturingNoMax,
+      orderNo: arg.orderNo,
       constructionNo: arg.constructionNo,
-      name: arg.name,
+      materialAndManufacturingName: arg.materialAndManufacturingName,
+      unitPrice: parseFloat(arg.unitPrice),
+      num: parseFloat(arg.num),
       money: parseFloat(arg.money),
       classification: arg.classification,
 	  });
@@ -136,6 +164,18 @@ export const actions = {
 		});
 	  Firebase.database().ref(dbMaterialAndManufacturing).child(key).remove();
 	},
+	delInWork(context, workNo) {
+	  let key;
+		Firebase.database().ref(dbInWork)
+		.orderByChild('workNo')
+		.startAt(workNo).endAt(workNo)
+		.once('value', function(snapshot) {
+      snapshot.forEach(function(childSnapshot) {
+		    key = childSnapshot.key;
+		  });
+		});
+	  Firebase.database().ref(dbInWork).child(key).remove();
+	},
 	editMaterialAndManufacturing(context, arg) {
 		Firebase.database().ref(dbMaterialAndManufacturing)
 			.orderByChild('materialAndManufacturingNo')
@@ -143,33 +183,65 @@ export const actions = {
 			.once('value', function(snapshot) {
 			  snapshot.forEach(function(childSnapshot) {
 		      Firebase.database().ref(dbMaterialAndManufacturing).child(childSnapshot.key).update({
+		        orderNo: arg.orderNo,
 		        constructionNo: arg.constructionNo,
-		        name: arg.name,
-		        money: arg.money,
+		        materialAndManufacturingName: arg.materialAndManufacturingName,
+		        unitPrice: parseFloat(arg.unitPrice),
+		        num: parseFloat(arg.num),
+		        money: parseFloat(arg.money),
 		        classification: arg.classification
 		      });
 			  });
 			});
 	},
-	addInWork(context, arg) {
-	  let noMax = 0;
-	  //既に登録されているNoの最大値取得
+	editInWork(context, arg) {
 		Firebase.database().ref(dbInWork)
-		  .orderByChild('materialAndManufacturingNo').on('value', function(snapshot) {
+			.orderByChild('workNo')
+			.startAt(arg.workNo).endAt(arg.workNo)
+			.once('value', function(snapshot) {
+			  snapshot.forEach(function(childSnapshot) {
+		      Firebase.database().ref(dbInWork).child(childSnapshot.key).update({
+		        constructionNo: arg.constructionNo,
+		        workName: arg.workName,
+		        money: parseFloat(arg.money),
+		      });
+			  });
+			});
+	},
+	getInWork(context) {
+		Firebase.database().ref(dbInWork)
+		  .orderByChild('workNo')
+		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      if (noMax < childSnapshot.val().materialAndManufacturingNo) {
-		      	noMax = childSnapshot.val().materialAndManufacturingNo;
+		      context.commit('setInWork', {
+		      	workNo: childSnapshot.val().workNo, 
+		      	constructionNo: childSnapshot.val().constructionNo, 
+		      	workName: childSnapshot.val().workName, 
+		      	money: childSnapshot.val().money, 
+		      });
+		    });
+	  });
+	},
+	async addInWork(context, arg) {
+	  let workNoMax = 0;
+	  //既に登録されているNoの最大値取得
+		await Firebase.database().ref(dbInWork)
+		  .orderByChild('workNo')
+		  .on('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      if (workNoMax < childSnapshot.val().workNo) {
+		      	workNoMax = childSnapshot.val().workNo;
 		      }
 		    })
 		  });
 	  //新規登録用No（＋1）
-	  noMax += 1;
+	  workNoMax += 1;
 	  //データ登録
-    Firebase.database().ref(dbInWork).push({
-      materialAndManufacturingNo: noMax,
+    await Firebase.database().ref(dbInWork).push({
+      workNo: workNoMax,
       constructionNo: arg.constructionNo,
-      name: arg.name, 
-      money: parseFloat(arg.money)
+      workName: arg.workName,
+      money: parseFloat(arg.money),
 	  });
 	},
 	getCost(context, constructionNo) {
@@ -383,9 +455,9 @@ export const actions = {
 		await Firebase.database().ref(dbOrderDetails)
 		  .orderByChild('orderNo')
 		  .startAt(orderNo).endAt(orderNo)
-		  .on('value', function(snapshot) {
-		    snapshot.forEach(function(childSnapshot) {
-		      orderDetails.push({
+		  .on('value', async function(snapshot) {
+		    await snapshot.forEach(async function(childSnapshot) {
+		      await orderDetails.push({
 		        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
 		        unitPrice: childSnapshot.val().unitPrice,
 		        num: childSnapshot.val().num,

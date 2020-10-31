@@ -82,9 +82,9 @@ export default {
   	orderEdit(orderNo) {
   	  this.$store.commit('setOrderNo', orderNo);
   	}, 
-  	del(orderNo) {
-  	  this.$store.dispatch('delOrder', orderNo);
-  	  this.$store.dispatch('getOrder');
+  	async del(orderNo) {
+  	  await this.$store.dispatch('delOrder', orderNo);
+  	  await this.$store.dispatch('getOrder');
   	  this.order = this.$store.state.order;
   	},
   	editCancel() {
