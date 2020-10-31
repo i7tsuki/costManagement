@@ -6,11 +6,17 @@
       <h2>材料</h2>
       <table>
       	<tr>
+      	  <th>注文番号</th>
       		<th>名称</th>
+      		<th>単価</th>
+      		<th>数量</th>
       		<th>金額</th>
       	</tr>
       	<tr v-for="material in costDetailMaterial" v-bind:key="material.no">
-      		<td>{{ material.name }}</td>
+          <td>{{ material.orderNo }}</td>
+      		<td>{{ material.materialAndManufacturingName }}</td>
+      		<td>{{ material.unitPrice }}</td>
+      		<td>{{ material.num }}</td>
       		<td>{{ material.money }}</td>
       	</tr>
       </table>
@@ -18,11 +24,17 @@
       <h2>外注</h2>
       <table>
       	<tr>
+      	  <th>注文番号</th>
       		<th>名称</th>
+      		<th>単価</th>
+      		<th>数量</th>
       		<th>金額</th>
       	</tr>
       	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.no">
-      		<td>{{ manufacturing.name }}</td>
+      	  <td>{{ manufacturing.orderNo }}</td>
+      		<td>{{ manufacturing.materialAndManufacturingName }}</td>
+      		<td>{{ manufacturing.unitPrice }}</td>
+      		<td>{{ manufacturing.num }}</td>
       		<td>{{ manufacturing.money }}</td>
       	</tr>
       </table>
@@ -31,11 +43,13 @@
       <table>
       	<tr>
       		<th>名称</th>
-      		<th>金額</th>
+      		<th>作業時間[h]</th>
+      		<th>区分</th>
       	</tr>
       	<tr v-for="work in costDetailInWork" v-bind:key="work.no">
-      		<td>{{ work.name }}</td>
-      		<td>{{ work.money }}</td>
+      		<td>{{ work.workName }}</td>
+      		<td>{{ work.time }}</td>
+      		<td>{{ work.classification }}</td>
       	</tr>
       </table>
       <h3>小計：{{ costInWork }}</h3>

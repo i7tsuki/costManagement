@@ -53,21 +53,23 @@
       		<td><button @click="del(index)">削除</button></td>
       	</tr>
       </table>
-      <p>名称</p>
-      <input type="text" v-model="newName">
-      <p>単価</p>
-      <input type="text" v-model="newUnitPrice">
-      <p>数量</p>
-      <input type="text" v-model="newNum">
-      <p>金額</p>
-      <input type="text" v-model="newMoney">
-      <p>区分</p>
-      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
-      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
-      </select>
-      <p>工事番号</p>
-      <input type="text" v-model="newConstructionNo">
-      <button @click="addOrder">明細追加</button>
+      <div id="input-form">
+	      <p>名称</p>
+	      <input type="text" v-model="newName">
+	      <p>単価</p>
+	      <input type="text" v-model="newUnitPrice">
+	      <p>数量</p>
+	      <input type="text" v-model="newNum">
+	      <p>金額</p>
+	      <input type="text" v-model="newMoney">
+	      <p>区分</p>
+	      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
+	      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
+	      </select>
+	      <p>工事番号</p>
+	      <input type="text" v-model="newConstructionNo">
+	      <button @click="addOrder">明細追加</button>
+      </div>
     </div>
   </div>
 </template>
@@ -96,7 +98,7 @@ export default {
   async created() {
     if (this.$store.state.orderNo !== '') {
       this.orderNo = this.$store.state.orderNo;
-      await this.$store.dispatch('getOrder');
+      await this.$store.dispatch('getOrderOne', this.orderNo);
       await this.$store.dispatch('getOrderDetails', this.orderNo);
       this.orderDetails = this.$store.state.orderDetails;
       this.orderName = this.$store.state.orderName;
@@ -199,5 +201,9 @@ export default {
 
 .links {
   padding-top: 15px;
+}
+
+#input-form {
+  border: 1px solid;
 }
 </style>

@@ -16,8 +16,8 @@
       	  <th>注文番号</th>
       		<th>工事番号</th>
       		<th>名称</th>
-      		<th>数量</th>
       		<th>単価</th>
+      		<th>数量</th>
       		<th>金額</th>
       		<th>区分</th>
       	</tr>
@@ -40,7 +40,7 @@
       		    <p>名称</p>
       		    <p><input type="text" v-model="editMaterialAndManufacturingName"></p>
       		    <p>単価</p>
-      		    <p><input type="text" v-model="editUnitPricey"></p>
+      		    <p><input type="text" v-model="editUnitPrice"></p>
       		    <p>数量</p>
       		    <p><input type="text" v-model="editNum"></p>
       		    <p>金額</p>
@@ -133,8 +133,8 @@ export default {
   	  	orderNo: this.editOrderNo, 
   	  	constructionNo: this.editConstructionNo,
   	  	materialAndManufacturingName: this.editMaterialAndManufacturingName,
-  	  	unitPrice: this.unitPrice,
-  	  	num: this.num, 
+  	  	unitPrice: this.editUnitPrice,
+  	  	num: this.editNum, 
   	  	money: this.editMoney,
   	  	classification: this.editClassification
   	  });

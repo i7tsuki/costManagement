@@ -8,16 +8,12 @@
       	  <th>注文番号</th>
       	  <th>注文日</th>
       		<th>名称</th>
-      		<th>金額</th>
-      		<th>区分</th>
       		<th>納品日</th>
       	</tr>
       	<tr v-for="o in order" v-bind:key="o.orderNo">
 	      	<td>{{ o.orderNo }}</td>
 	      	<td>{{ o.orderDay }}</td>
       		<td>{{ o.orderName }}</td>
-      		<td>{{ o.orderMoney }}
-      		<td>{{ o.constructionNo }}</td>
       		<td>{{ o.deliveryDay }}</td>
       		<td><button @click="deliver(o.deliveryDay)">納品</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
@@ -48,18 +44,14 @@ export default {
   components: { EditModal },
 	data: function() {
 		return {
-			constructionNo: '',
-			name: '',
-			money: 0,
-			classification: '材料',
 			isShowModal: false,
-			editOrderNo: '',
 			editDeliveryDay: '',
-			order: this.$store.state.order
+			order: []
     }
   },
-	beforeCreate() {
-		this.$store.dispatch('getOrder');
+	async beforeCreate() {
+	  await this.$store.commit('clearOrder');
+		await this.$store.dispatch('getOrder');
 		this.order = this.$store.state.order;
 	},
   methods: {
@@ -70,12 +62,14 @@ export default {
   	  this.editDeliveryDay = deliveryDay;
   	  this.isShowModal = true;
   	}, 
-  	editOK(orderNo) {
-  	  this.$store.dispatch('setDeliverDay', {
+  	async editOK(orderNo) {
+  	  await this.$store.commit('clearOrder');
+  	  await this.$store.dispatch('setDeliverDay', {
   	    orderNo: orderNo, 
   	    deliveryDay: this.editDeliveryDay,
   	  });
-  	  this.$store.dispatch('getOrder');
+  	  await this.$store.commit('clearOrder');
+  	  await this.$store.dispatch('getOrder');
   	  this.isShowModal = false;
   	  this.order = this.$store.state.order;
   	},
@@ -83,7 +77,9 @@ export default {
   	  this.$store.commit('setOrderNo', orderNo);
   	}, 
   	async del(orderNo) {
+    	await this.$store.commit('clearOrder');
   	  await this.$store.dispatch('delOrder', orderNo);
+  	  await this.$store.commit('clearOrder');
   	  await this.$store.dispatch('getOrder');
   	  this.order = this.$store.state.order;
   	},

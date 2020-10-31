@@ -3,29 +3,41 @@
     <div>
       <Logo />
       <label>工事番号</label><input type="text" v-model="constructionNo">
+      <label>作業日</label><input type="date" v-model="workDay">
       <label>作業内容</label><input type="text" v-model="workName">
-      <label>金額</label><input type="text" v-model="money">
+      <label>作業時間[h]</label><input type="text" v-model="time">
+      <input type="radio" value="直接工" name="class" v-model="classification">直接工
+      <input type="radio" value="間接工" name="class" v-model="classification">間接工
       <button @click="add">追加</button>
       <table>
       	<tr>
       		<th>工事番号</th>
+      		<th>作業日</th>
       		<th>作業内容</th>
-      		<th>金額</th>
+      		<th>作業時間[h]</th>
+      		<th>区分</th>
       	</tr>
       	<tr v-for="w in inWork" v-bind:key="w.workNo">
       		<td>{{ w.constructionNo }}</td>
+      		<td>{{ w.workDay }}</td>
       		<td>{{ w.workName }}</td>
-      		<td>{{ w.money }}
-      		<td><button @click="edit(w.workNo, w.constructionNo, w.workName, w.money)">編集</button></td>
+      		<td>{{ w.time }}</td>
+      		<td>{{ w.classification }}</td>
+      		<td><button @click="edit(w.workNo, w.constructionNo, w.workDay, w.workName, w.time, w.classification)">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header">No: {{ editNo }}</h3>
       		  <h3 slot="body">
       		    <p>工事番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
-      		    <p>名称</p>
+      		    <p>作業日</p>
+      		    <p><input type="date" v-model="editWorkDay"></p>
+      		    <p>作業内容</p>
       		    <p><input type="text" v-model="editWorkName"></p>
-      		    <p>金額</p>
-      		    <p><input type="text" v-model="editMoney"></p>
+      		    <p>作業時間[h]</p>
+      		    <p><input type="text" v-model="editTime"></p>
+      		    <p>区分</p>
+				      <input type="radio" value="直接工" name="class" v-model="editClassification">直接工
+				      <input type="radio" value="間接工" name="class" v-model="editClassification">間接工
 				    </h3>
             <h3 slot="footer">
               <button @click="editOK">更新</button>
@@ -47,12 +59,16 @@ export default {
 	data: function() {
 		return {
 		  constructionNo: '',
+		  workDay: '',
 		  workName: '',
-		  money: 0,
+		  time: 0,
+		  classification: '直接工',
 		  inWork: [],
 		  editConstructionNo: '',
+		  editWorkDay: '',
 		  editWorkName: '',
-		  editMoney: 0,
+		  editTime: 0,
+		  editClassification:  '直接工',
 		  isShowModal: false,
     }
   },
@@ -72,18 +88,22 @@ export default {
   	  await this.$store.commit('clearInWork');
   		await this.$store.dispatch('addInWork', {
   			constructionNo: this.constructionNo,
+  			workDay: this.workDay,
   			workName: this.workName,
-  			money: this.money
+  			time: this.time,
+  			classification: this.classification,
   		});
   		await this.$store.commit('clearInWork');
   		await this.$store.dispatch('getInWork');
   		this.inWork = this.$store.state.inWork;
   	}, 
-  	edit(workNo, constructionNo, workName, money) {
+  	edit(workNo, constructionNo, workDay, workName, time, classification) {
   	  this.editNo = workNo;
   	  this.editConstructionNo = constructionNo;
+  	  this.editWorkDay = workDay;
   	  this.editWorkName = workName;
-  	  this.editMoney = money;
+  	  this.editTime = time;
+  	  this.editClassification = classification;
   	  this.isShowModal = true;
   	},
   	async editOK() {
@@ -92,8 +112,10 @@ export default {
   	  await this.$store.dispatch('editInWork', {
   	  	workNo: this.editNo,
   	  	constructionNo: this.editConstructionNo,
-  	  	workName: this.workName,
-  	  	money: this.editMoney,
+  	  	workDay: this.editWorkDay,
+  	  	workName: this.editWorkName,
+  	  	time: this.editTime,
+  	  	classification: this.editClassification,
   	  });
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策

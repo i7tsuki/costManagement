@@ -21,6 +21,8 @@ export const state = () => ({
   order: [],
   orderNo: '',
   orderDetails: [],
+  orderDay: null,
+  orderName: '',
 });
 export const mutations = {
 	setMaterialAndManufacturing(state, arg) {
@@ -49,8 +51,10 @@ export const mutations = {
 	setConstruction(state, arg) {
 	  state.construction.push({
 	  	constructionNo: arg.constructionNo, 
-	  	name: arg.name, 
+	  	constructionName: arg.constructionName, 
+	  	orderDay: arg.orderDay, 
 	  	money: arg.money, 
+	  	shipDay: arg.shipDay, 
 	  });
   }, 
   setconstructionNo(state, constructionNo) {
@@ -78,6 +82,11 @@ export const mutations = {
       deliveryDay: arg.deliveryDay,
     });
   },
+  setOrderOne(state, arg) {
+    state.orderNo = arg.orderNo;
+    state.orderDay = arg.orderDay;
+    state.orderName = arg.orderName;
+  },
   setStateOrderDetails(state, orderDetails) {
     state.orderDetails = [];
     for(let i = 0; i < orderDetails.length; i++) {
@@ -101,8 +110,10 @@ export const mutations = {
 	  state.inWork.push({
 	  	workNo: arg.workNo, 
 	  	constructionNo: arg.constructionNo, 
+	  	workDay: arg.workDay, 
 	  	workName: arg.workName, 
-	  	money: arg.money, 
+	  	time: arg.time, 
+	  	classification: arg.classification, 
 	  });
 	},
 };
@@ -202,8 +213,10 @@ export const actions = {
 			  snapshot.forEach(function(childSnapshot) {
 		      Firebase.database().ref(dbInWork).child(childSnapshot.key).update({
 		        constructionNo: arg.constructionNo,
+		        workDay: arg.workDay,
 		        workName: arg.workName,
-		        money: parseFloat(arg.money),
+		        time: parseFloat(arg.time),
+		        classification: arg.classification,
 		      });
 			  });
 			});
@@ -216,8 +229,10 @@ export const actions = {
 		      context.commit('setInWork', {
 		      	workNo: childSnapshot.val().workNo, 
 		      	constructionNo: childSnapshot.val().constructionNo, 
+		      	workDay: childSnapshot.val().workDay, 
 		      	workName: childSnapshot.val().workName, 
-		      	money: childSnapshot.val().money, 
+		      	time: childSnapshot.val().time,
+		      	classification: childSnapshot.val().classification,
 		      });
 		    });
 	  });
@@ -240,8 +255,10 @@ export const actions = {
     await Firebase.database().ref(dbInWork).push({
       workNo: workNoMax,
       constructionNo: arg.constructionNo,
+      workDay: arg.workDay,
       workName: arg.workName,
-      money: parseFloat(arg.money),
+      time: parseFloat(arg.time),
+      classification: arg.classification,
 	  });
 	},
 	getCost(context, constructionNo) {
@@ -280,8 +297,10 @@ export const actions = {
 	  //データ登録
     Firebase.database().ref(dbConstruction).push({
       constructionNo: arg.constructionNo,
-      name: arg.name,
-      money: parseFloat(arg.money)
+      constructionName: arg.constructionName,
+      orderDay: arg.orderDay,
+      money: parseFloat(arg.money),
+      shipDay: arg.shipDay,
 	  });
   },
 	getConstructionNo(context) {
@@ -291,15 +310,17 @@ export const actions = {
 		    snapshot.forEach(function(childSnapshot) {
 		      context.commit('setConstruction', {
 		      	constructionNo: childSnapshot.val().constructionNo, 
-		      	name: childSnapshot.val().name, 
+		      	constructionName: childSnapshot.val().constructionName, 
+		      	orderDay: childSnapshot.val().orderDay, 
 		      	money: childSnapshot.val().money, 
+		      	shipDay: childSnapshot.val().shipDay, 
 		      });
 		    });
 	  });
   },
-	editConstructionNo(context, arg) {
+	async editConstructionNo(context, arg) {
 	  let key;
-		Firebase.database().ref(dbConstruction)
+		await Firebase.database().ref(dbConstruction)
 			.orderByChild('constructionNo')
 			.startAt(arg.beforeConstructionNo).endAt(arg.beforeConstructionNo)
 			.once('value', function(snapshot) {
@@ -307,10 +328,13 @@ export const actions = {
 		      key = childSnapshot.key;
 			  });
 			});
-		Firebase.database().ref(dbConstruction).child(key).update({
+	  console.log(arg);
+		await Firebase.database().ref(dbConstruction).child(key).update({
 			constructionNo: arg.afterConstructionNo,
-			name: arg.name,
+			constructionName: arg.constructionName,
+			orderDay: arg.orderDay,
 			money: arg.money,
+			shipDay: arg.shipDay,
 		});
 	},
 	delConstructionNo(context, constructionNo) {
@@ -337,13 +361,19 @@ export const actions = {
 		        if (childSnapshot.classification = '材料') {
 		          material += childSnapshot.val().money;
 		          materialData.push({
-		          	name: childSnapshot.val().name,
-		          	money: childSnapshot.val().money
+		            orderNo: childSnapshot.val().orderNo,
+		          	materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
+		          	unitPrice: childSnapshot.val().unitPrice,
+		          	num: childSnapshot.val().num,
+		          	money: childSnapshot.val().money,
 		          });
 		        } else if (childSnapshot.classification = '外注') {
 		          manufacturing += childSnapshot.val().money;
 		          manufacturingData.push({
-		          	name: childSnapshot.val().name,
+		            orderNo: childSnapshot.val().orderNo,
+		          	materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
+		          	unitPrice: childSnapshot.val().unitPrice,
+		          	num: childSnapshot.val().num,
 		          	money: childSnapshot.val().money
 		          });
 		        }
@@ -357,7 +387,7 @@ export const actions = {
 			    snapshot.forEach(function(childSnapshot) {
 		        inWork += childSnapshot.val().money;
 	          inWorkData.push({
-	          	name: childSnapshot.val().name,
+	          	workName: childSnapshot.val().workName,
 	          	money: childSnapshot.val().money
 	          });
 			    });
@@ -446,6 +476,20 @@ export const actions = {
 		      	orderDay: childSnapshot.val().orderDay, 
 		      	orderName: childSnapshot.val().orderName, 
 		      	deliveryDay: childSnapshot.val().deliveryDay
+		      });
+		    });
+	  });
+  },
+	async getOrderOne(context, orderNo) {
+		await Firebase.database().ref(dbOrder)
+		  .orderByChild('orderNo')
+		  .startAt(orderNo).endAt(orderNo)
+		  .once('value', function(snapshot) {
+		    snapshot.forEach(function(childSnapshot) {
+		      context.commit('setOrderOne', {
+		      	orderNo: orderNo, 
+		      	orderDay: childSnapshot.val().orderDay, 
+		      	orderName: childSnapshot.val().orderName, 
 		      });
 		    });
 	  });
