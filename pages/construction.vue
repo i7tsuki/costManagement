@@ -22,27 +22,7 @@
       		<td>{{ c.orderDay }}</td>
       		<td>{{ c.money }}
       		<td>{{ c.shipDay }}
-      		<td><button @click="cost(c.constructionNo)">原価</button></td>
-      		<EditModal v-if="isShowCostModal" @close="isShowCostModal = false">
-      		  <h3 slot="header">
-      		    <p>{{ c.constructionNo }}</p>
-      		  </h3>
-      		  <h3 slot="body">
-      		    <p></p>
-      		    <p>材料</p>
-      		    <p>{{ costMaterial }}</p>
-      		    <p>外注</p>
-      		    <p>{{ costManufacturing }}</p>
-      		    <p>内作</p>
-      		    <p>{{ costInWork }}</p>
-      		    <p>合計</p>
-      		    <p>{{ totalCost }}</p>
-				    </h3>
-            <h3 slot="footer">
-              <router-link to="costDetails"><button @click="costDetail(c.constructionNo)">明細</button></router-link>
-              <button @click="costClose">閉じる</button>
-            </h3>
-          </EditModal>
+      		<td><router-link to="costDetails"><button @click="costDetail(c.constructionNo)">原価</button></router-link></td>
       		<td><button @click="edit(c.constructionNo, c.constructionName, c.orderDay, c.money, c.shipDay)">編集</button></td>
       		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
       		  <h3 slot="header">
@@ -79,6 +59,7 @@ export default {
   components: { EditModal },
 	data: function() {
 		return {
+		  construction: [],
 			constructionNo: '',
 			constructionName: '',
 			orderDay: '',
@@ -90,9 +71,13 @@ export default {
 			editMoney: 0,
 			editShipDay: '',
 			isShowEditModal: false,
-			isShowCostModal: false,
     }
   },
+	async created() {
+	  await this.$store.commit('clearConstruction');
+		await this.$store.dispatch('getConstructionNo');
+		this.construction = this.$store.state.construction;
+	},
   methods: {
   	async add() {
   	  if (this.constructionName === '') {
@@ -136,6 +121,7 @@ export default {
   	  	shipDay: this.editShipDay,
   	  });
   		this.isShowEditModal = false;
+  		await this.$store.commit('clearConstruction');
   		this.$store.dispatch('getConstructionNo');
   	},
   	editCancel() {
@@ -151,26 +137,6 @@ export default {
   		this.$store.commit('setconstructionNo', constructionNo);
   	},
   },
-	created() {
-		this.$store.dispatch('getConstructionNo');
-	},
-	computed: {
-	  construction: function() {
-	    return this.$store.state.construction
-	  },
-	  costMaterial: function() {
-	    return this.$store.state.costMaterial;
-	  },
-	  costManufacturing: function() {
-	    return this.$store.state.costManufacturing;
-	  },
-	  costInWork: function() {
-	    return this.$store.state.costInWork;
-	  },
-	  totalCost: function() {
-	    return this.costMaterial + this.costManufacturing + this.costInWork;
-	  },
-	}
 }
 </script>
 

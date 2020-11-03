@@ -3,6 +3,9 @@
     <div>
       <Logo />
       <h1>工事番号：{{ constructionNo }}</h1>
+      <p>受注金額：{{ constructionMoney }}</p>
+      <p>原価：{{ costAll }}</p>
+      <p>粗利：{{ costConstruction }}</p>
       <h2>材料</h2>
       <table>
       	<tr>
@@ -12,7 +15,7 @@
       		<th>数量</th>
       		<th>金額</th>
       	</tr>
-      	<tr v-for="material in costDetailMaterial" v-bind:key="material.no">
+      	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
           <td>{{ material.orderNo }}</td>
       		<td>{{ material.materialAndManufacturingName }}</td>
       		<td>{{ material.unitPrice }}</td>
@@ -30,7 +33,7 @@
       		<th>数量</th>
       		<th>金額</th>
       	</tr>
-      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.no">
+      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
       	  <td>{{ manufacturing.orderNo }}</td>
       		<td>{{ manufacturing.materialAndManufacturingName }}</td>
       		<td>{{ manufacturing.unitPrice }}</td>
@@ -39,28 +42,105 @@
       	</tr>
       </table>
       <h3>小計：{{ costManufacturing }}</h3>
-      <h2>内作</h2>
+      <h2>内作/直接工</h2>
+	    <table>
+	    	<tr>
+	    	  <th>作業日</th>
+	    		<th>作業内容</th>
+	    		<th>作業時間[h]</th>
+	    	</tr>
+	    	<tr v-for="dwork in costDetailDirectWork" v-bind:key="dwork.workNo">
+	    	  <td>{{ dwork.workDay }}</td>
+	    		<td>{{ dwork.workName }}</td>
+	    		<td>{{ dwork.time }}</td>
+	    	</tr>
+	    </table>
       <table>
       	<tr>
-      		<th>名称</th>
+      		<th>年</th>
       		<th>作業時間[h]</th>
-      		<th>区分</th>
+      		<th>総給料</th>
+      		<th>総作業時間[h]</th>
+      		<th>作業時間＊総給料/総作業時間</th>
       	</tr>
-      	<tr v-for="work in costDetailInWork" v-bind:key="work.no">
-      		<td>{{ work.workName }}</td>
-      		<td>{{ work.time }}</td>
-      		<td>{{ work.classification }}</td>
+      	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
+      		<th>{{ cdws.year }}</th>
+      		<th>{{ cdws.time }}</th>
+      		<th>{{ cdws.salary }}</th>
+      		<th>{{ cdws.workTime }}</th>
+      		<th>{{ cdws.time * cdws.salary / cdws.workTime }}</th>
       	</tr>
       </table>
-      <h3>小計：{{ costInWork }}</h3>
+      <h3>小計：{{ costDirectWork }}</h3>
+      <h2>内作/間接工</h2>
+      <h3>出荷日に属する年に出荷した製品一覧</h3>
+      <table>
+      	<tr>
+      	  <th>工事番号</th>
+      	  <th>名称</th>
+      		<th>出荷日</th>
+      		<th>受注金額</th>
+      	</tr>
+      	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
+      		<th>{{ c.constructionNo }}</th>
+      		<th>{{ c.constructionName }}</th>
+      		<th>{{ c.shipDay }}</th>
+      		<th>{{ c.money }}</th>
+      	</tr>
+      </table>
+      <h3>間接工給料</h3>
+      <table>
+      	<tr>
+      		<th>年</th>
+      		<th>給料</th>
+      	</tr>
+      	<tr>
+      		<th>{{ shipYear }}</th>
+      		<th>{{ inDirectSalary }}</th>
+      	</tr>
+      </table>
+      <h3>小計(按分金額)：{{ costInDirectWork }}</h3>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-	created() {
-		this.$store.dispatch('getCostDetails', this.constructionNo);
+	data: function() {
+		return {
+		  constructionNo: '',
+		  costDetailDirectWork: [],
+		  costDirectWorkSalary: [],
+		  constructionMoney: 0,
+		  costConstruction: 0,
+		  anotherConstruction: [],
+		  shipYear: '',
+		  inDirectSalary: 0,
+    }
+  },
+	async beforeCreate() {
+	  //受注金額取得
+	  await this.$store.dispatch('getConstructionInfo', this.$store.state.constructionNo);
+	  this.constructionMoney = this.$store.state.constructionMoney;
+		//材料・外注・内作直接工取得
+		await this.$store.dispatch('getCostDetails', this.$store.state.constructionNo);
+		this.costDetailDirectWork = this.$store.state.costDetailDirectWork;
+		//該当の直接工取得
+		await this.$store.dispatch('getCostDirectWorkSalary', {
+		  constructionNo: this.$store.state.constructionNo, 
+		  costDetailDirectWork: this.costDetailDirectWork
+		});
+		this.costDirectWorkSalary = this.$store.state.costDirectWorkSalary;
+		//出荷日に属する年に出荷した全製品
+		await this.$store.dispatch('getShipYearAndAnotherConstruction', this.$store.state.constructionNo);
+    this.anotherConstruction = this.$store.state.anotherConstruction;
+		//間接工給料取得
+		await this.$store.dispatch('getInDirectSalary', this.$store.state.shipYear);
+		//原価計算
+		this.costConstruction = this.constructionMoney;
+		this.constructionNo = this.$store.state.constructionNo;
+		this.shipYear = this.$store.state.shipYear;
+		this.inDirectSalary = this.$store.state.inDirectSalary;
 	},
 	computed: {
 	  costDetailMaterial: function() {
@@ -69,20 +149,30 @@ export default {
 	  costDetailManufacturing: function() {
 	    return this.$store.state.costDetailManufacturing
 	  },
-	  costDetailInWork: function() {
-	    return this.$store.state.costDetailInWork;
-	  },
-	  constructionNo: function() {
-	  	return this.$store.state.constructionNo;
-	  },
 	  costMaterial: function() {
 	  	return this.$store.state.costMaterial;
 	  },
 	  costManufacturing: function() {
 	  	return this.$store.state.costManufacturing;
 	  },
-	  costInWork: function() {
-	  	return this.$store.state.costInWork;
+	  costDirectWork: function() {
+	    let cost = 0;
+	    for (let i = 0; i < this.costDirectWorkSalary.length; i++) {
+	      cost += this.costDirectWorkSalary[i].time * this.costDirectWorkSalary[i].salary / this.costDirectWorkSalary[i].workTime;
+	    }
+	  	return cost;
+	  },
+	  costInDirectWork: function() {
+	    let cost = 0;
+	    let allConstructionMoney = 0;
+	    for (let i = 0; i < this.anotherConstruction.length; i++) {
+	      allConstructionMoney += this.anotherConstruction[i].money;
+	    }
+	    cost = this.inDirectSalary * this.constructionMoney / allConstructionMoney;
+	  	return cost;
+	  },
+	  costAll: function() {
+	    return this.costMaterial + this.costManufacturing + this.costDirectWork + this.costInDirectWork;
 	  },
 	}
 }

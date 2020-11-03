@@ -2,45 +2,44 @@
   <div class="container">
     <div>
       <Logo />
+      <label>年</label><input type="text" v-model="year">
+      <label>給料</label><input type="text" v-model="salary">
+      <label>実働時間</label><input type="text" v-model="workTime">
+      <input type="radio" value="直接工" name="class" v-model="classification">直接工
+      <input type="radio" value="間接工" name="class" v-model="classification">間接工
+      <button @click="add">追加</button>
       <table>
       	<tr>
-      	  <th>名前</th>
       	  <th>年</th>
-      	  <th>月</th>
       	  <th>給料</th>
+      	  <th>実働時間</th>
       		<th>区分</th>
       	</tr>
-      	<tr>
-      		<td>直接工</td>
-      		<td>{{ directWork }}</td>
-      		<td><button @click="edit('directWork')">編集</button></td>
+      	<tr v-for="w in worker" v-bind:key="w.id">
+      	  <td>{{ w.year }}</td>
+      		<td>{{ w.salary }}</td>
+      		<td>{{ w.workTime }}</td>
+      		<td>{{ w.classification }}</td>
+      		<td><button @click="edit(w.id, w.year, w.salary, w.workTime, w.classification)">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header">直接工</h3>
+      		  <h3 slot="header">{{ editId }}</h3>
       		  <h3 slot="body">
-      		    <p>一時間当たりの金額</p>
-      		    <p><input type="text" v-model="money"></p>
+      		    <p>年</p>
+      		    <p><input type="text" v-model="editYear"></p>
+      		    <p>給料</p>
+      		    <p><input type="text" v-model="editSalary"></p>
+      		    <p>実働時間</p>
+      		    <p><input type="text" v-model="editWorkTime"></p>
+      		    <p>区分</p>
+				      <p><input type="radio" value="直接工" name="class" v-model="editClassification">直接工</p>
+				      <p><input type="radio" value="間接工" name="class" v-model="editClassification">間接工</p>
  				    </h3>
             <h3 slot="footer">
-              <button @click="editOK('directWork')">更新</button>
+              <button @click="editOK">更新</button>
               <button @click="editCancel">キャンセル</button>
             </h3>
           </EditModal>
-      　</tr>
-      　<tr>
-      		<td>間接工</td>
-      		<td>{{ indirectWork }}</td>
-      		<td><button @click="edit('indirectWork')">編集</button></td>
-      		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header">間接工</h3>
-      		  <h3 slot="body">
-      		    <p>一時間当たりの金額</p>
-      		    <p><input type="text" v-model="money"></p>
- 				    </h3>
-            <h3 slot="footer">
-              <button @click="editOK('indirectWork')">更新</button>
-              <button @click="editCancel">キャンセル</button>
-            </h3>
-          </EditModal>
+          <td><button @click="del(w.id)">削除</button></td>
         </tr>
       </table>
     </div>
@@ -54,41 +53,71 @@ export default {
   components: { EditModal },
 	data: function() {
 		return {
-		  directWork: 0,
-		  indirectWork: 0,
+		  year: '',
+		  salary: 0,
+		  workTime: 0,
+		  classification: '直接工',
+		  editId: '',
+		  editYear: '',
+		  editSalary: 0,
+		  editClassification: '直接工',
+		  worker: [],
+		  isShowModal: false,
     }
   },
-	created() {
-		this.$store.dispatch('getInWork');
-		this.inWork = this.$store.state.inWork;
+	async created() {
+	  await this.$store.commit('clearWorker');
+		await this.$store.dispatch('getWorker');
+		this.worker = this.$store.state.worker;
 	},
   methods: {
-  	edit(workNo, constructionNo, workName, time, classification) {
-  	  this.editNo = workNo;
-  	  this.editConstructionNo = constructionNo;
-  	  this.editWorkName = workName;
-  	  this.editTime = time;
+  	async add() {
+  	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
+  	  await this.$store.commit('clearWorker');
+  		await this.$store.dispatch('addWorker', {
+  			year: this.year,
+  			salary: this.salary, 
+  			workTime: this.workTime,
+  			classification: this.classification
+  		});
+  		await this.$store.commit('clearWorker');
+  		await this.$store.dispatch('getWorker');
+  		this.worker = this.$store.state.worker;
+  	}, 
+  	edit(id, year, salary, workTime, classification) {
+  	  this.editId = id;
+  	  this.editYear = year;
+  	  this.editSalary = salary;
+  	  this.editWorkTime = workTime;
   	  this.editClassification = classification;
   	  this.isShowModal = true;
   	},
   	async editOK() {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearInWork');
-  	  await this.$store.dispatch('editInWork', {
-  	  	workNo: this.editNo,
-  	  	constructionNo: this.editConstructionNo,
-  	  	workName: this.workName,
-  	  	time: this.editTime,
+  	  await this.$store.commit('clearWorker');
+  	  await this.$store.dispatch('editWorker', {
+  	  	id: this.editId,
+  	  	year: this.editYear,
+  	  	salary: this.editSalary,
+  	  	workTime: this.editWorkTime,
   	  	classification: this.editClassification,
   	  });
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
-  		await this.$store.commit('clearInWork');
-  		await this.$store.dispatch('getInWork');
-  		this.inWork = this.$store.state.inWork;
+  		await this.$store.commit('clearWorker');
+  		await this.$store.dispatch('getWorker');
+  		this.worker = this.$store.state.worker;
   	},
   	editCancel() {
   	  this.isShowModal = false;
+  	},
+  	async del(id) {
+  	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
+  	  await this.$store.commit('clearWorker');
+  	  await this.$store.dispatch('delWorker', id);
+  	  await this.$store.commit('clearWorker');
+  	  await this.$store.dispatch('getWorker');
+  	  this.worker = this.$store.state.worker;
   	},
   }
 }
