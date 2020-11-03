@@ -4,7 +4,7 @@
       <Logo />
       <router-link to="order">注文</router-link>
       <router-link to="materialAndManufacturing">材料・外注</router-link>
-      <router-link to="inwork">工数</router-link>
+      <router-link to="inwork">直接工</router-link>
       <router-link to="construction">工事一覧</router-link>
       <router-link to="worker">工員</router-link>
     </div>

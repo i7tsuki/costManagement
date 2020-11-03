@@ -4,7 +4,6 @@
       <Logo />
       <label>工事番号</label><input type="text" v-model="constructionNo">
       <label>名称</label><input type="text" v-model="constructionName">
-      <label>受注日</label><input type="date" v-model="orderDay">
       <label>受注金額</label><input type="text" v-model="money">
       <label>出荷日</label><input type="date" v-model="shipDay">
       <button @click="add">追加</button>
@@ -12,18 +11,16 @@
       	<tr>
       		<th>工事番号</th>
       		<th>名称</th>
-      		<th>受注日</th>
       		<th>受注金額</th>
       		<th>出荷日</th>
       	</tr>
       	<tr v-for="c in construction" v-bind:key="c.constructionNo">
       		<td>{{ c.constructionNo }}</td>
       		<td>{{ c.constructionName }}</td>
-      		<td>{{ c.orderDay }}</td>
       		<td>{{ c.money }}
       		<td>{{ c.shipDay }}
       		<td><router-link to="costDetails"><button @click="costDetail(c.constructionNo)">原価</button></router-link></td>
-      		<td><button @click="edit(c.constructionNo, c.constructionName, c.orderDay, c.money, c.shipDay)">編集</button></td>
+      		<td><button @click="edit(c.constructionNo, c.constructionName, c.money, c.shipDay)">編集</button></td>
       		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
       		  <h3 slot="header">
       		    <p></p>
@@ -33,8 +30,6 @@
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>名称</p>
       		    <p><input type="text" v-model="editConstructionName"></p>
-      		    <p>受注日</p>
-      		    <p><input type="date" v-model="editOrderDay"></p>
       		    <p>受注金額</p>
       		    <p><input type="text" v-model="editMoney"></p>
       		    <p>出荷日</p>
@@ -62,12 +57,10 @@ export default {
 		  construction: [],
 			constructionNo: '',
 			constructionName: '',
-			orderDay: '',
 			money: 0,
 			shipDay: '',
 			editConstructionNo: '',
 			editConstructionName: '',
-			editOrderDay: '',
 			editMoney: 0,
 			editShipDay: '',
 			isShowEditModal: false,
@@ -88,7 +81,6 @@ export default {
   		await this.$store.dispatch('addConstructionNo', {
   			constructionNo: this.constructionNo,
   			constructionName: this.constructionName,
-  			orderDay: this.orderDay,
   			money: this.money,
   			shipDay: this.shipDay,
   		});
@@ -102,10 +94,9 @@ export default {
   	costClose() {
   	  this.isShowCostModal = false;
   	},
-  	edit(constructionNo, constructionName, orderDay, money, shipDay) {
+  	edit(constructionNo, constructionName, money, shipDay) {
   		this.editConstructionNo = constructionNo;
   		this.editConstructionName = constructionName;
-  		this.editOrderDay = orderDay;
   		this.editMoney = money;
   		this.editShipDay = shipDay;
   		this.isShowEditModal = true;
@@ -116,7 +107,6 @@ export default {
   	    beforeConstructionNo: constructionNo,
   	  	afterConstructionNo: this.editConstructionNo,
   	  	constructionName: this.editConstructionName,
-  	  	orderDay: this.editOrderDay,
   	  	money: this.editMoney,
   	  	shipDay: this.editShipDay,
   	  });

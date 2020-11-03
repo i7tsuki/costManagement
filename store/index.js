@@ -247,7 +247,6 @@ export const actions = {
 		        workDay: arg.workDay,
 		        workName: arg.workName,
 		        time: parseFloat(arg.time),
-		        classification: arg.classification,
 		      });
 			  });
 			});
@@ -263,7 +262,6 @@ export const actions = {
 		      	workDay: childSnapshot.val().workDay, 
 		      	workName: childSnapshot.val().workName, 
 		      	time: childSnapshot.val().time,
-		      	classification: childSnapshot.val().classification,
 		      });
 		    });
 	  });
@@ -289,7 +287,6 @@ export const actions = {
       workDay: arg.workDay,
       workName: arg.workName,
       time: parseFloat(arg.time),
-      classification: arg.classification,
 	  });
 	},
 	addConstructionNo(context, arg) {
@@ -297,7 +294,6 @@ export const actions = {
     Firebase.database().ref(dbConstruction).push({
       constructionNo: arg.constructionNo,
       constructionName: arg.constructionName,
-      orderDay: arg.orderDay,
       money: parseFloat(arg.money),
       shipDay: arg.shipDay,
 	  });
@@ -310,7 +306,6 @@ export const actions = {
 		      context.commit('setConstruction', {
 		      	constructionNo: childSnapshot.val().constructionNo, 
 		      	constructionName: childSnapshot.val().constructionName, 
-		      	orderDay: childSnapshot.val().orderDay, 
 		      	money: childSnapshot.val().money, 
 		      	shipDay: childSnapshot.val().shipDay, 
 		      });
@@ -330,7 +325,6 @@ export const actions = {
 		await Firebase.database().ref(dbConstruction).child(key).update({
 			constructionNo: arg.afterConstructionNo,
 			constructionName: arg.constructionName,
-			orderDay: arg.orderDay,
 			money: arg.money,
 			shipDay: arg.shipDay,
 		});
