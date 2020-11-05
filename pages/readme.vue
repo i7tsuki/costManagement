@@ -2,20 +2,18 @@
   <div class="container">
     <div>
       <Logo />
-      <p>
-			  <router-link to="readme">README</router-link>
-			</p>
-      <router-link to="order">注文</router-link>
-      <router-link to="materialAndManufacturing">材料・外注</router-link>
-      <router-link to="inwork">直接工</router-link>
-      <router-link to="construction">工事一覧</router-link>
-      <router-link to="worker">工員</router-link>
+   		<p>原価計算用のシステムになります。</p>
+   		<p>製品受注後、材料/外注の注文、直接工を経て、製品が完成され、その後出荷されます。</p>
+   		<p>また、直接工・間接工の給料を元に、内作を円換算しております。</p>
+   		<p>以上の金額を集計して、一製品当たりの原価を計算します。</p>
+   		
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+}
 </script>
 
 <style>
