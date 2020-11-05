@@ -205,5 +205,6 @@ export default {
 
 #input-form {
   border: 1px solid;
+  margin-top: 30px;
 }
 </style>

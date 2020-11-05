@@ -64,11 +64,11 @@
       		<th>作業時間＊総給料/総作業時間</th>
       	</tr>
       	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
-      		<th>{{ cdws.year }}</th>
-      		<th>{{ cdws.time }}</th>
-      		<th>{{ cdws.salary }}</th>
-      		<th>{{ cdws.workTime }}</th>
-      		<th>{{ cdws.time * cdws.salary / cdws.workTime }}</th>
+      		<td>{{ cdws.year }}</td>
+      		<td>{{ cdws.time }}</td>
+      		<td>{{ cdws.salary }}</td>
+      		<td>{{ cdws.workTime }}</td>
+      		<td>{{ cdws.time * cdws.salary / cdws.workTime }}</td>
       	</tr>
       </table>
       <h3>小計：{{ costDirectWork }}</h3>
@@ -82,10 +82,10 @@
       		<th>受注金額</th>
       	</tr>
       	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
-      		<th>{{ c.constructionNo }}</th>
-      		<th>{{ c.constructionName }}</th>
-      		<th>{{ c.shipDay }}</th>
-      		<th>{{ c.money }}</th>
+      		<td>{{ c.constructionNo }}</td>
+      		<td>{{ c.constructionName }}</td>
+      		<td>{{ c.shipDay }}</td>
+      		<td>{{ c.money }}</td>
       	</tr>
       </table>
       <h3>間接工給料</h3>
@@ -95,8 +95,8 @@
       		<th>給料</th>
       	</tr>
       	<tr>
-      		<th>{{ shipYear }}</th>
-      		<th>{{ inDirectSalary }}</th>
+      		<td>{{ shipYear }}</td>
+      		<td>{{ inDirectSalary }}</td>
       	</tr>
       </table>
       <h3>小計(按分金額)：{{ costInDirectWork }}</h3>
@@ -216,5 +216,9 @@ export default {
 
 .links {
   padding-top: 15px;
+}
+
+h3 {
+  margin-bottom: 30px;
 }
 </style>
