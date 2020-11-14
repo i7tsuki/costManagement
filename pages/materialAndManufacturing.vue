@@ -89,9 +89,9 @@ export default {
   },
 	async created() {
 	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-	  await this.$store.commit('clearMaterialAndManufacturing');
-		await this.$store.dispatch('getMaterialAndManufacturing');
-		this.materialAndManufacturing = this.$store.state.materialAndManufacturing;
+	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
 	},
   methods: {
   	async add() {
@@ -100,8 +100,8 @@ export default {
   	    return ;
   	  }
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearMaterialAndManufacturing');
-  		await this.$store.dispatch('addMaterialAndManufacturing', {
+  	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  		await this.$store.dispatch('materialAndManufacturing/addMaterialAndManufacturing', {
   		  orderNo: this.orderNo, 
   			constructionNo: this.constructionNo,
   			materialAndManufacturingName: this.materialAndManufacturingName,
@@ -110,9 +110,9 @@ export default {
   			money: this.money,
   			classification: this.classification
   		});
-  		await this.$store.commit('clearMaterialAndManufacturing');
-  		await this.$store.dispatch('getMaterialAndManufacturing');
-  		this.materialAndManufacturing = this.$store.state.materialAndManufacturing;
+  		await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	}, 
   	edit(materialAndManufacturingNo, orderNo, constructionNo, materialAndManufacturingName, unitPrice, num, money, classification) {
   	  this.editNo = materialAndManufacturingNo;
@@ -127,8 +127,8 @@ export default {
   	}, 
   	async editOK() {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearMaterialAndManufacturing');
-  	  await this.$store.dispatch('editMaterialAndManufacturing', {
+  	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  	  await this.$store.dispatch('materialAndManufacturing/editMaterialAndManufacturing', {
   	  	materialAndManufacturingNo: this.editNo,
   	  	orderNo: this.editOrderNo, 
   	  	constructionNo: this.editConstructionNo,
@@ -140,20 +140,20 @@ export default {
   	  });
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
-  		await this.$store.commit('clearMaterialAndManufacturing');
-  		await this.$store.dispatch('getMaterialAndManufacturing');
-  		this.materialAndManufacturing = this.$store.state.materialAndManufacturing;
+  		await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	},
   	editCancel() {
   		this.isShowModal = false;
   	},
   	async del(materialAndManufacturingNo) {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearMaterialAndManufacturing');
-  	  await this.$store.dispatch('delMaterialAndManufacturing', materialAndManufacturingNo);
-  	  await this.$store.commit('clearMaterialAndManufacturing');
-  	  await this.$store.dispatch('getMaterialAndManufacturing');
-  	  this.materialAndManufacturing = this.$store.state.materialAndManufacturing;
+  	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  	  await this.$store.dispatch('materialAndManufacturing/delMaterialAndManufacturing', materialAndManufacturingNo);
+  	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
+  	  await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  	  this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	},
   },
 }

@@ -49,39 +49,44 @@ export default {
 			order: []
     }
   },
-	async beforeCreate() {
-	  await this.$store.commit('clearOrder');
-		await this.$store.dispatch('getOrder');
-		this.order = this.$store.state.order;
+	async created() {
+  	console.log('a');
+	  await this.$store.commit('order/clearOrder');
+	  console.log('b');
+	  this.order = this.$store.state.order.order;
+	  console.log('c');
+		await this.$store.dispatch('order/getOrder');
+		this.order = this.$store.state.order.order;
 	},
   methods: {
     newOrder() {
-      this.$store.commit('setOrderNo', '');
+      this.$store.commit('orderDetails/setOrderNo', '');
     },
   	deliver(deliveryDay) {
   	  this.editDeliveryDay = deliveryDay;
   	  this.isShowModal = true;
   	}, 
   	async editOK(orderNo) {
-  	  await this.$store.commit('clearOrder');
-  	  await this.$store.dispatch('setDeliverDay', {
+  	  console.log(this.order);
+  	  await this.$store.commit('order/clearOrder');
+  	  await this.$store.dispatch('order/setDeliverDay', {
   	    orderNo: orderNo, 
   	    deliveryDay: this.editDeliveryDay,
   	  });
-  	  await this.$store.commit('clearOrder');
-  	  await this.$store.dispatch('getOrder');
+  	  await this.$store.commit('order/clearOrder');
+  	  await this.$store.dispatch('order/getOrder');
   	  this.isShowModal = false;
-  	  this.order = this.$store.state.order;
+  	  this.order = this.$store.state.order.order;
   	},
   	orderEdit(orderNo) {
-  	  this.$store.commit('setOrderNo', orderNo);
+  	  this.$store.commit('orderDetails/setOrderNo', orderNo);
   	}, 
   	async del(orderNo) {
-    	await this.$store.commit('clearOrder');
-  	  await this.$store.dispatch('delOrder', orderNo);
-  	  await this.$store.commit('clearOrder');
-  	  await this.$store.dispatch('getOrder');
-  	  this.order = this.$store.state.order;
+    	await this.$store.commit('order/clearOrder');
+  	  await this.$store.dispatch('order/delOrder', orderNo);
+  	  await this.$store.commit('order/clearOrder');
+  	  await this.$store.dispatch('order/getOrder');
+  	  this.order = this.$store.state.order.order;
   	},
   	editCancel() {
   	  this.isShowModal = false;

@@ -120,40 +120,40 @@ export default {
   },
 	async beforeCreate() {
 	  //受注金額取得
-	  await this.$store.dispatch('getConstructionInfo', this.$store.state.constructionNo);
-	  this.constructionMoney = this.$store.state.constructionMoney;
+	  await this.$store.dispatch('costDetails/getConstructionInfo', this.$store.state.constructionNo);
+	  this.constructionMoney = this.$store.state.costDetails.constructionMoney;
 		//材料・外注・内作直接工取得
-		await this.$store.dispatch('getCostDetails', this.$store.state.constructionNo);
-		this.costDetailDirectWork = this.$store.state.costDetailDirectWork;
+		await this.$store.dispatch('costDetails/getCostDetails', this.$store.state.constructionNo);
+		this.costDetailDirectWork = this.$store.state.costDetails.costDetailDirectWork;
 		//該当の直接工取得
-		await this.$store.dispatch('getCostDirectWorkSalary', {
-		  constructionNo: this.$store.state.constructionNo, 
+		await this.$store.dispatch('costDetails/getCostDirectWorkSalary', {
+		  constructionNo: this.$store.state.costDetails.constructionNo, 
 		  costDetailDirectWork: this.costDetailDirectWork
 		});
-		this.costDirectWorkSalary = this.$store.state.costDirectWorkSalary;
+		this.costDirectWorkSalary = this.$store.state.costDetails.costDirectWorkSalary;
 		//出荷日に属する年に出荷した全製品
-		await this.$store.dispatch('getShipYearAndAnotherConstruction', this.$store.state.constructionNo);
-    this.anotherConstruction = this.$store.state.anotherConstruction;
+		await this.$store.dispatch('costDetails/getShipYearAndAnotherConstruction', this.$store.state.constructionNo);
+    this.anotherConstruction = this.$store.state.costDetails.anotherConstruction;
 		//間接工給料取得
-		await this.$store.dispatch('getInDirectSalary', this.$store.state.shipYear);
+		await this.$store.dispatch('costDetails/getInDirectSalary', this.$store.state.costDetails.shipYear);
 		//原価計算
 		this.costConstruction = this.constructionMoney;
-		this.constructionNo = this.$store.state.constructionNo;
-		this.shipYear = this.$store.state.shipYear;
-		this.inDirectSalary = this.$store.state.inDirectSalary;
+		this.constructionNo = this.$store.state.costDetails.constructionNo;
+		this.shipYear = this.$store.state.costDetails.shipYear;
+		this.inDirectSalary = this.$store.state.costDetails.inDirectSalary;
 	},
 	computed: {
 	  costDetailMaterial: function() {
-	    return this.$store.state.costDetailMaterial
+	    return this.$store.state.costDetails.costDetailMaterial
 	  },
 	  costDetailManufacturing: function() {
-	    return this.$store.state.costDetailManufacturing
+	    return this.$store.state.costDetails.costDetailManufacturing
 	  },
 	  costMaterial: function() {
-	  	return this.$store.state.costMaterial;
+	  	return this.$store.state.costDetails.costMaterial;
 	  },
 	  costManufacturing: function() {
-	  	return this.$store.state.costManufacturing;
+	  	return this.$store.state.costDetails.costManufacturing;
 	  },
 	  costDirectWork: function() {
 	    let cost = 0;

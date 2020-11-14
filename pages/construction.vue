@@ -67,9 +67,9 @@ export default {
     }
   },
 	async created() {
-	  await this.$store.commit('clearConstruction');
-		await this.$store.dispatch('getConstructionNo');
-		this.construction = this.$store.state.construction;
+	  await this.$store.commit('construction/clearConstruction');
+		await this.$store.dispatch('construction/getConstructionNo');
+		this.construction = this.$store.state.construction.construction;
 	},
   methods: {
   	async add() {
@@ -77,18 +77,18 @@ export default {
   	    console.log('正しく入力されていません。');
   	    return ;
   	  }
-  	  await this.$store.commit('clearConstruction');
-  		await this.$store.dispatch('addConstructionNo', {
+  	  await this.$store.commit('construction/clearConstruction');
+  		await this.$store.dispatch('construction/addConstructionNo', {
   			constructionNo: this.constructionNo,
   			constructionName: this.constructionName,
   			money: this.money,
   			shipDay: this.shipDay,
   		});
-  		await this.$store.commit('clearConstruction');
-  		await this.$store.dispatch('getConstructionNo');
+  		await this.$store.commit('construction/clearConstruction');
+  		await this.$store.dispatch('construction/getConstructionNo');
   	}, 
   	cost(constructionNo) {
-     	this.$store.dispatch('getCost', constructionNo);
+     	this.$store.dispatch('construction/getCost', constructionNo);
   		this.isShowCostModal = true;		
   	},
   	costClose() {
@@ -102,8 +102,8 @@ export default {
   		this.isShowEditModal = true;
   	}, 
   	async editOK(constructionNo) {
-  	  await this.$store.commit('clearConstruction');
-  	  await this.$store.dispatch('editConstructionNo', {
+  	  await this.$store.commit('construction/clearConstruction');
+  	  await this.$store.dispatch('construction/editConstructionNo', {
   	    beforeConstructionNo: constructionNo,
   	  	afterConstructionNo: this.editConstructionNo,
   	  	constructionName: this.editConstructionName,
@@ -111,20 +111,20 @@ export default {
   	  	shipDay: this.editShipDay,
   	  });
   		this.isShowEditModal = false;
-  		await this.$store.commit('clearConstruction');
-  		this.$store.dispatch('getConstructionNo');
+  		await this.$store.commit('construction/clearConstruction');
+  		this.$store.dispatch('construction/getConstructionNo');
   	},
   	editCancel() {
   		this.isShowEditModal = false;
   	},
   	async del(constructionNo) {
-  	  await this.$store.commit('clearConstruction');
-  	  await this.$store.dispatch('delConstructionNo', constructionNo);
-  	  await this.$store.commit('clearConstruction');
-  	  this.$store.dispatch('getConstructionNo');
+  	  await this.$store.commit('construction/clearConstruction');
+  	  await this.$store.dispatch('construction/delConstructionNo', constructionNo);
+  	  await this.$store.commit('construction/clearConstruction');
+  	  this.$store.dispatch('construction/getConstructionNo');
   	},
   	costDetail(constructionNo) {
-  		this.$store.commit('setconstructionNo', constructionNo);
+  		this.$store.commit('construction/setconstructionNo', constructionNo);
   	},
   },
 }

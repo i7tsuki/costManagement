@@ -96,17 +96,17 @@ export default {
     }
   },
   async created() {
-    if (this.$store.state.orderNo !== '') {
-      this.orderNo = this.$store.state.orderNo;
-      await this.$store.dispatch('getOrderOne', this.orderNo);
-      await this.$store.dispatch('getOrderDetails', this.orderNo);
-      this.orderDetails = this.$store.state.orderDetails;
-      this.orderName = this.$store.state.orderName;
-      this.orderDay = this.$store.state.orderDay;
+    if (this.$store.state.orderDetails.orderNo !== '') {
+      this.orderNo = this.$store.state.orderDetails.orderNo;
+      await this.$store.dispatch('orderDetails/getOrderOne', this.orderNo);
+      await this.$store.dispatch('orderDetails/getOrderDetails', this.orderNo);
+      this.orderDetails = this.$store.state.orderDetails.orderDetails;
+      this.orderName = this.$store.state.orderDetails.orderName;
+      this.orderDay = this.$store.state.orderDetails.orderDay;
     }
   },
   destroyed() {
-    this.$store.commit('setOrderNo', '');
+    this.$store.commit('orderDetails/setOrderNo', '');
   },
   methods: {
   	addOrder() {
@@ -124,7 +124,7 @@ export default {
   			console.log('注文番号が入力されていません。');
   			return;
   		}
-  		this.$store.dispatch('commitOrder', {
+  		this.$store.dispatch('orderDetails/commitOrder', {
   		  orderDay: this.orderDay,
   		  orderNo: this.orderNo, 
   		  orderName: this.orderName,

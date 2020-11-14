@@ -66,23 +66,23 @@ export default {
     }
   },
 	async created() {
-	  await this.$store.commit('clearWorker');
-		await this.$store.dispatch('getWorker');
-		this.worker = this.$store.state.worker;
+	  await this.$store.commit('worker/clearWorker');
+		await this.$store.dispatch('worker/getWorker');
+		this.worker = this.$store.state.worker.worker;
 	},
   methods: {
   	async add() {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearWorker');
-  		await this.$store.dispatch('addWorker', {
+  	  await this.$store.commit('worker/clearWorker');
+  		await this.$store.dispatch('worker/addWorker', {
   			year: this.year,
   			salary: this.salary, 
   			workTime: this.workTime,
   			classification: this.classification
   		});
-  		await this.$store.commit('clearWorker');
-  		await this.$store.dispatch('getWorker');
-  		this.worker = this.$store.state.worker;
+  		await this.$store.commit('worker/clearWorker');
+  		await this.$store.dispatch('worker/getWorker');
+  		this.worker = this.$store.state.worker.worker;
   	}, 
   	edit(id, year, salary, workTime, classification) {
   	  this.editId = id;
@@ -94,8 +94,8 @@ export default {
   	},
   	async editOK() {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearWorker');
-  	  await this.$store.dispatch('editWorker', {
+  	  await this.$store.commit('worker/clearWorker');
+  	  await this.$store.dispatch('worker/editWorker', {
   	  	id: this.editId,
   	  	year: this.editYear,
   	  	salary: this.editSalary,
@@ -104,20 +104,20 @@ export default {
   	  });
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
-  		await this.$store.commit('clearWorker');
-  		await this.$store.dispatch('getWorker');
-  		this.worker = this.$store.state.worker;
+  		await this.$store.commit('worker/clearWorker');
+  		await this.$store.dispatch('worker/getWorker');
+  		this.worker = this.$store.state.worker.worker;
   	},
   	editCancel() {
   	  this.isShowModal = false;
   	},
   	async del(id) {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
-  	  await this.$store.commit('clearWorker');
-  	  await this.$store.dispatch('delWorker', id);
-  	  await this.$store.commit('clearWorker');
-  	  await this.$store.dispatch('getWorker');
-  	  this.worker = this.$store.state.worker;
+  	  await this.$store.commit('worker/clearWorker');
+  	  await this.$store.dispatch('worker/delWorker', id);
+  	  await this.$store.commit('worker/clearWorker');
+  	  await this.$store.dispatch('worker/getWorker');
+  	  this.worker = this.$store.state.worker.worker;
   	},
   }
 }
