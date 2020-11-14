@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <div>
-      <Logo />
+    <div class="section">
       <h1>製品番号：{{ constructionNo }}</h1>
       <p>受注金額：{{ constructionMoney }}</p>
       <p>原価：{{ costAll }}</p>
@@ -180,44 +179,12 @@ export default {
 
 <style>
 .container {
+  width: 70%;
   margin: 0 auto;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
 }
-
-.title {
-  font-family:
-    'Quicksand',
-    'Source Sans Pro',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    'Helvetica Neue',
-    Arial,
-    sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+.section {
+  margin: 0 auto;
 }
-
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
-}
-
 h3 {
   margin-bottom: 30px;
 }
