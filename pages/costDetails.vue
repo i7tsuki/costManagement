@@ -2,7 +2,7 @@
   <div class="container">
     <div>
       <Logo />
-      <h1>工事番号：{{ constructionNo }}</h1>
+      <h1>製品番号：{{ constructionNo }}</h1>
       <p>受注金額：{{ constructionMoney }}</p>
       <p>原価：{{ costAll }}</p>
       <p>粗利：{{ costConstruction }}</p>
@@ -76,7 +76,7 @@
       <h3>出荷日に属する年に出荷した製品一覧</h3>
       <table>
       	<tr>
-      	  <th>工事番号</th>
+      	  <th>製品番号</th>
       	  <th>名称</th>
       		<th>出荷日</th>
       		<th>受注金額</th>

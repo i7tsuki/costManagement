@@ -46,17 +46,30 @@ export default {
 		return {
 			isShowModal: false,
 			editDeliveryDay: '',
-			order: []
+			order: [],
+			testData: [{
+			  '注文番号': '111',
+			  '注文日': '2019/1/1',
+			}, {
+			  '注文番号': '222',
+			  '注文日': '2020/1/1',
+      }],
     }
   },
 	async created() {
-  	console.log('a');
+	  console.log(this.testData);
+	  console.log('zzz')
+	  console.log(this.testData[0].注文番号);
+  	console.log('a')
 	  await this.$store.commit('order/clearOrder');
-	  console.log('b');
-	  this.order = this.$store.state.order.order;
-	  console.log('c');
+	  console.log('b1');
+	  console.log(this.$store.state.order.orderXXX);
+	  console.log('b2');
+	  this.order = this.$store.state.order.orderXXX;
 		await this.$store.dispatch('order/getOrder');
-		this.order = this.$store.state.order.order;
+		this.order = this.$store.state.order.orderXXX;
+		console.log('d');
+		console.log(this.$store.state.order.orderXXX);
 	},
   methods: {
     newOrder() {
@@ -67,16 +80,19 @@ export default {
   	  this.isShowModal = true;
   	}, 
   	async editOK(orderNo) {
-  	  console.log(this.order);
   	  await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/setDeliverDay', {
   	    orderNo: orderNo, 
   	    deliveryDay: this.editDeliveryDay,
   	  });
+  	  console.log('789');
+  	  console.log(this.$store.state.order.orderXXX);
   	  await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/getOrder');
   	  this.isShowModal = false;
-  	  this.order = this.$store.state.order.order;
+  	  this.order = this.$store.state.order.orderXXX;
+  	  console.log('z');
+  	  console.log(this.order);
   	},
   	orderEdit(orderNo) {
   	  this.$store.commit('orderDetails/setOrderNo', orderNo);

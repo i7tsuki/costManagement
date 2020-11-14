@@ -2,14 +2,14 @@
   <div class="container">
     <div>
       <Logo />
-      <label>工事番号</label><input type="text" v-model="constructionNo">
+      <label>製品番号</label><input type="text" v-model="constructionNo">
       <label>名称</label><input type="text" v-model="constructionName">
       <label>受注金額</label><input type="text" v-model="money">
       <label>出荷日</label><input type="date" v-model="shipDay">
       <button @click="add">追加</button>
       <table>
       	<tr>
-      		<th>工事番号</th>
+      		<th>製品番号</th>
       		<th>名称</th>
       		<th>受注金額</th>
       		<th>出荷日</th>
@@ -26,7 +26,7 @@
       		    <p></p>
       		  </h3>
       		  <h3 slot="body">
-      		    <p>工事番号</p>
+      		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>名称</p>
       		    <p><input type="text" v-model="editConstructionName"></p>

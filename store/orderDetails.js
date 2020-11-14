@@ -2,12 +2,6 @@ import Firebase from '../assets/firebase-config';
 const dbOrder = 'order';
 const dbOrderDetails = 'orderDetails';
 
-export const state = () => ({
-  orderNo: '',
-  orderDetails: [],
-  orderDay: null,
-  orderName: '',
-});
 export const mutations = {
   setOrderOne(state, arg) {
     state.orderNo = arg.orderNo;

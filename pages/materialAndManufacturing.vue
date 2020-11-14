@@ -3,7 +3,7 @@
     <div>
       <Logo />
       <label>注文番号</label><input type="text" v-model="orderNo">
-      <label>工事番号</label><input type="text" v-model="constructionNo">
+      <label>製品番号</label><input type="text" v-model="constructionNo">
       <label>名称</label><input type="text" v-model="materialAndManufacturingName">
       <label>単価</label><input type="text" v-model="unitPrice">
       <label>数量</label><input type="text" v-model="num">
@@ -14,7 +14,7 @@
       <table>
       	<tr>
       	  <th>注文番号</th>
-      		<th>工事番号</th>
+      		<th>製品番号</th>
       		<th>名称</th>
       		<th>単価</th>
       		<th>数量</th>
@@ -35,7 +35,7 @@
       		  <h3 slot="body">
       		    <p>注文番号</p>
       		    <p><input type="text" v-model="editOrderNo"></p>
-      		    <p>工事番号</p>
+      		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>名称</p>
       		    <p><input type="text" v-model="editMaterialAndManufacturingName"></p>

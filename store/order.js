@@ -4,22 +4,33 @@ const dbOrderDetails = 'orderDetails';
 const dbMaterialAndManufacturing = 'materialAndManufacturing';
 
 export const state = () => ({
-  order: [],
+  orderXXX: [],
+  deliveryDay: '',
   orderNo: '',
-});
+  orderDetails: [],
+  orderDay: null,
+  orderName: '',
+})
 export const mutations = {
-    clearOrder(state) {
-    console.log(1);
-    console.log(state.order);
-    state.order = [];
-  	console.log(state.order);
-  	console.log(2);
+  clearOrder(state) {
+    console.log(1111);
+    console.log(state.orderXXX);
+    if (state.orderXXX.length > 0) {
+      console.log(state.orderXXX[0].orderNo);
+    }
+    state.orderXXX = null;
+    state.orderXXX = [];
+    console.log(2222);
+  	console.log(state.orderXXX[0]);
+  	console.log(state.orderXXX);
+  	console.log(state.orderXXX.length);
+    console.log(4444);
   },
   setStateDeliverDay(state, deliveryDay) {
     state.deliveryDay = deliveryDay;  
   },
   setOrder(state, arg) {
-    state.order.push({
+    state.orderXXX.push({
       orderNo: arg.orderNo,
       orderDay: arg.orderDay,
       orderName: arg.orderName,

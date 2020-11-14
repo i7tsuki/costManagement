@@ -2,14 +2,14 @@
   <div class="container">
     <div>
       <Logo />
-      <label>工事番号</label><input type="text" v-model="constructionNo">
+      <label>製品番号</label><input type="text" v-model="constructionNo">
       <label>作業日</label><input type="date" v-model="workDay">
       <label>作業内容</label><input type="text" v-model="workName">
       <label>作業時間[h]</label><input type="text" v-model="time">
       <button @click="add">追加</button>
       <table>
       	<tr>
-      		<th>工事番号</th>
+      		<th>製品番号</th>
       		<th>作業日</th>
       		<th>作業内容</th>
       		<th>作業時間[h]</th>
@@ -23,7 +23,7 @@
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header">No: {{ editNo }}</h3>
       		  <h3 slot="body">
-      		    <p>工事番号</p>
+      		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>作業日</p>
       		    <p><input type="date" v-model="editWorkDay"></p>

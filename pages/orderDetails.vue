@@ -17,7 +17,7 @@
       		<th>数量</th>
       		<th>金額</th>
       		<th>区分</th>
-      		<th>工事番号</th>
+      		<th>製品番号</th>
       	</tr>
       	<tr v-for="(o, index) in orderDetails" v-bind:key="index">
       	  <td>{{ index + 1 }}</td>
@@ -42,7 +42,7 @@
       		    <p>区分</p>
 				      <input type="radio" value="材料" name="editClass" v-model="editClassification">材料
 				      <input type="radio" value="外注" name="editClass" v-model="editClassification">外注
-      		    <p>工事番号</p>
+      		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
 				    </h3>
             <h3 slot="footer">
@@ -66,7 +66,7 @@
 	      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
 	      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
 	      </select>
-	      <p>工事番号</p>
+	      <p>製品番号</p>
 	      <input type="text" v-model="newConstructionNo">
 	      <button @click="addOrder">明細追加</button>
       </div>
@@ -119,12 +119,12 @@ export default {
   	    constructionNo: this.newConstructionNo,
   	  });
   	},
-  	commit() {
+  	async commit() {
   		if (this.orderNo === '') {
   			console.log('注文番号が入力されていません。');
   			return;
   		}
-  		this.$store.dispatch('orderDetails/commitOrder', {
+  		await this.$store.dispatch('orderDetails/commitOrder', {
   		  orderDay: this.orderDay,
   		  orderNo: this.orderNo, 
   		  orderName: this.orderName,

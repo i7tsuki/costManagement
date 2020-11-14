@@ -13,5 +13,7 @@
     "firebase": "^7.24.0",
     "nuxt": "^2.14.6"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "nuxt-svg-loader": "^1.2.0"
+  }
 }
