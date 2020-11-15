@@ -78,6 +78,7 @@ export default {
   	  }
   	  await this.$store.commit('construction/clearConstruction');
   		await this.$store.dispatch('construction/addConstructionNo', {
+  		  userId: this.userId,
   			constructionNo: this.constructionNo,
   			constructionName: this.constructionName,
   			money: this.money,

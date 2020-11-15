@@ -74,6 +74,7 @@ export default {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
   		await this.$store.dispatch('worker/addWorker', {
+  		  userId: this.userId,
   			year: this.year,
   			salary: this.salary, 
   			workTime: this.workTime,

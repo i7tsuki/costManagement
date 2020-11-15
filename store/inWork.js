@@ -78,6 +78,7 @@ export const actions = {
 	  workNoMax += 1;
 	  //データ登録
     await Firebase.database().ref(dbInWork).push({
+      userId: arg.userId,
       workNo: workNoMax,
       constructionNo: arg.constructionNo,
       workDay: arg.workDay,

@@ -35,6 +35,7 @@ export const actions = {
 	  workerIdMax += 1;
 	  //データ登録
     await Firebase.database().ref(dbWorker).push({
+      userId: arg.userId,
       id: workerIdMax,
       year: arg.year,
       salary: parseFloat(arg.salary),

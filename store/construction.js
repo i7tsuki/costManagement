@@ -35,6 +35,7 @@ export const actions = {
 	addConstructionNo(context, arg) {
 	  //データ登録
     Firebase.database().ref(dbConstruction).push({
+      userId: arg.userId,
       constructionNo: arg.constructionNo,
       constructionName: arg.constructionName,
       money: parseFloat(arg.money),

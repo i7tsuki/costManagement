@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <div class="section">
-	    <p>{{ userName }}様、ようこそ！</p>
 	    <img src="~/assets/factory.jpg">
 	 		<p>原価計算用のシステムになります。</p>
 	 		<p>製品製造の受注後、材料・外注の注文、直接工を経て、製品が完成され、その後出荷されます。</p>
@@ -16,20 +15,8 @@
 import Overview from '~/assets/overview.svg';
 
 export default {
-	data: function() {
-		return {
-		  userName: '',
-		}
-  },
   components: { 
     Overview,
-  },
-  async beforeCreate() {
-    if(this.$store.state.user.mail === null) {
-      this.$router.push('/login');
-    } else {
-      this.userName = this.$store.state.user.userName 
-    }
   },
 }
 </script>

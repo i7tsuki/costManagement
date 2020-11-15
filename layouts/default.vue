@@ -1,11 +1,15 @@
 <template>
   <div>
-    <header>
+    <div class="header">
       <div id="title">
-        <router-link to="/"><h1 v-if="isLogin">原価計算システム</h1></router-link>
-        <button @click="logout" v-if="isLogin">ログアウト</button>
+        <router-link to="/"><h1>原価計算システム</h1></router-link>
+        <div>
+	        <p>ユーザーID:{{ userId }}</p>
+	        <p>{[ userName }}様</p>
+	        <button @click="logout">ログアウト</button>
+	      </div>
       </div>
-		  <ul class="menu" v-if="isLogin">
+		  <ul class="menu">
 			  <li class="menu__single">
 	        <router-link to="order"><div class="init-bottom">注文</div></router-link>
 		    </li>
@@ -22,32 +26,31 @@
 	        <router-link to="worker"><div class="init-bottom"><p>工員</p></div></router-link>
 		    </li>
 			</ul>
-    </header>
+    </div>
     <Nuxt />
   </div>
 </template>
 
 <script>
 export default {
-	data: function() {
-		return {
-      isLogin: false,
-    }
-  },
   async beforeCreate () {
-    console.log('a');
-    console.log(this.$store.state.user.mail);
-    if(this.$store.state.user.mail !== null) {
-      console.log('b');
-      console.log(this.$store.state.user.mail);
-      this.isLogin = true;
-    }
-    console.log('c');
+    if(this.$store.state.user.mail === null) {
+      this.$router.push('/login');
+    } 
   },
   methods: {
     logout() {
-      this.$store.dispatch('logout');
+      console.log(this.$store.state.user.userId);
+      this.$store.dispatch('user/logout');
       this.$router.push('/login');
+    },
+  },
+  computed: { 
+    userId: function () {
+      return this.$store.state.user.userId;
+    },
+    userName: function () {
+      return this.$store.state.user.userName;
     },
   },
 }
@@ -72,43 +75,12 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
-
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
 }
-
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
-  text-decoration: none;
-  padding: 10px 30px;
-}
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
-}
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
-}
-
 ul {
 	list-style: none;
 	margin: 0;
@@ -120,9 +92,8 @@ a {
   color: #000;
 }
 
-header {
-  margin: 0;
-  padding: 0;
+.header {
+  margin-bottom: 30px;
   width: 100%;
   height: 150px;
   margin-top: 30px;

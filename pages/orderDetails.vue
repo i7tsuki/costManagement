@@ -124,6 +124,7 @@ export default {
   			return;
   		}
   		await this.$store.dispatch('orderDetails/commitOrder', {
+  		  userId: this.userId,
   		  orderDay: this.orderDay,
   		  orderNo: this.orderNo, 
   		  orderName: this.orderName,

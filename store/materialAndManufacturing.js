@@ -56,6 +56,7 @@ export const actions = {
 	  materialAndManufacturingNoMax += 1;
 	  //データ登録
     await Firebase.database().ref(dbMaterialAndManufacturing).push({
+      userId: arg.userId,
       materialAndManufacturingNo: materialAndManufacturingNoMax,
       orderNo: arg.orderNo,
       constructionNo: arg.constructionNo,

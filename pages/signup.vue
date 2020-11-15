@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="section">
-      <h1>原価管理システム</h1>
-      <h2>新規登録</h2>
+      <h1>新規登録</h1>
 	    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
@@ -16,6 +15,7 @@
 import { isMailAdress, isPassword } from '~/plugins/definiton';
 
 export default {
+  layout: 'home', 
 	data: function() {
 		return {
 		  userName: '',

@@ -1,8 +1,7 @@
 <template>
   <div class="container">
     <div class="section">
-      <h1>原価管理システム</h1>
-      <h2>ログイン</h2>
+      <h1>ログイン</h1>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
 	    <p><button @click="login">ログイン</button></p>
@@ -15,6 +14,7 @@
 import { isMailAdress, isPassword } from '~/plugins/definiton';
 
 export default {
+  layout: 'home', 
 	data: function() {
 		return {
 		  mail: '',
@@ -32,6 +32,7 @@ export default {
           mail: this.mail.trim(), 
           password: this.password.trim()
         });
+        console.log('yyy');
         await this.$router.push('/');
       } catch(error) {
         console.log({ error });

@@ -31,6 +31,7 @@ export const mutations = {
   },
   setOrder(state, arg) {
     state.orderXXX.push({
+      userId: arg.userId,
       orderNo: arg.orderNo,
       orderDay: arg.orderDay,
       orderName: arg.orderName,
