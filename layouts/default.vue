@@ -2,10 +2,10 @@
   <div>
     <header>
       <div id="title">
-        <router-link to="/"><h1>原価計算システム</h1></router-link>
-        <p>ログアウト</p>
+        <router-link to="/"><h1 v-if="isLogin">原価計算システム</h1></router-link>
+        <button @click="logout" v-if="isLogin">ログアウト</button>
       </div>
-		  <ul class="menu">
+		  <ul class="menu" v-if="isLogin">
 			  <li class="menu__single">
 	        <router-link to="order"><div class="init-bottom">注文</div></router-link>
 		    </li>
@@ -26,6 +26,32 @@
     <Nuxt />
   </div>
 </template>
+
+<script>
+export default {
+	data: function() {
+		return {
+      isLogin: false,
+    }
+  },
+  async beforeCreate () {
+    console.log('a');
+    console.log(this.$store.state.user.mail);
+    if(this.$store.state.user.mail !== null) {
+      console.log('b');
+      console.log(this.$store.state.user.mail);
+      this.isLogin = true;
+    }
+    console.log('c');
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('logout');
+      this.$router.push('/login');
+    },
+  },
+}
+</script>
 
 <style>
 html {
