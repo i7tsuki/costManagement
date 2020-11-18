@@ -72,13 +72,13 @@ export default {
 	},
   methods: {
   	async add() {
-  	  if (this.constructionName === '') {
+  	  if (this.constructionNo === '' || this.constructionName === '') {
   	    console.log('正しく入力されていません。');
   	    return ;
   	  }
   	  await this.$store.commit('construction/clearConstruction');
   		await this.$store.dispatch('construction/addConstructionNo', {
-  		  userId: this.userId,
+  		  userId: this.$store.state.user.userId,
   			constructionNo: this.constructionNo,
   			constructionName: this.constructionName,
   			money: this.money,
@@ -86,6 +86,7 @@ export default {
   		});
   		await this.$store.commit('construction/clearConstruction');
   		await this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
+  		this.construction = this.$store.state.construction.construction;
   	}, 
   	costClose() {
   	  this.isShowCostModal = false;
@@ -110,6 +111,7 @@ export default {
   		this.isShowEditModal = false;
   		await this.$store.commit('construction/clearConstruction');
   		this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
+  		this.construction = this.$store.state.construction.construction;
   	},
   	editCancel() {
   		this.isShowEditModal = false;
@@ -120,11 +122,13 @@ export default {
   	    userId: this.$store.state.user.userId, 
   	    constructionNo: constructionNo
   	  });
+  	  console.log('c');
   	  await this.$store.commit('construction/clearConstruction');
   	  this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
+  	  this.construction = this.$store.state.construction.construction;
   	},
   	costDetail(constructionNo) {
-  		this.$store.commit('construction/setconstructionNo', constructionNo);
+  		this.$store.commit('construction/setConstructionNo', constructionNo);
   	},
   },
 }

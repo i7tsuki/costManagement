@@ -4,7 +4,6 @@ const dbConstruction = 'construction';
 export const state = () => ({
   construction: [],
   constructionNo: '',
-  anotherConstruction: [],
   shipYear: '',
 });
 export const mutations = {
@@ -20,21 +19,30 @@ export const mutations = {
 	  	shipDay: arg.shipDay, 
 	  });
   }, 
-  setconstructionNo(state, constructionNo) {
+  setConstructionNo(state, constructionNo) {
   	state.constructionNo = constructionNo;
-  },
-  setConstructionInfo(state, money) {
-    state.constructionMoney = money;
-  },
-  setShipYearAndAnotherConstruction(state, arg) {
-    state.anotherConstruction = arg.constructionData;
-    state.shipYear = arg.shipYear;
   },
 }
 export const actions = {
-	addConstructionNo(context, arg) {
+	async addConstructionNo(context, arg) {
+	  let findFlag = 0;
+		await Firebase.database().ref(dbConstruction)
+			.orderByChild('constructionNo')
+			.startAt(arg.constructionNo).endAt(arg.constructionNo)
+			.once('value', function(snapshot) {
+			  snapshot.forEach(function(childSnapshot) {
+			    if(arg.userId === childSnapshot.val().userId && 
+			      arg.constructionNo === childSnapshot.val().constructionNo) {
+			        findFlag = 1;
+			    }
+  		  });
+			});
+		if(findFlag === 1) {
+	    console.log('該当の製品番号は既に登録済みです。');
+		  return;
+		}
 	  //データ登録
-    Firebase.database().ref(dbConstruction).push({
+    await Firebase.database().ref(dbConstruction).push({
       userId: arg.userId,
       constructionNo: arg.constructionNo,
       constructionName: arg.constructionName,
@@ -77,18 +85,18 @@ export const actions = {
 			shipDay: arg.shipDay,
 		});
 	},
-	delConstructionNo(context, arg) {
+	async delConstructionNo(context, arg) {
 	  let key;
-		Firebase.database().ref(dbConstruction)
-		.orderByChild('constructionNo')
-		.startAt(arg.constructionNo).endAt(arg.constructionNo)
-		.once('value', function(snapshot) {
-		  if(arg.userId === childSnapshot.val().userId) { 
+		await Firebase.database().ref(dbConstruction)
+		  .orderByChild('constructionNo')
+		  .startAt(arg.constructionNo).endAt(arg.constructionNo)
+		  .once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
-	  	    key = childSnapshot.key;
+	        if(arg.userId === childSnapshot.val().userId) { 
+	  	      key = childSnapshot.key;
+		      }
 		    });
-		  }
-		});
-	  Firebase.database().ref(dbConstruction).child(key).remove();
+		  });
+	  await Firebase.database().ref(dbConstruction).child(key).remove();
 	},
 };

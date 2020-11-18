@@ -177,6 +177,8 @@ export default {
 	  costInDirectWork: function() {
 	    let cost = 0;
 	    let allConstructionMoney = 0;
+	    console.log('xxxxxxxxxxx');
+	    console.log(this.anotherConstruction);
 	    for (let i = 0; i < this.anotherConstruction.length; i++) {
 	      allConstructionMoney += this.anotherConstruction[i].money;
 	    }

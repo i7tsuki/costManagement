@@ -33,11 +33,7 @@
 
 <script>
 export default {
-  async beforeCreate () {
-    if(this.$store.state.user.mail === null) {
-      this.$router.push('/login');
-    } 
-  },
+  middleware: 'pageLayout',
   methods: {
     logout() {
       this.$store.dispatch('user/logout');

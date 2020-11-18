@@ -14,6 +14,7 @@ export const state = () => ({
   costDirectWorkSalary: [],
   constructionMoney: 0,
   inDirectSalary: 0,
+  anotherConstruction: [],
 });
 export const mutations = {
   setCost(state, arg) {
@@ -33,6 +34,13 @@ export const mutations = {
   },
   setInDirectSalary(state, inDirectSalary) {
     state.inDirectSalary = inDirectSalary;
+  },
+  setConstructionInfo(state, money) {
+    state.constructionMoney = money;
+  },
+  setShipYearAndAnotherConstruction(state, arg) {
+    state.anotherConstruction = arg.constructionData;
+    state.shipYear = arg.shipYear;
   },
 }
 export const actions = {
@@ -137,7 +145,7 @@ export const actions = {
 		}
 		context.commit('setCostDirectWorkSalary', years);
 	},
-	async getConstructionInfo(context, constructionNo) {
+	async getConstructionInfo(context, arg) {
 	  let money;
 		await Firebase.database().ref(dbConstruction)
 		  .orderByChild('constructionNo')
@@ -155,17 +163,21 @@ export const actions = {
 	  let shipDay, shipYear;
 	  let constructionData = [];
 		await Firebase.database().ref(dbConstruction)
-		.orderByChild('constructionNo')
-		.startAt(arg.constructionNo).endAt(arg.constructionNo)
-		.once('value', async function(snapshot) {
-      await snapshot.forEach(function(childSnapshot) {
-        if(arg.userId === childSnapshot.val().userId) {
-  		    shipDay = childSnapshot.val().shipDay;
-  		  }
-		  });
-	 	});
+		  .orderByChild('constructionNo')
+		  .startAt(arg.constructionNo).endAt(arg.constructionNo)
+		  .once('value', async function(snapshot) {
+        await snapshot.forEach(function(childSnapshot) {
+          if(arg.userId === childSnapshot.val().userId) {
+  		      shipDay = childSnapshot.val().shipDay;
+  		    }
+		    });
+	 	  });
 	  if (typeof shipDay === 'undefined' ||  shipDay === '') {
 	    console.log('製品出荷日が確定していないため、間接工の計算ができません。');
+			context.commit('setShipYearAndAnotherConstruction', {
+			  constructionData: constructionData,
+			  shipYear: null,
+			});
 	    return;
 	  } 
 	  shipYear = shipDay.substr(0, 4);
@@ -192,25 +204,18 @@ export const actions = {
 	},
 	async getInDirectSalary(context, arg) {
 	  let inDirectSalary = 0;
-	  console.log(shipYear);
-	  console.log(1);
-		const aaa = Firebase.database().ref(dbWorker)
+		await Firebase.database().ref(dbWorker)
 		  .orderByChild('year')
 		  .startAt(arg.shipYear).endAt(arg.shipYear)
 		  .on('value', function(snapshot) {
-		    console.log(2);
 	      snapshot.forEach(function(childSnapshot) {
 	        if(arg.userId === childSnapshot.val().userId) {
-		        console.log(3);
 				    if (childSnapshot.val().classification === '間接工') {
 				      inDirectSalary += childSnapshot.val().salary;
 				    }
-				    console.log(4);
 				  }
 			  });
-			  console.log(6);
 			});
-		console.log(7);
 	 	context.commit('setInDirectSalary', inDirectSalary);
 	},
 };
