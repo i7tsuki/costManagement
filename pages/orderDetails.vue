@@ -97,8 +97,14 @@ export default {
   async created() {
     if (this.$store.state.orderDetails.orderNo !== '') {
       this.orderNo = this.$store.state.orderDetails.orderNo;
-      await this.$store.dispatch('orderDetails/getOrderOne', this.orderNo);
-      await this.$store.dispatch('orderDetails/getOrderDetails', this.orderNo);
+      await this.$store.dispatch('orderDetails/getOrderOne', {
+        orderNo: this.orderNo,
+        userId: this.$store.state.userId,
+      });
+      await this.$store.dispatch('orderDetails/getOrderDetails', {
+        orderNo: this.orderNo,
+        userId: this.$store.state.userId,
+      });
       this.orderDetails = this.$store.state.orderDetails.orderDetails;
       this.orderName = this.$store.state.orderDetails.orderName;
       this.orderDay = this.$store.state.orderDetails.orderDay;
@@ -124,7 +130,7 @@ export default {
   			return;
   		}
   		await this.$store.dispatch('orderDetails/commitOrder', {
-  		  userId: this.userId,
+  		  userId: this.$store.state.user.userId,
   		  orderDay: this.orderDay,
   		  orderNo: this.orderNo, 
   		  orderName: this.orderName,

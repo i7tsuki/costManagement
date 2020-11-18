@@ -36,50 +36,54 @@ export const mutations = {
   },
 }
 export const actions = {
-	async getCostDetails(context, constructionNo) {
+	async getCostDetails(context, arg) {
 	  let material = 0, manufacturing = 0, directWork = 0;
 		let materialData =[], manufacturingData = [], directWorkData = [];
 		const getCostMaterialAndManufacturing =
 		   Firebase.database().ref(dbMaterialAndManufacturing)
 			  .orderByChild('constructionNo')
-			  .startAt(constructionNo).endAt(constructionNo)
+			  .startAt(arg.constructionNo).endAt(arg.constructionNo)
 			  .once('value', async function(snapshot) {
 			    await snapshot.forEach(function(childSnapshot) {
-		        if (childSnapshot.classification = '材料') {
-		          material += childSnapshot.val().money;
-		          materialData.push({
-		            materialNo: childSnapshot.val().materialAndManufacturingNo,
-		            orderNo: childSnapshot.val().orderNo,
-		          	materialName: childSnapshot.val().materialAndManufacturingName,
-		          	unitPrice: childSnapshot.val().unitPrice,
-		          	num: childSnapshot.val().num,
-		          	money: childSnapshot.val().money,
-		          });
-		        } else if (childSnapshot.classification = '外注') {
-		          manufacturing += childSnapshot.val().money;
-		          manufacturingData.push({
-		            manufacturingNo: childSnapshot.val().materialAndManufacturingNo,
-		            orderNo: childSnapshot.val().orderNo,
-		          	manufacturingName: childSnapshot.val().materialAndManufacturingName,
-		          	unitPrice: childSnapshot.val().unitPrice,
-		          	num: childSnapshot.val().num,
-		          	money: childSnapshot.val().money
-		          });
-		        }
+            if(userId === childSnapshot.val().userId) {
+			        if(childSnapshot.val().classification = '材料') {
+			          material += childSnapshot.val().money;
+			          materialData.push({
+			            materialNo: childSnapshot.val().materialAndManufacturingNo,
+			            orderNo: childSnapshot.val().orderNo,
+			          	materialName: childSnapshot.val().materialAndManufacturingName,
+			          	unitPrice: childSnapshot.val().unitPrice,
+			          	num: childSnapshot.val().num,
+			          	money: childSnapshot.val().money,
+			          });
+			        } else if (childSnapshot.val().classification = '外注') {
+			          manufacturing += childSnapshot.val().money;
+			          manufacturingData.push({
+			            manufacturingNo: childSnapshot.val().materialAndManufacturingNo,
+			            orderNo: childSnapshot.val().orderNo,
+			          	manufacturingName: childSnapshot.val().materialAndManufacturingName,
+			          	unitPrice: childSnapshot.val().unitPrice,
+			          	num: childSnapshot.val().num,
+			          	money: childSnapshot.val().money
+			          });
+			        }
+			      }
 			    });
 			  });
 		const getCostDirectWork =
 		  Firebase.database().ref(dbInWork)
 			  .orderByChild('constructionNo')
-			  .startAt(constructionNo).endAt(constructionNo)
+			  .startAt(arg.constructionNo).endAt(arg.constructionNo)
 			  .once('value', async function(snapshot) {
 			    await snapshot.forEach(function(childSnapshot) {
-	          directWorkData.push({
-	            workNo: childSnapshot.val().workNo,
-	            workDay: childSnapshot.val().workDay,
-	          	workName: childSnapshot.val().workName,
-	          	time: childSnapshot.val().time,
-	          });
+			      if(userId === childSnapshot.val().userId) {
+		          directWorkData.push({
+		            workNo: childSnapshot.val().workNo,
+		            workDay: childSnapshot.val().workDay,
+		          	workName: childSnapshot.val().workName,
+		          	time: childSnapshot.val().time,
+		          });
+		        }
 			    });
 			  });
 	  await Promise.all([getCostMaterialAndManufacturing, getCostDirectWork]).then(() => {
@@ -122,10 +126,12 @@ export const actions = {
 				.startAt(years[y].year).endAt(years[y].year)
 				.once('value', async function(snapshot) {
 				  await snapshot.forEach(function(childSnapshot) {
-			      if (childSnapshot.val().year === years[y].year) {
-			        years[y].salary += childSnapshot.val().salary;
-			        years[y].workTime += childSnapshot.val().workTime;
-			      }
+				    if(arg.userId === childSnapshot.val().userId) {
+				      if(childSnapshot.val().year === years[y].year) {
+				        years[y].salary += childSnapshot.val().salary;
+				        years[y].workTime += childSnapshot.val().workTime;
+				      }
+				    }
 				  });
 				});
 		}
@@ -134,24 +140,28 @@ export const actions = {
 	async getConstructionInfo(context, constructionNo) {
 	  let money;
 		await Firebase.database().ref(dbConstruction)
-		.orderByChild('constructionNo')
-		.startAt(constructionNo).endAt(constructionNo)
-		.once('value', async function(snapshot) {
-      await snapshot.forEach(function(childSnapshot) {
-		    money = childSnapshot.val().money;
+		  .orderByChild('constructionNo')
+		  .startAt(arg.constructionNo).endAt(arg.constructionNo)
+		  .once('value', async function(snapshot) {
+        await snapshot.forEach(function(childSnapshot) {
+          if(arg.userId === childSnapshot.val().userId) {
+  		      money = childSnapshot.val().money;
+  		    }
+		    });
 		  });
-		});
 	  context.commit('setConstructionInfo', money);
 	},
-	async getShipYearAndAnotherConstruction(context, constructionNo) {
+	async getShipYearAndAnotherConstruction(context, arg) {
 	  let shipDay, shipYear;
 	  let constructionData = [];
 		await Firebase.database().ref(dbConstruction)
 		.orderByChild('constructionNo')
-		.startAt(constructionNo).endAt(constructionNo)
+		.startAt(arg.constructionNo).endAt(arg.constructionNo)
 		.once('value', async function(snapshot) {
       await snapshot.forEach(function(childSnapshot) {
-		    shipDay = childSnapshot.val().shipDay;
+        if(arg.userId === childSnapshot.val().userId) {
+  		    shipDay = childSnapshot.val().shipDay;
+  		  }
 		  });
 	 	});
 	  if (typeof shipDay === 'undefined' ||  shipDay === '') {
@@ -161,38 +171,42 @@ export const actions = {
 	  shipYear = shipDay.substr(0, 4);
 		//出荷日に属する年に出荷したすべての製品
 		await Firebase.database().ref(dbConstruction)
-		.orderByChild('shipDay')
-		.startAt(shipYear).endAt(shipYear + '\uf8ff')
-		.on('value', async function(snapshot) {
-      await snapshot.forEach(function(childSnapshot) {
-		    constructionData.push({
-		      constructionNo: childSnapshot.val().constructionNo,
-		      constructionName: childSnapshot.val().constructionName,
-		      shipDay: childSnapshot.val().shipDay,
-		      money: childSnapshot.val().money,
+		  .orderByChild('shipDay')
+		  .startAt(shipYear).endAt(shipYear + '\uf8ff')
+		  .on('value', async function(snapshot) {
+        await snapshot.forEach(function(childSnapshot) {
+          if(arg.userId === childSnapshot.val().userId) {
+			      constructionData.push({
+			        constructionNo: childSnapshot.val().constructionNo,
+			        constructionName: childSnapshot.val().constructionName,
+			        shipDay: childSnapshot.val().shipDay,
+			        money: childSnapshot.val().money,
+			      });
+			    }
 		    });
-		  });
-	 	});
+	 	  });
 		context.commit('setShipYearAndAnotherConstruction', {
 		  constructionData: constructionData,
 		  shipYear: shipYear,
 		});
 	},
-	async getInDirectSalary(context, shipYear) {
+	async getInDirectSalary(context, arg) {
 	  let inDirectSalary = 0;
 	  console.log(shipYear);
 	  console.log(1);
 		const aaa = Firebase.database().ref(dbWorker)
 		  .orderByChild('year')
-		  .startAt(shipYear).endAt(shipYear)
+		  .startAt(arg.shipYear).endAt(arg.shipYear)
 		  .on('value', function(snapshot) {
 		    console.log(2);
 	      snapshot.forEach(function(childSnapshot) {
-	        console.log(3);
-			    if (childSnapshot.val().classification === '間接工') {
-			      inDirectSalary += childSnapshot.val().salary;
-			    }
-			    console.log(4);
+	        if(arg.userId === childSnapshot.val().userId) {
+		        console.log(3);
+				    if (childSnapshot.val().classification === '間接工') {
+				      inDirectSalary += childSnapshot.val().salary;
+				    }
+				    console.log(4);
+				  }
 			  });
 			  console.log(6);
 			});

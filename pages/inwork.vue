@@ -65,7 +65,7 @@ export default {
 	async created() {
 	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
 	  await this.$store.commit('inWork/clearInWork');
-		await this.$store.dispatch('inWork/getInWork');
+		await this.$store.dispatch('inWork/getInWork', this.$store.state.user.userId);
 		this.inWork = this.$store.state.inWork.inWork;
 	},
   methods: {
@@ -77,14 +77,14 @@ export default {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
   		await this.$store.dispatch('inWork/addInWork', {
-  		  userId: this.userId,
+  		  userId: this.$store.state.user.userId,
   			constructionNo: this.constructionNo,
   			workDay: this.workDay,
   			workName: this.workName,
   			time: this.time,
   		});
   		await this.$store.commit('inWork/clearInWork');
-  		await this.$store.dispatch('inWork/getInWork');
+  		await this.$store.dispatch('inWork/getInWork', this.$store.state.user.userId);
   		this.inWork = this.$store.state.inWork.inWork;
   	}, 
   	edit(workNo, constructionNo, workDay, workName, time) {
@@ -108,7 +108,7 @@ export default {
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
   		await this.$store.commit('inWork/clearInWork');
-  		await this.$store.dispatch('inWork/getInWork');
+  		await this.$store.dispatch('inWork/getInWork', this.$store.state.user.userId);
   		this.inWork = this.$store.state.inWork.inWork;
   	},
   	editCancel() {
@@ -119,7 +119,7 @@ export default {
   	  await this.$store.commit('inWork/clearInWork');
   	  await this.$store.dispatch('inWork/delInWork', workNo);
   	  await this.$store.commit('inWork/clearInWork');
-  	  await this.$store.dispatch('inWork/getInWork');
+  	  await this.$store.dispatch('inWork/getInWork', this.$store.state.user.userId);
   	  this.inWork = this.$store.state.inWork.inWork;
   	},
   }

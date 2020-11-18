@@ -40,9 +40,7 @@ export default {
       };
       try {
         await this.$store.dispatch('user/createUserAccount', user);
-        console.log('createOK');
         await this.$store.dispatch('user/login', user);
-        console.log('createOK②');
         await this.$router.push('/');
       } catch(error) {
         console.log({ error });

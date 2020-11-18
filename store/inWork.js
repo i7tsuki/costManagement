@@ -47,18 +47,20 @@ export const actions = {
 			  });
 			});
 	},
-	getInWork(context) {
+	getInWork(context, userId) {
 		Firebase.database().ref(dbInWork)
 		  .orderByChild('workNo')
 		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setInWork', {
-		      	workNo: childSnapshot.val().workNo, 
-		      	constructionNo: childSnapshot.val().constructionNo, 
-		      	workDay: childSnapshot.val().workDay, 
-		      	workName: childSnapshot.val().workName, 
-		      	time: childSnapshot.val().time,
-		      });
+		      if(userId === childSnapshot.val().userId) {
+			      context.commit('setInWork', {
+			      	workNo: childSnapshot.val().workNo, 
+			      	constructionNo: childSnapshot.val().constructionNo, 
+			      	workDay: childSnapshot.val().workDay, 
+			      	workName: childSnapshot.val().workName, 
+			      	time: childSnapshot.val().time,
+			      });
+			    }
 		    });
 	  });
 	},

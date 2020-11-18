@@ -67,7 +67,7 @@ export default {
   },
 	async created() {
 	  await this.$store.commit('construction/clearConstruction');
-		await this.$store.dispatch('construction/getConstructionNo');
+		await this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
 		this.construction = this.$store.state.construction.construction;
 	},
   methods: {
@@ -85,12 +85,8 @@ export default {
   			shipDay: this.shipDay,
   		});
   		await this.$store.commit('construction/clearConstruction');
-  		await this.$store.dispatch('construction/getConstructionNo');
+  		await this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
   	}, 
-  	cost(constructionNo) {
-     	this.$store.dispatch('construction/getCost', constructionNo);
-  		this.isShowCostModal = true;		
-  	},
   	costClose() {
   	  this.isShowCostModal = false;
   	},
@@ -104,6 +100,7 @@ export default {
   	async editOK(constructionNo) {
   	  await this.$store.commit('construction/clearConstruction');
   	  await this.$store.dispatch('construction/editConstructionNo', {
+  	    userId: this.$store.state.user.userId, 
   	    beforeConstructionNo: constructionNo,
   	  	afterConstructionNo: this.editConstructionNo,
   	  	constructionName: this.editConstructionName,
@@ -112,16 +109,19 @@ export default {
   	  });
   		this.isShowEditModal = false;
   		await this.$store.commit('construction/clearConstruction');
-  		this.$store.dispatch('construction/getConstructionNo');
+  		this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
   	},
   	editCancel() {
   		this.isShowEditModal = false;
   	},
   	async del(constructionNo) {
   	  await this.$store.commit('construction/clearConstruction');
-  	  await this.$store.dispatch('construction/delConstructionNo', constructionNo);
+  	  await this.$store.dispatch('construction/delConstructionNo', {
+  	    userId: this.$store.state.user.userId, 
+  	    constructionNo: constructionNo
+  	  });
   	  await this.$store.commit('construction/clearConstruction');
-  	  this.$store.dispatch('construction/getConstructionNo');
+  	  this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
   	},
   	costDetail(constructionNo) {
   		this.$store.commit('construction/setconstructionNo', constructionNo);

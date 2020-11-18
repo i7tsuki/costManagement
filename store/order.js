@@ -4,7 +4,7 @@ const dbOrderDetails = 'orderDetails';
 const dbMaterialAndManufacturing = 'materialAndManufacturing';
 
 export const state = () => ({
-  orderXXX: [],
+  order: [],
   deliveryDay: '',
   orderNo: '',
   orderDetails: [],
@@ -13,25 +13,14 @@ export const state = () => ({
 })
 export const mutations = {
   clearOrder(state) {
-    console.log(1111);
-    console.log(state.orderXXX);
-    if (state.orderXXX.length > 0) {
-      console.log(state.orderXXX[0].orderNo);
-    }
-    state.orderXXX = null;
-    state.orderXXX = [];
-    console.log(2222);
-  	console.log(state.orderXXX[0]);
-  	console.log(state.orderXXX);
-  	console.log(state.orderXXX.length);
-    console.log(4444);
+    state.order = null;
+    state.order = [];
   },
   setStateDeliverDay(state, deliveryDay) {
     state.deliveryDay = deliveryDay;  
   },
   setOrder(state, arg) {
-    state.orderXXX.push({
-      userId: arg.userId,
+    state.order.push({
       orderNo: arg.orderNo,
       orderDay: arg.orderDay,
       orderName: arg.orderName,
@@ -43,44 +32,64 @@ export const mutations = {
   },
 }
 export const actions = {
-	async getOrder(context) {
+	async getOrder(context, userId) {
 		await Firebase.database().ref(dbOrder)
 		  .orderByChild('orderNo')
 		  .on('value', function(snapshot) {
-		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setOrder', {
-		      	orderNo: childSnapshot.val().orderNo, 
-		      	orderDay: childSnapshot.val().orderDay, 
-		      	orderName: childSnapshot.val().orderName, 
-		      	deliveryDay: childSnapshot.val().deliveryDay
-		      });
+		    snapshot.forEach(function(childSnapshot) {		      
+		      if(childSnapshot.val().userId === userId) {
+			      context.commit('setOrder', {
+			      	orderNo: childSnapshot.val().orderNo, 
+			      	orderDay: childSnapshot.val().orderDay, 
+			      	orderName: childSnapshot.val().orderName, 
+			      	deliveryDay: childSnapshot.val().deliveryDay
+			      });
+			    }
 		    });
 	  });
   },
-	async delOrder(context, orderNo) {
+	async delOrder(context, arg) {
 	  let key;
 	  let keys = [];
 	  //１　dbOrder
 		await Firebase.database().ref(dbOrder)
 		  .orderByChild('orderNo')
-		  .startAt(orderNo).endAt(orderNo)
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
 		  .once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
-		      key = childSnapshot.key;
+          if(arg.userId === childSnapshot.val().userId) {
+  		      key = childSnapshot.key;
+  		    }
 		    });
 		  });
 	  await Firebase.database().ref(dbOrder).child(key).remove();
 	  //２　dbOrderDetails
 		await Firebase.database().ref(dbOrderDetails)
       .orderByChild('orderNo')
-		  .startAt(orderNo).endAt(orderNo)
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
 		  .once('value', function(snapshot) {
         snapshot.forEach(function(childSnapshot) {
-          keys.push(childSnapshot.key);
+          if(arg.userId === childSnapshot.val().userId) {
+            keys.push(childSnapshot.key);
+          }
 		    });
 		  });
 	  for (let i = 0; i < keys.length; i++) {
 	    await Firebase.database().ref(dbOrderDetails).child(keys[i]).remove();
+  	}
+	  //３　dbMaterialAndManufacturing
+		await Firebase.database().ref(dbMaterialAndManufacturing)
+      .orderByChild('orderNo')
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
+		  .once('value', function(snapshot) {
+        snapshot.forEach(function(childSnapshot) {
+          if(arg.userId === childSnapshot.val().userId) {
+            keys.push(childSnapshot.key);
+          }
+		    });
+		  });
+	  for (let i = 0; i < keys.length; i++) {
+	    await Firebase.database().ref(dbMaterialAndManufacturing).child(keys[i]).remove();
   	}
 	},
 	async setDeliverDay(context, arg) {
@@ -93,7 +102,9 @@ export const actions = {
 			.startAt(arg.orderNo).endAt(arg.orderNo)
 			.once('value', function(snapshot) {
 			  snapshot.forEach(function(childSnapshot) {
-		      key = childSnapshot.key;
+			    if(arg.userId === childSnapshot.val().userId) {
+  		      key = childSnapshot.key;
+  		    }
 			  });
 			});
 		await Firebase.database().ref(dbOrder).child(key).update({
@@ -108,7 +119,9 @@ export const actions = {
 			.startAt(arg.orderNo).endAt(arg.orderNo)
 			.once('value', function(snapshot) {
 	      snapshot.forEach(function(childSnapshot) {
-			    keys.push(childSnapshot.key);
+	        if(arg.userId === childSnapshot.val().userId) {
+  			    keys.push(childSnapshot.key);
+  			  }
 			  });
 			});
 			for (let i = 0; i < keys.length; i++) {
@@ -120,16 +133,18 @@ export const actions = {
 			  .startAt(arg.orderNo).endAt(arg.orderNo)
 			  .once('value', function(snapshot) {
 	        snapshot.forEach(function(childSnapshot) {
-			      orderDetails.push({
-			        orderNo: childSnapshot.val().orderNo,
-			        orderDetailNo: childSnapshot.val().orderDetailNo,
-			        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
-			        unitPrice: childSnapshot.val().unitPrice,
-			        num: childSnapshot.val().num,
-			        money: childSnapshot.val().money,
-			        classification: childSnapshot.val().classification,
-			        constructionNo: childSnapshot.val().constructionNo,
-			    });
+	          if(arg.userId === childSnapshot.val().userId) {
+				      orderDetails.push({
+				        orderNo: childSnapshot.val().orderNo,
+				        orderDetailNo: childSnapshot.val().orderDetailNo,
+				        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
+				        unitPrice: childSnapshot.val().unitPrice,
+				        num: childSnapshot.val().num,
+				        money: childSnapshot.val().money,
+				        classification: childSnapshot.val().classification,
+				        constructionNo: childSnapshot.val().constructionNo,
+				      });
+				    }
 			  });
 			});
       //材料外注データの最大連番を取得
@@ -146,6 +161,7 @@ export const actions = {
       //材料外注データを追加する。
       for (let i = 0; i < orderDetails.length; i++) {
 		    await Firebase.database().ref(dbMaterialAndManufacturing).push({
+		      userId: arg.userId,
 		      materialAndManufacturingNo: materialAndManufacturingNoMax,
 	        orderNo: orderDetails[i].orderNo,
 	        orderDetailNo: orderDetails[i].orderDetailNo,

@@ -5,7 +5,7 @@
         <router-link to="/"><h1>原価計算システム</h1></router-link>
         <div>
 	        <p>ユーザーID:{{ userId }}</p>
-	        <p>{[ userName }}様</p>
+	        <p>{{ userName }}様</p>
 	        <button @click="logout">ログアウト</button>
 	      </div>
       </div>
@@ -40,7 +40,6 @@ export default {
   },
   methods: {
     logout() {
-      console.log(this.$store.state.user.userId);
       this.$store.dispatch('user/logout');
       this.$router.push('/login');
     },
@@ -93,10 +92,10 @@ a {
 }
 
 .header {
-  margin-bottom: 30px;
-  width: 100%;
+  width: 80%;
   height: 150px;
-  margin-top: 30px;
+  margin: 0 auto 30px auto;
+  padding-top: 5px;
 }
 
 #title {

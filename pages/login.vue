@@ -32,7 +32,6 @@ export default {
           mail: this.mail.trim(), 
           password: this.password.trim()
         });
-        console.log('yyy');
         await this.$router.push('/');
       } catch(error) {
         console.log({ error });

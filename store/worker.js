@@ -43,18 +43,20 @@ export const actions = {
       classification: arg.classification,
 	  });
 	},
-	getWorker(context) {
+	getWorker(context, userId) {
 		Firebase.database().ref(dbWorker)
 		  .orderByChild('id')
 		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setWorker', {
-		      	id: childSnapshot.val().id, 
-		      	year: childSnapshot.val().year, 
-		      	salary: childSnapshot.val().salary, 
-		      	workTime: childSnapshot.val().workTime, 
-		      	classification: childSnapshot.val().classification,
-		      });
+		      if(userId === childSnapshot.val().userId) { 
+			      context.commit('setWorker', {
+			      	id: childSnapshot.val().id, 
+			      	year: childSnapshot.val().year, 
+			      	salary: childSnapshot.val().salary, 
+			      	workTime: childSnapshot.val().workTime, 
+			      	classification: childSnapshot.val().classification,
+			      });
+			    }
 		    });
 	  });
   },

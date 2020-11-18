@@ -42,17 +42,19 @@ export const actions = {
       shipDay: arg.shipDay,
 	  });
   },
-	getConstructionNo(context) {
+	getConstructionNo(context, userId) {
 	  context.commit('clearConstruction');
 		Firebase.database().ref(dbConstruction)
 		  .orderByChild('constructionNo').on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setConstruction', {
-		      	constructionNo: childSnapshot.val().constructionNo, 
-		      	constructionName: childSnapshot.val().constructionName, 
-		      	money: childSnapshot.val().money, 
-		      	shipDay: childSnapshot.val().shipDay, 
-		      });
+		      if(userId === childSnapshot.val().userId) { 
+			      context.commit('setConstruction', {
+			      	constructionNo: childSnapshot.val().constructionNo, 
+			      	constructionName: childSnapshot.val().constructionName, 
+			      	money: childSnapshot.val().money, 
+			      	shipDay: childSnapshot.val().shipDay, 
+			      });
+			    }
 		    });
 	  });
   },
@@ -63,7 +65,9 @@ export const actions = {
 			.startAt(arg.beforeConstructionNo).endAt(arg.beforeConstructionNo)
 			.once('value', function(snapshot) {
 			  snapshot.forEach(function(childSnapshot) {
-		      key = childSnapshot.key;
+			    if(arg.userId === childSnapshot.val().userId) { 
+  		      key = childSnapshot.key;
+  		    }
 			  });
 			});
 		await Firebase.database().ref(dbConstruction).child(key).update({
@@ -73,15 +77,17 @@ export const actions = {
 			shipDay: arg.shipDay,
 		});
 	},
-	delConstructionNo(context, constructionNo) {
+	delConstructionNo(context, arg) {
 	  let key;
 		Firebase.database().ref(dbConstruction)
 		.orderByChild('constructionNo')
-		.startAt(constructionNo).endAt(constructionNo)
+		.startAt(arg.constructionNo).endAt(arg.constructionNo)
 		.once('value', function(snapshot) {
-      snapshot.forEach(function(childSnapshot) {
-		    key = childSnapshot.key;
-		  });
+		  if(arg.userId === childSnapshot.val().userId) { 
+        snapshot.forEach(function(childSnapshot) {
+	  	    key = childSnapshot.key;
+		    });
+		  }
 		});
 	  Firebase.database().ref(dbConstruction).child(key).remove();
 	},

@@ -22,21 +22,23 @@ export const mutations = {
   },
 }
 export const actions = {
-	getMaterialAndManufacturing(context) {
+	getMaterialAndManufacturing(context, userId) {
 		Firebase.database().ref(dbMaterialAndManufacturing)
 		  .orderByChild('materialAndManufacturingNo')
 		  .on('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setMaterialAndManufacturing', {
-		      	materialAndManufacturingNo: childSnapshot.val().materialAndManufacturingNo, 
-		      	orderNo: childSnapshot.val().orderNo, 
-		      	constructionNo: childSnapshot.val().constructionNo, 
-		      	materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName, 
-		      	unitPrice: childSnapshot.val().unitPrice, 
-		      	num: childSnapshot.val().num, 
-		      	money: childSnapshot.val().money, 
-		      	classification: childSnapshot.val().classification
-		      });
+		      if(userId === childSnapshot.val().userId) {
+			      context.commit('setMaterialAndManufacturing', {
+			      	materialAndManufacturingNo: childSnapshot.val().materialAndManufacturingNo, 
+			      	orderNo: childSnapshot.val().orderNo, 
+			      	constructionNo: childSnapshot.val().constructionNo, 
+			      	materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName, 
+			      	unitPrice: childSnapshot.val().unitPrice, 
+			      	num: childSnapshot.val().num, 
+			      	money: childSnapshot.val().money, 
+			      	classification: childSnapshot.val().classification
+			      });
+			    }
 		    });
 	  });
   },

@@ -119,22 +119,35 @@ export default {
   },
 	async beforeCreate() {
 	  //受注金額取得
-	  await this.$store.dispatch('costDetails/getConstructionInfo', this.$store.state.constructionNo);
+	  await this.$store.dispatch('costDetails/getConstructionInfo', { 
+	    userId: this.$store.state.user.userId, 
+	    constructionNo: this.$store.state.constructionNo, 
+	  });
 	  this.constructionMoney = this.$store.state.costDetails.constructionMoney;
 		//材料・外注・内作直接工取得
-		await this.$store.dispatch('costDetails/getCostDetails', this.$store.state.constructionNo);
+		await this.$store.dispatch('costDetails/getCostDetails', {
+		  userId: this.$store.state.user.userId, 
+		  constructionNo: this.$store.state.constructionNo,
+		});
 		this.costDetailDirectWork = this.$store.state.costDetails.costDetailDirectWork;
 		//該当の直接工取得
 		await this.$store.dispatch('costDetails/getCostDirectWorkSalary', {
+		  userId: this.$store.state.user.userId, 
 		  constructionNo: this.$store.state.costDetails.constructionNo, 
 		  costDetailDirectWork: this.costDetailDirectWork
 		});
 		this.costDirectWorkSalary = this.$store.state.costDetails.costDirectWorkSalary;
 		//出荷日に属する年に出荷した全製品
-		await this.$store.dispatch('costDetails/getShipYearAndAnotherConstruction', this.$store.state.constructionNo);
+		await this.$store.dispatch('costDetails/getShipYearAndAnotherConstruction', {
+		  userId: this.$store.state.user.userId, 
+		  constructionNo: this.$store.state.constructionNo,
+		});
     this.anotherConstruction = this.$store.state.costDetails.anotherConstruction;
 		//間接工給料取得
-		await this.$store.dispatch('costDetails/getInDirectSalary', this.$store.state.costDetails.shipYear);
+		await this.$store.dispatch('costDetails/getInDirectSalary', {
+		  userId: this.$store.state.user.userId, 
+		  shipYear: this.$store.state.costDetails.shipYear,
+		});
 		//原価計算
 		this.costConstruction = this.constructionMoney;
 		this.constructionNo = this.$store.state.costDetails.constructionNo;

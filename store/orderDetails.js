@@ -29,14 +29,15 @@ export const actions = {
 	async commitOrder(context, arg) {
 	  let updateFlag = 0, orderDetailNo = 1;
 	  let key, keys = [];
-	  //既に登録されている注文番号かどうか確認
 		await Firebase.database().ref(dbOrder)
 		  .orderByChild('orderNo')
 		  .startAt(arg.orderNo).endAt(arg.orderNo)
 		  .once('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      if (arg.orderNo === childSnapshot.val().orderNo) {
-		      	updateFlag = 1;
+		      if(arg.userId === childSnapshot.val().userId && 
+		        arg.orderNo === childSnapshot.val().orderNo) {
+		      	  updateFlag = 1;
+		      	  console.log('既存の注文番号のため、注文データを更新します。');
 		      }
 		    })
 		  });
@@ -48,7 +49,9 @@ export const actions = {
 			.startAt(arg.orderNo).endAt(arg.orderNo)
 			.once('value', function(snapshot) {
 	      snapshot.forEach(function(childSnapshot) {
-			    key = childSnapshot.key;
+	        if(childSnapshot.val().userId === arg.userId) {
+			      key = childSnapshot.key;
+			    }
 			  });
 			});
 		  await Firebase.database().ref(dbOrder).child(key).remove();
@@ -58,8 +61,10 @@ export const actions = {
 			.startAt(arg.orderNo).endAt(arg.orderNo)
 			.once('value', function(snapshot) {
 	      snapshot.forEach(function(childSnapshot) {
-	        keys.push(childSnapshot.key);
-			  });
+	        if(childSnapshot.val().userId === arg.userId) {
+  	        keys.push(childSnapshot.key);
+          }
+	  		});
 			});
 			for (let i = 0; i < keys.length; i++) {
 			  await Firebase.database().ref(dbOrderDetails).child(keys[i]).remove();
@@ -68,6 +73,7 @@ export const actions = {
 	  //登録する
 	  //１　dbOrder
     await Firebase.database().ref(dbOrder).push({
+      userId: arg.userId,
       orderNo: arg.orderNo,
       orderDay: arg.orderDay,
       orderName: arg.orderName,
@@ -76,6 +82,7 @@ export const actions = {
 	  //２　dbOrderDetails　連番
 	  for (let i = 0; i < arg.orderDetails.length; i++) {	
 	    await Firebase.database().ref(dbOrderDetails).push({
+	      userId: arg.userId,
 	      orderNo: arg.orderNo,
 	      orderDetailNo: orderDetailNo,
 	      materialAndManufacturingName: arg.orderDetails[i].materialAndManufacturingName,
@@ -92,32 +99,36 @@ export const actions = {
 	  let orderDetails = [];
 		await Firebase.database().ref(dbOrderDetails)
 		  .orderByChild('orderNo')
-		  .startAt(orderNo).endAt(orderNo)
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
 		  .on('value', async function(snapshot) {
 		    await snapshot.forEach(async function(childSnapshot) {
-		      await orderDetails.push({
-		        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
-		        unitPrice: childSnapshot.val().unitPrice,
-		        num: childSnapshot.val().num,
-		        money: childSnapshot.val().money,
-		        classification: childSnapshot.val().classification,
-		        constructionNo: childSnapshot.val().constructionNo,
-		      });
+		      if(arg.userId === childSnapshot.val().userId) {
+			      await orderDetails.push({
+			        materialAndManufacturingName: childSnapshot.val().materialAndManufacturingName,
+			        unitPrice: childSnapshot.val().unitPrice,
+			        num: childSnapshot.val().num,
+			        money: childSnapshot.val().money,
+			        classification: childSnapshot.val().classification,
+			        constructionNo: childSnapshot.val().constructionNo,
+			      });
+			    }
 		    });
 	    });
 	  context.commit('setStateOrderDetails', orderDetails);
   },
-	async getOrderOne(context, orderNo) {
+	async getOrderOne(context, arg) {
 		await Firebase.database().ref(dbOrder)
 		  .orderByChild('orderNo')
-		  .startAt(orderNo).endAt(orderNo)
+		  .startAt(arg.orderNo).endAt(arg.orderNo)
 		  .once('value', function(snapshot) {
 		    snapshot.forEach(function(childSnapshot) {
-		      context.commit('setOrderOne', {
-		      	orderNo: orderNo, 
-		      	orderDay: childSnapshot.val().orderDay, 
-		      	orderName: childSnapshot.val().orderName, 
-		      });
+		      if(arg.userId === childSnapshot.val().userId) { 
+			      context.commit('setOrderOne', {
+			      	orderNo: arg.orderNo, 
+			      	orderDay: childSnapshot.val().orderDay, 
+			      	orderName: childSnapshot.val().orderName, 
+			      });
+			    }
 		    });
 	  });
   },

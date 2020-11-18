@@ -66,7 +66,7 @@ export default {
   },
 	async created() {
 	  await this.$store.commit('worker/clearWorker');
-		await this.$store.dispatch('worker/getWorker');
+		await this.$store.dispatch('worker/getWorker', this.$store.state.user.userId);
 		this.worker = this.$store.state.worker.worker;
 	},
   methods: {
@@ -74,14 +74,14 @@ export default {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
   		await this.$store.dispatch('worker/addWorker', {
-  		  userId: this.userId,
+  		  userId: this.$store.state.user.userId,
   			year: this.year,
   			salary: this.salary, 
   			workTime: this.workTime,
   			classification: this.classification
   		});
   		await this.$store.commit('worker/clearWorker');
-  		await this.$store.dispatch('worker/getWorker');
+  		await this.$store.dispatch('worker/getWorker', this.$store.state.user.userId);
   		this.worker = this.$store.state.worker.worker;
   	}, 
   	edit(id, year, salary, workTime, classification) {
@@ -105,7 +105,7 @@ export default {
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
   		await this.$store.commit('worker/clearWorker');
-  		await this.$store.dispatch('worker/getWorker');
+  		await this.$store.dispatch('worker/getWorker', this.$store.state.user.userId);
   		this.worker = this.$store.state.worker.worker;
   	},
   	editCancel() {
@@ -116,7 +116,7 @@ export default {
   	  await this.$store.commit('worker/clearWorker');
   	  await this.$store.dispatch('worker/delWorker', id);
   	  await this.$store.commit('worker/clearWorker');
-  	  await this.$store.dispatch('worker/getWorker');
+  	  await this.$store.dispatch('worker/getWorker', this.$store.state.user.userId);
   	  this.worker = this.$store.state.worker.worker;
   	},
   }

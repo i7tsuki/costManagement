@@ -46,29 +46,13 @@ export default {
 			isShowModal: false,
 			editDeliveryDay: '',
 			order: [],
-			testData: [{
-			  '注文番号': '111',
-			  '注文日': '2019/1/1',
-			}, {
-			  '注文番号': '222',
-			  '注文日': '2020/1/1',
-      }],
     }
   },
 	async created() {
-	  console.log(this.testData);
-	  console.log('zzz')
-	  console.log(this.testData[0].注文番号);
-  	console.log('a')
 	  await this.$store.commit('order/clearOrder');
-	  console.log('b1');
-	  console.log(this.$store.state.order.orderXXX);
-	  console.log('b2');
-	  this.order = this.$store.state.order.orderXXX;
-		await this.$store.dispatch('order/getOrder');
-		this.order = this.$store.state.order.orderXXX;
-		console.log('d');
-		console.log(this.$store.state.order.orderXXX);
+	  this.order = this.$store.state.order.order;
+		await this.$store.dispatch('order/getOrder', this.$store.state.user.userId);
+		this.order = this.$store.state.order.order;
 	},
   methods: {
     newOrder() {
@@ -82,25 +66,25 @@ export default {
   	  await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/setDeliverDay', {
   	    orderNo: orderNo, 
+  	    userId: this.$store.state.user.userId,
   	    deliveryDay: this.editDeliveryDay,
   	  });
-  	  console.log('789');
-  	  console.log(this.$store.state.order.orderXXX);
   	  await this.$store.commit('order/clearOrder');
-  	  await this.$store.dispatch('order/getOrder');
+  	  await this.$store.dispatch('order/getOrder', this.$store.state.user.userId);
   	  this.isShowModal = false;
-  	  this.order = this.$store.state.order.orderXXX;
-  	  console.log('z');
-  	  console.log(this.order);
+  	  this.order = this.$store.state.order.order;
   	},
   	orderEdit(orderNo) {
   	  this.$store.commit('orderDetails/setOrderNo', orderNo);
   	}, 
   	async del(orderNo) {
     	await this.$store.commit('order/clearOrder');
-  	  await this.$store.dispatch('order/delOrder', orderNo);
+  	  await this.$store.dispatch('order/delOrder', {
+  	    orderNo: orderNo,
+  	    userId: this.$store.state.user.userId,
+  	  });
   	  await this.$store.commit('order/clearOrder');
-  	  await this.$store.dispatch('order/getOrder');
+  	  await this.$store.dispatch('order/getOrder', this.$store.state.user.userId);
   	  this.order = this.$store.state.order.order;
   	},
   	editCancel() {

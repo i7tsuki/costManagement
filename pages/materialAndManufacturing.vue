@@ -89,7 +89,7 @@ export default {
 	async created() {
 	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
 	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
-		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing', this.$store.state.user.userId);
 		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
 	},
   methods: {
@@ -101,7 +101,7 @@ export default {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   		await this.$store.dispatch('materialAndManufacturing/addMaterialAndManufacturing', {
-  		  userId: this.userId,
+  		  userId: this.$store.state.user.userId,
   		  orderNo: this.orderNo, 
   			constructionNo: this.constructionNo,
   			materialAndManufacturingName: this.materialAndManufacturingName,
@@ -111,7 +111,7 @@ export default {
   			classification: this.classification
   		});
   		await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
-  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing', this.$store.state.user.userId);
   		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	}, 
   	edit(materialAndManufacturingNo, orderNo, constructionNo, materialAndManufacturingName, unitPrice, num, money, classification) {
@@ -129,6 +129,7 @@ export default {
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   	  await this.$store.dispatch('materialAndManufacturing/editMaterialAndManufacturing', {
+  	    userId: this.$store.state.user.userId,
   	  	materialAndManufacturingNo: this.editNo,
   	  	orderNo: this.editOrderNo, 
   	  	constructionNo: this.editConstructionNo,
