@@ -6,99 +6,111 @@
       <p>原価：{{ costAll }}</p>
       <p>粗利：{{ costConstruction }}</p>
       <h2>材料</h2>
-      <table>
-      	<tr>
-      	  <th>注文番号</th>
-      		<th>名称</th>
-      		<th>単価</th>
-      		<th>数量</th>
-      		<th>金額</th>
-      	</tr>
-      	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
-          <td>{{ material.orderNo }}</td>
-      		<td>{{ material.materialName }}</td>
-      		<td>{{ material.unitPrice }}</td>
-      		<td>{{ material.num }}</td>
-      		<td>{{ material.money }}</td>
-      	</tr>
-      </table>
-      <h3>小計：{{ costMaterial }}</h3>
+      <div class="center">
+	      <table>
+	      	<tr>
+	      	  <th>注文番号</th>
+	      		<th>名称</th>
+	      		<th>単価</th>
+	      		<th>数量</th>
+	      		<th>金額</th>
+	      	</tr>
+	      	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
+	          <td>{{ material.orderNo }}</td>
+	      		<td>{{ material.materialName }}</td>
+	      		<td>{{ material.unitPrice }}</td>
+	      		<td>{{ material.num }}</td>
+	      		<td>{{ material.money }}</td>
+	      	</tr>
+	      </table>
+	    </div>
+	    <h3 class="subtotal">小計：{{ costMaterial }}</h3>
       <h2>外注</h2>
-      <table>
-      	<tr>
-      	  <th>注文番号</th>
-      		<th>名称</th>
-      		<th>単価</th>
-      		<th>数量</th>
-      		<th>金額</th>
-      	</tr>
-      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
-      	  <td>{{ manufacturing.orderNo }}</td>
-      		<td>{{ manufacturing.manufacturingName }}</td>
-      		<td>{{ manufacturing.unitPrice }}</td>
-      		<td>{{ manufacturing.num }}</td>
-      		<td>{{ manufacturing.money }}</td>
-      	</tr>
-      </table>
-      <h3>小計：{{ costManufacturing }}</h3>
+      <div class="center">
+	      <table>
+	      	<tr>
+	      	  <th>注文番号</th>
+	      		<th>名称</th>
+	      		<th>単価</th>
+	      		<th>数量</th>
+	      		<th>金額</th>
+	      	</tr>
+	      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
+	      	  <td>{{ manufacturing.orderNo }}</td>
+	      		<td>{{ manufacturing.manufacturingName }}</td>
+	      		<td>{{ manufacturing.unitPrice }}</td>
+	      		<td>{{ manufacturing.num }}</td>
+	      		<td>{{ manufacturing.money }}</td>
+	      	</tr>
+	      </table>
+	    </div>
+      <h3 class="subtotal">小計：{{ costManufacturing }}</h3>
       <h2>内作/直接工</h2>
-	    <table>
-	    	<tr>
-	    	  <th>作業日</th>
-	    		<th>作業内容</th>
-	    		<th>作業時間[h]</th>
-	    	</tr>
-	    	<tr v-for="dwork in costDetailDirectWork" v-bind:key="dwork.workNo">
-	    	  <td>{{ dwork.workDay }}</td>
-	    		<td>{{ dwork.workName }}</td>
-	    		<td>{{ dwork.time }}</td>
-	    	</tr>
-	    </table>
-      <table>
-      	<tr>
-      		<th>年</th>
-      		<th>作業時間[h]</th>
-      		<th>総給料</th>
-      		<th>総作業時間[h]</th>
-      		<th>作業時間＊総給料/総作業時間</th>
-      	</tr>
-      	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
-      		<td>{{ cdws.year }}</td>
-      		<td>{{ cdws.time }}</td>
-      		<td>{{ cdws.salary }}</td>
-      		<td>{{ cdws.workTime }}</td>
-      		<td>{{ cdws.time * cdws.salary / cdws.workTime }}</td>
-      	</tr>
-      </table>
-      <h3>小計：{{ costDirectWork }}</h3>
+      <div class="center">
+		    <table>
+		    	<tr>
+		    	  <th>作業日</th>
+		    		<th>作業内容</th>
+		    		<th>作業時間[h]</th>
+		    	</tr>
+		    	<tr v-for="dwork in costDetailDirectWork" v-bind:key="dwork.workNo">
+		    	  <td>{{ dwork.workDay }}</td>
+		    		<td>{{ dwork.workName }}</td>
+		    		<td>{{ dwork.time }}</td>
+		    	</tr>
+		    </table>
+	    </div>
+      <div class="center">
+	      <table>
+	      	<tr>
+	      		<th>年</th>
+	      		<th>作業時間[h]</th>
+	      		<th>総給料</th>
+	      		<th>総作業時間[h]</th>
+	      		<th>作業時間＊総給料/総作業時間</th>
+	      	</tr>
+	      	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
+	      		<td>{{ cdws.year }}</td>
+	      		<td>{{ cdws.time }}</td>
+	      		<td>{{ cdws.salary }}</td>
+	      		<td>{{ cdws.workTime }}</td>
+	      		<td>{{ cdws.time * cdws.salary / cdws.workTime }}</td>
+	      	</tr>
+	      </table>
+	    </div>
+      <h3 class="subtotal">小計：{{ costDirectWork }}</h3>
       <h2>内作/間接工</h2>
       <h3>出荷日に属する年に出荷した製品一覧</h3>
-      <table>
-      	<tr>
-      	  <th>製品番号</th>
-      	  <th>名称</th>
-      		<th>出荷日</th>
-      		<th>受注金額</th>
-      	</tr>
-      	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
-      		<td>{{ c.constructionNo }}</td>
-      		<td>{{ c.constructionName }}</td>
-      		<td>{{ c.shipDay }}</td>
-      		<td>{{ c.money }}</td>
-      	</tr>
-      </table>
+      <div class="center">
+	      <table>
+	      	<tr>
+	      	  <th>製品番号</th>
+	      	  <th>名称</th>
+	      		<th>出荷日</th>
+	      		<th>受注金額</th>
+	      	</tr>
+	      	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
+	      		<td>{{ c.constructionNo }}</td>
+	      		<td>{{ c.constructionName }}</td>
+	      		<td>{{ c.shipDay }}</td>
+	      		<td>{{ c.money }}</td>
+	      	</tr>
+	      </table>
+	    </div>
       <h3>間接工給料</h3>
-      <table>
-      	<tr>
-      		<th>年</th>
-      		<th>給料</th>
-      	</tr>
-      	<tr>
-      		<td>{{ shipYear }}</td>
-      		<td>{{ inDirectSalary }}</td>
-      	</tr>
-      </table>
-      <h3>小計(按分金額)：{{ costInDirectWork }}</h3>
+      <div class="center">
+	      <table>
+	      	<tr>
+	      		<th>年</th>
+	      		<th>給料</th>
+	      	</tr>
+	      	<tr>
+	      		<td>{{ shipYear }}</td>
+	      		<td>{{ inDirectSalary }}</td>
+	      	</tr>
+	      </table>
+	    </div>
+      <h3 class="subtotal">小計(按分金額)：{{ costInDirectWork }}</h3>
     </div>
   </div>
 </template>
@@ -199,6 +211,13 @@ export default {
   margin: 0 auto;
 }
 h3 {
+  text-align: center;
+}
+.subtotal {
   margin-bottom: 30px;
+}
+p, .center {
+  display: flex;
+  justify-content: center;
 }
 </style>
