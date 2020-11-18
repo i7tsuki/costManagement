@@ -122,7 +122,6 @@ export default {
   	    userId: this.$store.state.user.userId, 
   	    constructionNo: constructionNo
   	  });
-  	  console.log('c');
   	  await this.$store.commit('construction/clearConstruction');
   	  this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
   	  this.construction = this.$store.state.construction.construction;

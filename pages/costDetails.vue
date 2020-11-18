@@ -16,7 +16,7 @@
       	</tr>
       	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
           <td>{{ material.orderNo }}</td>
-      		<td>{{ material.materialAndManufacturingName }}</td>
+      		<td>{{ material.materialName }}</td>
       		<td>{{ material.unitPrice }}</td>
       		<td>{{ material.num }}</td>
       		<td>{{ material.money }}</td>
@@ -34,7 +34,7 @@
       	</tr>
       	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
       	  <td>{{ manufacturing.orderNo }}</td>
-      		<td>{{ manufacturing.materialAndManufacturingName }}</td>
+      		<td>{{ manufacturing.manufacturingName }}</td>
       		<td>{{ manufacturing.unitPrice }}</td>
       		<td>{{ manufacturing.num }}</td>
       		<td>{{ manufacturing.money }}</td>
@@ -121,26 +121,26 @@ export default {
 	  //受注金額取得
 	  await this.$store.dispatch('costDetails/getConstructionInfo', { 
 	    userId: this.$store.state.user.userId, 
-	    constructionNo: this.$store.state.constructionNo, 
+	    constructionNo: this.$store.state.construction.constructionNo, 
 	  });
 	  this.constructionMoney = this.$store.state.costDetails.constructionMoney;
 		//材料・外注・内作直接工取得
 		await this.$store.dispatch('costDetails/getCostDetails', {
 		  userId: this.$store.state.user.userId, 
-		  constructionNo: this.$store.state.constructionNo,
+		  constructionNo: this.$store.state.construction.constructionNo,
 		});
 		this.costDetailDirectWork = this.$store.state.costDetails.costDetailDirectWork;
 		//該当の直接工取得
 		await this.$store.dispatch('costDetails/getCostDirectWorkSalary', {
 		  userId: this.$store.state.user.userId, 
-		  constructionNo: this.$store.state.costDetails.constructionNo, 
+		  constructionNo: this.$store.state.construction.constructionNo, 
 		  costDetailDirectWork: this.costDetailDirectWork
 		});
 		this.costDirectWorkSalary = this.$store.state.costDetails.costDirectWorkSalary;
 		//出荷日に属する年に出荷した全製品
 		await this.$store.dispatch('costDetails/getShipYearAndAnotherConstruction', {
 		  userId: this.$store.state.user.userId, 
-		  constructionNo: this.$store.state.constructionNo,
+		  constructionNo: this.$store.state.construction.constructionNo,
 		});
     this.anotherConstruction = this.$store.state.costDetails.anotherConstruction;
 		//間接工給料取得
@@ -150,7 +150,7 @@ export default {
 		});
 		//原価計算
 		this.costConstruction = this.constructionMoney;
-		this.constructionNo = this.$store.state.costDetails.constructionNo;
+		this.constructionNo = this.$store.state.construction.constructionNo;
 		this.shipYear = this.$store.state.costDetails.shipYear;
 		this.inDirectSalary = this.$store.state.costDetails.inDirectSalary;
 	},
@@ -177,8 +177,6 @@ export default {
 	  costInDirectWork: function() {
 	    let cost = 0;
 	    let allConstructionMoney = 0;
-	    console.log('xxxxxxxxxxx');
-	    console.log(this.anotherConstruction);
 	    for (let i = 0; i < this.anotherConstruction.length; i++) {
 	      allConstructionMoney += this.anotherConstruction[i].money;
 	    }

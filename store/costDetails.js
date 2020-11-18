@@ -53,7 +53,7 @@ export const actions = {
 			  .startAt(arg.constructionNo).endAt(arg.constructionNo)
 			  .once('value', async function(snapshot) {
 			    await snapshot.forEach(function(childSnapshot) {
-            if(userId === childSnapshot.val().userId) {
+            if(arg.userId === childSnapshot.val().userId) {
 			        if(childSnapshot.val().classification = '材料') {
 			          material += childSnapshot.val().money;
 			          materialData.push({
@@ -84,7 +84,7 @@ export const actions = {
 			  .startAt(arg.constructionNo).endAt(arg.constructionNo)
 			  .once('value', async function(snapshot) {
 			    await snapshot.forEach(function(childSnapshot) {
-			      if(userId === childSnapshot.val().userId) {
+			      if(arg.userId === childSnapshot.val().userId) {
 		          directWorkData.push({
 		            workNo: childSnapshot.val().workNo,
 		            workDay: childSnapshot.val().workDay,
@@ -134,12 +134,12 @@ export const actions = {
 				.startAt(years[y].year).endAt(years[y].year)
 				.once('value', async function(snapshot) {
 				  await snapshot.forEach(function(childSnapshot) {
-				    if(arg.userId === childSnapshot.val().userId) {
-				      if(childSnapshot.val().year === years[y].year) {
+				    if(arg.userId === childSnapshot.val().userId && 
+				      childSnapshot.val().year === years[y].year && 
+				      childSnapshot.val().classification === '直接工') { 
 				        years[y].salary += childSnapshot.val().salary;
 				        years[y].workTime += childSnapshot.val().workTime;
 				      }
-				    }
 				  });
 				});
 		}
