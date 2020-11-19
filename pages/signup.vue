@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="signup">
       <h1>新規登録</h1>
 	    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
@@ -51,11 +51,8 @@ export default {
 </script>
 
 <style>
-.container {
+.signup {
   width: 70%;
-  margin: 0 auto;
-}
-.section {
   margin: 0 auto;
 }
 h1 {

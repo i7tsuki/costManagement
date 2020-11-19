@@ -1,12 +1,14 @@
 <template>
   <div class="container">
-    <div class="section">
-      <label>年</label><input type="text" v-model="year">
-      <label>給料</label><input type="text" v-model="salary">
-      <label>実働時間</label><input type="text" v-model="workTime">
-      <input type="radio" value="直接工" name="class" v-model="classification">直接工
-      <input type="radio" value="間接工" name="class" v-model="classification">間接工
-      <button @click="add">追加</button>
+    <div class="worker">
+      <div class="input-form">
+	      <label>年</label><input type="text" v-model="year">
+	      <label>給料</label><input type="text" v-model="salary">
+	      <label>実働時間</label><input type="text" v-model="workTime">
+	      <input type="radio" value="直接工" name="class" v-model="classification">直接工
+	      <input type="radio" value="間接工" name="class" v-model="classification">間接工
+	      <button @click="add">追加</button>
+	    </div>
       <table>
       	<tr>
       	  <th>年</th>
@@ -129,11 +131,12 @@ export default {
 </script>
 
 <style>
-.container {
+.worker {
   width: 70%;
   margin: 0 auto;
 }
-.section {
-  margin: 0 auto;
+.input-form {
+  border: solid 1px #C0C0C0;
+  padding: 10px;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="login">
       <h1>ログイン</h1>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
@@ -43,11 +43,8 @@ export default {
 </script>
 
 <style>
-.container {
+.login {
   width: 70%;
-  margin: 0 auto;
-}
-.section {
   margin: 0 auto;
 }
 h1 {

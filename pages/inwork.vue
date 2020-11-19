@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <div class="section">
-      <label>製品番号</label><input type="text" v-model="constructionNo">
-      <label>作業日</label><input type="date" v-model="workDay">
-      <label>作業内容</label><input type="text" v-model="workName">
-      <label>作業時間[h]</label><input type="text" v-model="time">
-      <button @click="add">追加</button>
+    <div class="inwork">
+      <div class="input-form">
+	      <label>製品番号</label><input type="text" v-model="constructionNo">
+	      <label>作業日</label><input type="date" v-model="workDay">
+	      <label>作業内容</label><input type="text" v-model="workName">
+	      <label>作業時間[h]</label><input type="text" v-model="time">
+	      <button @click="add">追加</button>
+	    </div>
       <table>
       	<tr>
       		<th>製品番号</th>
@@ -127,11 +129,12 @@ export default {
 </script>
 
 <style>
-.container {
+.inwork {
   width: 70%;
   margin: 0 auto;
 }
-.section {
-  margin: 0 auto;
+.input-form {
+  border: solid 1px #C0C0C0;
+  padding: 10px;
 }
 </style>

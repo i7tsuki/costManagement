@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="costDetails">
       <h1>製品番号：{{ constructionNo }}</h1>
       <p>受注金額：{{ constructionMoney }}</p>
       <p>原価：{{ costAll }}</p>
@@ -182,7 +182,9 @@ export default {
 	  costDirectWork: function() {
 	    let cost = 0;
 	    for (let i = 0; i < this.costDirectWorkSalary.length; i++) {
-	      cost += this.costDirectWorkSalary[i].time * this.costDirectWorkSalary[i].salary / this.costDirectWorkSalary[i].workTime;
+	      if(this.costDirectWorkSalary[i].workTime !== 0) {
+		      cost += this.costDirectWorkSalary[i].time * this.costDirectWorkSalary[i].salary / this.costDirectWorkSalary[i].workTime;
+		    }
 	    }
 	  	return cost;
 	  },
@@ -203,11 +205,8 @@ export default {
 </script>
 
 <style>
-.container {
+.costDetails {
   width: 70%;
-  margin: 0 auto;
-}
-.section {
   margin: 0 auto;
 }
 h3 {

@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <div class="section">
-      <label>製品番号</label><input type="text" v-model="constructionNo">
-      <label>名称</label><input type="text" v-model="constructionName">
-      <label>受注金額</label><input type="text" v-model="money">
-      <label>出荷日</label><input type="date" v-model="shipDay">
-      <button @click="add">追加</button>
+    <div class="construction">
+      <div class="input-form">
+	      <label>製品番号</label><input type="text" v-model="constructionNo">
+	      <label>名称</label><input type="text" v-model="constructionName">
+	      <label>受注金額</label><input type="text" v-model="money">
+	      <label>出荷日</label><input type="date" v-model="shipDay">
+	      <button @click="add">追加</button>
+	    </div>
       <table>
       	<tr>
       		<th>製品番号</th>
@@ -134,11 +136,12 @@ export default {
 </script>
 
 <style>
-.container {
+.construction {
   width: 70%;
   margin: 0 auto;
 }
-.section {
-  margin: 0 auto;
+.input-form {
+  border: solid 1px #C0C0C0;
+  padding: 10px;
 }
 </style>

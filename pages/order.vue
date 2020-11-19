@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="order">
       <router-link to="orderDetails"><button @click="newOrder">新規</button></router-link>
       <table>
       	<tr>
@@ -95,11 +95,8 @@ export default {
 </script>
 
 <style>
-.container {
+.order {
   width: 70%;
-  margin: 0 auto;
-}
-.section {
   margin: 0 auto;
 }
 </style>

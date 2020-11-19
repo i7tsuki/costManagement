@@ -1,13 +1,15 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="orderDetails">
       <button @click="commit()">登録</button>
-      <p>注文日</p>
-      <input type="date" v-model="orderDay">
-      <p>注文番号</p>
-      <input type="text" v-model="orderNo">
-      <p>注文名</p>
-      <input type="text" v-model="orderName">
+      <div class>
+	      <label>注文日</label>
+	      <input type="date" v-model="orderDay">
+	      <label>注文番号</label>
+	      <input type="text" v-model="orderNo">
+	      <label>注文名</label>
+	      <input type="text" v-model="orderName">
+	    </div>
       <table>
       	<tr>
       	  <th>No</th>
@@ -52,22 +54,24 @@
       		<td><button @click="del(index)">削除</button></td>
       	</tr>
       </table>
-      <div id="input-form">
-	      <p>名称</p>
-	      <input type="text" v-model="newName">
-	      <p>単価</p>
-	      <input type="text" v-model="newUnitPrice">
-	      <p>数量</p>
-	      <input type="text" v-model="newNum">
-	      <p>金額</p>
-	      <input type="text" v-model="newMoney">
-	      <p>区分</p>
-	      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
-	      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
-	      </select>
-	      <p>製品番号</p>
-	      <input type="text" v-model="newConstructionNo">
-	      <button @click="addOrder">明細追加</button>
+      <div class="input-form">
+        <div class="input-box">
+		      <label>名称</label>
+		      <input type="text" v-model="newName">
+		      <label>単価</label>
+		      <input type="text" v-model="newUnitPrice">
+		      <label>数量</label>
+		      <input type="text" v-model="newNum">
+		      <label>金額</label>
+		      <input type="text" v-model="newMoney">
+		      <label>区分</label>
+		      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
+		      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
+		      </select>
+		      <label>製品番号</label>
+	      	<input type="text" v-model="newConstructionNo">
+	      </div>
+	      <p><button @click="addOrder">明細追加</button></p>
       </div>
     </div>
   </div>
@@ -170,11 +174,19 @@ export default {
 </script>
 
 <style>
-.container {
+.orderDetails {
   width: 70%;
   margin: 0 auto;
 }
-.section {
-  margin: 0 auto;
+table {
+  margin-top: 15px;
+}
+.input-form {
+  margin-top: 30px;
+  border: solid 1px #C0C0C0;
+}
+.input-form p {
+  display: flex;
+  justify-content: center;
 }
 </style>

@@ -17,7 +17,7 @@
 	        <router-link to="materialAndManufacturing"><div class="init-bottom"><p>材料・外注</p></div></router-link>
 		    </li>
 			  <li class="menu__single">
-	        <router-link to="inwork"><div class="init-bottom"><p>直接工</p></div></router-link>
+	        <router-link to="inWork"><div class="init-bottom"><p>直接工</p></div></router-link>
 		    </li>
 			  <li class="menu__single">
 	        <router-link to="construction"><div class="init-bottom"><p>工事一覧</p></div></router-link>

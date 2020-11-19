@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="section">
+    <div class="index">
 	    <img src="~/assets/factory.jpg">
 	 		<p>原価計算用のシステムになります。</p>
 	 		<p>製品製造の受注後、材料・外注の注文、直接工を経て、製品が完成され、その後出荷されます。</p>
@@ -22,11 +22,8 @@ export default {
 </script>
 
 <style>
-.container {
+.index {
   width: 70%;
-  margin: 0 auto;
-}
-.section {
   margin: 0 auto;
 }
 img {

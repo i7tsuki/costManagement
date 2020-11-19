@@ -1,15 +1,17 @@
 <template>
   <div class="container">
-    <div class="section">
-	    <label>注文番号</label><input type="text" v-model="orderNo">
-	    <label>製品番号</label><input type="text" v-model="constructionNo">
-	    <label>名称</label><input type="text" v-model="materialAndManufacturingName">
-	    <label>単価</label><input type="text" v-model="unitPrice">
-	    <label>数量</label><input type="text" v-model="num">
-	    <label>金額</label><input type="text" v-model="money">
-	    <input type="radio" value="材料" name="class" v-model="classification">材料
-	    <input type="radio" value="外注" name="class" v-model="classification">外注
-	    <button @click="add">追加</button>
+    <div class="materialAndManufacturing">
+      <div class="input-form">
+		    <label>注文番号</label><input type="text" v-model="orderNo">
+		    <label>製品番号</label><input type="text" v-model="constructionNo">
+		    <label>名称</label><input type="text" v-model="materialAndManufacturingName">
+		    <label>単価</label><input type="text" v-model="unitPrice">
+		    <label>数量</label><input type="text" v-model="num">
+		    <label>金額</label><input type="text" v-model="money">
+		    <input type="radio" value="材料" name="class" v-model="classification">材料
+		    <input type="radio" value="外注" name="class" v-model="classification">外注
+	    	<button @click="add">追加</button>
+	    </div>
 	    <table>
 	    	<tr>
 	    	  <th>注文番号</th>
@@ -142,7 +144,7 @@ export default {
   		this.isShowModal = false;
   		//データ更新前にローカルデータリセット：Duplicate keys detected対策
   		await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
-  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  		await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing', this.$store.state.user.userId);
   		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	},
   	editCancel() {
@@ -153,17 +155,20 @@ export default {
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   	  await this.$store.dispatch('materialAndManufacturing/delMaterialAndManufacturing', materialAndManufacturingNo);
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
-  	  await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing');
+  	  await this.$store.dispatch('materialAndManufacturing/getMaterialAndManufacturing', this.$store.state.user.userId);
   	  this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	},
   },
 }
 </script>
-.container {
+
+<style>
+.materialAndManufacturing {
   width: 70%;
   margin: 0 auto;
 }
-.section {
-  margin: 0 auto;
+.input-form {
+  border: solid 1px #C0C0C0;
+  padding: 10px;
 }
 </style>
