@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="inwork">
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
 	      <label>製品番号</label><input type="text" v-model="constructionNo">
 	      <label>作業日</label><input type="date" v-model="workDay">
@@ -62,6 +63,8 @@ export default {
 		  editWorkName: '',
 		  editTime: 0,
 		  isShowModal: false,
+		  errMsg: false,
+		  message: null,
     }
   },
 	async created() {
@@ -72,9 +75,12 @@ export default {
 	},
   methods: {
   	async add() {
-  	  if (this.workName === '') {
-  	    console.log('作業内容を入力してください。');
-  	    return;
+  	  if (this.workName === '' || this.workDay === '') {
+  	    this.errMsg = true;
+  	    this.message = 'バリデーションエラー';
+  	    return ;
+  	  } else {
+  	    this.errMsg = false;
   	  }
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
@@ -136,5 +142,8 @@ export default {
 .inwork .input-form {
   border: solid 1px #C0C0C0;
   padding: 10px;
+}
+.inwork .err-msg {
+  color: red;
 }
 </style>

@@ -7,9 +7,6 @@ export const state = () => ({
   order: [],
   deliveryDay: '',
   orderNo: '',
-  orderDetails: [],
-  orderDay: null,
-  orderName: '',
 })
 export const mutations = {
   clearOrder(state) {

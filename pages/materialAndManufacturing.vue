@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="materialAndManufacturing">
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
 		    <label>注文番号</label><input type="text" v-model="orderNo">
 		    <label>製品番号</label><input type="text" v-model="constructionNo">
@@ -86,6 +87,8 @@ export default {
 			editNum: 0,
 			editMoney: 0,
 			editClassification: '材料',
+		  errMsg: false,
+		  message: null,
     }
   },
 	async created() {
@@ -97,8 +100,11 @@ export default {
   methods: {
   	async add() {
   	  if (this.materialAndManufacturingName === '') {
-  	    console.log('正しく入力されていません。');
+  	    this.errMsg = true;
+  	    this.message = 'バリデーションエラー';
   	    return ;
+  	  } else {
+  	    this.errMsg = false;
   	  }
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
@@ -170,5 +176,8 @@ export default {
 .materialAndManufacturing .input-form {
   border: solid 1px #C0C0C0;
   padding: 10px;
+}
+.materialAndManufacturing .err-msg {
+  color: red;
 }
 </style>

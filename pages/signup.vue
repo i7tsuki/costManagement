@@ -2,6 +2,7 @@
   <div class="container">
     <div class="signup">
       <h1>新規登録</h1>
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
 	    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
@@ -21,6 +22,8 @@ export default {
 		  userName: '',
 		  mail: '',
 		  password: '',
+		  errMsg: false,
+		  message: null,
 		}
   },
   methods: {
@@ -30,7 +33,7 @@ export default {
         !isMailAdress(this.mail) ||
         !isPassword(this.password)
       ) {
-        console.log('バリデーションエラー');
+        this.setMessage('バリデーションエラー');
         return;
       }
       const user = {
@@ -44,6 +47,15 @@ export default {
         await this.$router.push('/');
       } catch(error) {
         console.log({ error });
+        this.setMessage(this.$store.state.user.message);
+      }
+    },
+    setMessage(msg) {
+      if(msg === null) {
+        this.errMsg = false;
+      } else {
+        this.errMsg = true;
+        this.message = msg;
       }
     },
   },
@@ -63,5 +75,8 @@ export default {
 }
 .signup small {
   color: blue;
+}
+.signup .err-msg {
+  color: red;
 }
 </style>

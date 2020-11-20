@@ -1,8 +1,9 @@
 <template>
   <div class="container">
     <div class="worker">
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
-	      <label>年</label><input type="text" v-model="year">
+	      <label>年（西暦）</label><input type="text" v-model="year">
 	      <label>給料</label><input type="text" v-model="salary">
 	      <label>実働時間</label><input type="text" v-model="workTime">
 	      <input type="radio" value="直接工" name="class" v-model="classification">直接工
@@ -11,7 +12,7 @@
 	    </div>
       <table>
       	<tr>
-      	  <th>年</th>
+      	  <th>年（西暦）</th>
       	  <th>給料</th>
       	  <th>実働時間</th>
       		<th>区分</th>
@@ -64,6 +65,8 @@ export default {
 		  editClassification: '直接工',
 		  worker: [],
 		  isShowModal: false,
+		  errMsg: false,
+		  message: null,
     }
   },
 	async created() {
@@ -75,8 +78,11 @@ export default {
   	async add() {
   	  if(this.year === '' || this.salary === '' || 
   	    this.workTime === '' || this.classification === '') {
-  	      console.log('入力してください。');
-  	      return;
+	  	    this.errMsg = true;
+	  	    this.message = 'バリデーションエラー';
+	  	    return ;
+  	  } else {
+  	    this.errMsg = false;
   	  }
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
@@ -138,5 +144,8 @@ export default {
 .worker .input-form {
   border: solid 1px #C0C0C0;
   padding: 10px;
+}
+.worker .err-msg {
+  color: red;
 }
 </style>

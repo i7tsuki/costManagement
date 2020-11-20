@@ -2,6 +2,12 @@ import Firebase from '../assets/firebase-config';
 const dbOrder = 'order';
 const dbOrderDetails = 'orderDetails';
 
+export const state = () => ({
+  orderNo: '',
+  orderDetails: [],
+  orderDay: null,
+  orderName: '',
+})
 export const mutations = {
   setOrderOne(state, arg) {
     state.orderNo = arg.orderNo;
@@ -95,7 +101,7 @@ export const actions = {
 		  orderDetailNo++;
     }
 	},
-	async getOrderDetails(context, orderNo) {
+	async getOrderDetails(context, arg) {
 	  let orderDetails = [];
 		await Firebase.database().ref(dbOrderDetails)
 		  .orderByChild('orderNo')

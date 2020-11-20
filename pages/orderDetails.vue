@@ -2,6 +2,7 @@
   <div class="container">
     <div class="orderDetails">
       <button @click="commit()">登録</button>
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class>
 	      <label>注文日</label>
 	      <input type="date" v-model="orderDay">
@@ -96,6 +97,8 @@ export default {
 			isShowModal: false,
 			selectRow: null,
 			orderDetails: [],
+		  errMsg: false,
+		  message: null,
     }
   },
   async created() {
@@ -103,11 +106,11 @@ export default {
       this.orderNo = this.$store.state.orderDetails.orderNo;
       await this.$store.dispatch('orderDetails/getOrderOne', {
         orderNo: this.orderNo,
-        userId: this.$store.state.userId,
+        userId: this.$store.state.user.userId,
       });
       await this.$store.dispatch('orderDetails/getOrderDetails', {
         orderNo: this.orderNo,
-        userId: this.$store.state.userId,
+        userId: this.$store.state.user.userId,
       });
       this.orderDetails = this.$store.state.orderDetails.orderDetails;
       this.orderName = this.$store.state.orderDetails.orderName;
@@ -130,8 +133,11 @@ export default {
   	},
   	async commit() {
   		if (this.orderNo === '') {
-  			console.log('注文番号が入力されていません。');
+  		  this.errMsg = true;
+  			this.message = '注文番号が入力されていません。';
   			return;
+  		} else {
+  		  this.errMsg = false;
   		}
   		await this.$store.dispatch('orderDetails/commitOrder', {
   		  userId: this.$store.state.user.userId,
@@ -188,5 +194,8 @@ export default {
 .orderDetails .input-form p {
   display: flex;
   justify-content: center;
+}
+.orderDetails .err-msg {
+  color: red;
 }
 </style>

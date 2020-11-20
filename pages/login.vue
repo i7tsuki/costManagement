@@ -2,6 +2,7 @@
   <div class="container">
     <div class="login">
       <h1>ログイン</h1>
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
 	    <p><button @click="login">ログイン</button></p>
@@ -19,12 +20,14 @@ export default {
 		return {
 		  mail: '',
 		  password: '',
+		  errMsg: false,
+		  message: null,
 		}
   },
   methods: {
     async login() {
       if (!isMailAdress(this.mail) || !isPassword(this.password)) {
-        console.log('バリデーションエラー');
+        this.setMessage('バリデーションエラー');
         return;
       }
       try {
@@ -34,7 +37,18 @@ export default {
         });
         await this.$router.push('/');
       } catch(error) {
-        console.log({ error });
+        console.log(error);
+        if(error.code === 'auth/user-not-found') {
+          this.setMessage('該当のユーザーは登録されていません。');
+        }
+      }
+    },
+    setMessage(msg) {
+      if(msg === null) {
+        this.errMsg = false;
+      } else {
+        this.errMsg = true;
+        this.message = msg;
       }
     },
   },
@@ -55,5 +69,8 @@ export default {
 }
 .login small {
   color: blue;
+}
+.login .err-msg {
+  color: red;
 }
 </style>

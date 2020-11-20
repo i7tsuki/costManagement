@@ -6,6 +6,7 @@ export const state = () => ({
   userName: null,
   mail: null,
   password: null,
+  message: null,
 })
 export const mutations = {
   setUser(state, arg) {
@@ -13,6 +14,9 @@ export const mutations = {
     state.userName = arg.userName;
     state.mail = arg.mail;
     state.password = arg.password;
+  },
+  setMessage(state, msg) {
+    state.message = msg;
   },
 }
 export const actions = {
@@ -44,7 +48,7 @@ export const actions = {
       .startAt(arg.mail).endAt(arg.mail)
       .once('value', function(snapshot) {
         if (snapshot.exists()) { 
-          console.log('既に同じメールアドレスが登録済みです。');
+          context.commit('setMessage', '既に同じメールアドレスが登録済みです。');
           context.commit('setUser', {
             mail: arg.mail,
           });

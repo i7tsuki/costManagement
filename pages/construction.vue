@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="construction">
+      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
 	      <label>製品番号</label><input type="text" v-model="constructionNo">
 	      <label>名称</label><input type="text" v-model="constructionName">
@@ -65,6 +66,8 @@ export default {
 			editMoney: 0,
 			editShipDay: '',
 			isShowEditModal: false,
+		  errMsg: false,
+		  message: null,
     }
   },
 	async created() {
@@ -75,17 +78,24 @@ export default {
   methods: {
   	async add() {
   	  if (this.constructionNo === '' || this.constructionName === '') {
-  	    console.log('正しく入力されていません。');
-  	    return ;
+  	    this.checkErrMessage('バリデーションエラー');
+  	    return;
+  	  } else {
+  	    this.checkErrMessage('');
   	  }
   	  await this.$store.commit('construction/clearConstruction');
-  		await this.$store.dispatch('construction/addConstructionNo', {
-  		  userId: this.$store.state.user.userId,
-  			constructionNo: this.constructionNo,
-  			constructionName: this.constructionName,
-  			money: this.money,
-  			shipDay: this.shipDay,
-  		});
+  	  try {
+	  		await this.$store.dispatch('construction/addConstructionNo', {
+	  		  userId: this.$store.state.user.userId,
+	  			constructionNo: this.constructionNo,
+	  			constructionName: this.constructionName,
+	  			money: this.money,
+	  			shipDay: this.shipDay,
+	  		});
+	    } catch (error) {
+	      this.checkErrMessage(error);
+	      return;
+      }
   		await this.$store.commit('construction/clearConstruction');
   		await this.$store.dispatch('construction/getConstructionNo', this.$store.state.user.userId);
   		this.construction = this.$store.state.construction.construction;
@@ -131,6 +141,14 @@ export default {
   	costDetail(constructionNo) {
   		this.$store.commit('construction/setConstructionNo', constructionNo);
   	},
+  	checkErrMessage(msg) {
+  	  if (msg !== '') {
+  	    this.errMsg = true;
+  	    this.message = msg;
+  	  } else {
+  	    this.errMsg = false;
+  	  }
+  	}
   },
 }
 </script>
@@ -143,5 +161,8 @@ export default {
 .construction .input-form {
   border: solid 1px #C0C0C0;
   padding: 10px;
+}
+.construction .err-msg {
+  color: red;
 }
 </style>

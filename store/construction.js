@@ -38,7 +38,7 @@ export const actions = {
   		  });
 			});
 		if(findFlag === 1) {
-	    console.log('該当の製品番号は既に登録済みです。');
+	    throw('該当の製品番号は既に登録済みです。');
 		  return;
 		}
 	  //データ登録
