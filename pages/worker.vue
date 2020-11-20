@@ -135,7 +135,7 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-.input-form {
+.worker .input-form {
   border: solid 1px #C0C0C0;
   padding: 10px;
 }

@@ -26,14 +26,14 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-img {
+.index img {
   width: 100%;
 }
 .overview {
   display: flex;
   justify-content: center;
 }
-svg {
+.index svg {
   margin: 0 auto;
   height: 95%;
   width: 50%;

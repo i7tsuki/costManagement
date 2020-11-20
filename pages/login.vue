@@ -47,13 +47,13 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-h1 {
+.login h1 {
   font-size: 1.5rem;
 }
-h2 {
+.login h2 {
   font-size: 1.3rem;
 }
-small {
+.login small {
   color: blue;
 }
 </style>

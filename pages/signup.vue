@@ -55,13 +55,13 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-h1 {
+.signup h1 {
   font-size: 1.5rem;
 }
-h2 {
+.signup h2 {
   font-size: 1.3rem;
 }
-small {
+.signup small {
   color: blue;
 }
 </style>

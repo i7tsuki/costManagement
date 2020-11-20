@@ -178,14 +178,14 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
-table {
+.orderDetails table {
   margin-top: 15px;
 }
-.input-form {
+.orderDetails .input-form {
   margin-top: 30px;
   border: solid 1px #C0C0C0;
 }
-.input-form p {
+.orderDetails .input-form p {
   display: flex;
   justify-content: center;
 }

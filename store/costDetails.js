@@ -54,7 +54,7 @@ export const actions = {
 			  .once('value', async function(snapshot) {
 			    await snapshot.forEach(function(childSnapshot) {
             if(arg.userId === childSnapshot.val().userId) {
-			        if(childSnapshot.val().classification = '材料') {
+			        if(childSnapshot.val().classification === '材料') {
 			          material += childSnapshot.val().money;
 			          materialData.push({
 			            materialNo: childSnapshot.val().materialAndManufacturingNo,
@@ -64,7 +64,7 @@ export const actions = {
 			          	num: childSnapshot.val().num,
 			          	money: childSnapshot.val().money,
 			          });
-			        } else if (childSnapshot.val().classification = '外注') {
+			        } else if (childSnapshot.val().classification === '外注') {
 			          manufacturing += childSnapshot.val().money;
 			          manufacturingData.push({
 			            manufacturingNo: childSnapshot.val().materialAndManufacturingNo,

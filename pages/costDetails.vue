@@ -1,11 +1,11 @@
 <template>
   <div class="container">
-    <div class="costDetails">
-      <h1>製品番号：{{ constructionNo }}</h1>
-      <p>受注金額：{{ constructionMoney }}</p>
-      <p>原価：{{ costAll }}</p>
-      <p>粗利：{{ costConstruction }}</p>
-      <h2>材料</h2>
+    <div class="cost-details">
+      <h1 class="cost">製品番号：{{ constructionNo }}</h1>
+      <h3>受注金額：{{ constructionMoney }}</h3>
+      <h3>原価：{{ costAll }}</h3>
+      <h3>粗利：{{ costConstruction }}</h3>
+      <h2 class="material">材料</h2>
       <div class="center">
 	      <table>
 	      	<tr>
@@ -25,7 +25,7 @@
 	      </table>
 	    </div>
 	    <h3 class="subtotal">小計：{{ costMaterial }}</h3>
-      <h2>外注</h2>
+      <h2 class="manufacturing">外注</h2>
       <div class="center">
 	      <table>
 	      	<tr>
@@ -45,7 +45,7 @@
 	      </table>
 	    </div>
       <h3 class="subtotal">小計：{{ costManufacturing }}</h3>
-      <h2>内作/直接工</h2>
+      <h2 class="direct-work">直接工</h2>
       <div class="center">
 		    <table>
 		    	<tr>
@@ -79,7 +79,7 @@
 	      </table>
 	    </div>
       <h3 class="subtotal">小計：{{ costDirectWork }}</h3>
-      <h2>内作/間接工</h2>
+      <h2 class="in-direct-work">間接工</h2>
       <h3>出荷日に属する年に出荷した製品一覧</h3>
       <div class="center">
 	      <table>
@@ -205,17 +205,30 @@ export default {
 </script>
 
 <style>
-.costDetails {
+.cost-details {
   width: 70%;
   margin: 0 auto;
 }
-h3 {
+.cost-details .cost {
+  background-color: #75FF70;
+}
+.material, .manufacturing {
+  background-color: #00C1FF;
+}
+.direct-work {
+  background-color: #D2B51A;
+}
+.in-direct-work {
+  background-color: #FFFF1C;
+}
+.cost-details h3 {
   text-align: center;
 }
 .subtotal {
   margin-bottom: 30px;
 }
-p, .center {
+.cost-details p,
+.center {
   display: flex;
   justify-content: center;
 }
