@@ -21,7 +21,7 @@
       		<td>{{ c.constructionName }}</td>
       		<td>{{ c.money }}
       		<td>{{ c.shipDay }}
-      		<td><router-link to="costDetails"><button @click="costDetail(c.constructionNo)">原価</button></router-link></td>
+      		<td><router-link to="/costDetails"><button @click="costDetail(c.constructionNo)">原価</button></router-link></td>
       		<td><button @click="edit(c.constructionNo, c.constructionName, c.money, c.shipDay)">編集</button></td>
       		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
       		  <h3 slot="header">

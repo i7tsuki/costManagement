@@ -6,7 +6,7 @@
 	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 	    <p><input type="text" placeholder="Password" v-model="password"></p>
 	    <p><button @click="login">ログイン</button></p>
-	    <router-link to="signup"><small>新規登録はこちらから</small></router-link>
+	    <router-link to="/signup"><small>新規登録はこちらから</small></router-link>
  		</div>
   </div>
 </template>

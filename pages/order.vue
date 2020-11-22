@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="order">
-      <router-link to="orderDetails"><button @click="newOrder">新規</button></router-link>
+      <router-link to="/orderDetails"><button @click="newOrder">新規</button></router-link>
       <table>
       	<tr>
       	  <th>注文番号</th>
@@ -27,7 +27,7 @@
             </h3>
           </EditModal>
       		<td>
-      		  <router-link to="orderDetails"><button @click="orderEdit(o.orderNo)">注文変更</button></router-link>
+      		  <router-link to="/orderDetails"><button @click="orderEdit(o.orderNo)">注文変更</button></router-link>
       		</td>
       		<td><button @click="del(o.orderNo)">削除</button></td>
       	</tr>
