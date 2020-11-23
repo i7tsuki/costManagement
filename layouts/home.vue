@@ -27,6 +27,17 @@ html {
   box-sizing: border-box;
 }
 
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+}
+
 *,
 *::before,
 *::after {
