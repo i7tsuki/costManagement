@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="default">
     <div class="header">
       <div id="title">
         <router-link to="/"><h1>原価計算システム</h1></router-link>
-        <div>
+        <div class="info">
 	        <p>ユーザーID:{{ userId }}</p>
 	        <p>{{ userName }}様</p>
 	        <button @click="logout">ログアウト</button>
@@ -62,7 +62,7 @@ html {
     'Helvetica Neue',
     Arial,
     sans-serif;
-  font-size: 16px;
+  font-size: 6px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -70,65 +70,65 @@ html {
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
 }
+.default {
+  height: 100vh;
+  background: #fff;
+}
 *,
 *::before,
 *::after {
   box-sizing: border-box;
   margin: 0;
 }
+.main {
+  background: #fafafa;
+  height: 100vh;
+}
 ul {
 	list-style: none;
 	margin: 0;
 	padding: 0;
 }
-
 a {
   text-decoration: none;
   color: #000;
 }
-
 .header {
-  width: 80%;
   height: 150px;
   margin: 0 auto 30px auto;
   padding-top: 5px;
 }
-
 #title {
   width: 100%;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 15px;
 }
-
 #title h1 {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   text-align: left;
+  padding-left: 30px;
 }
-
+#title .info {
+  margin-right: 50px;
+  font-size: 0.8rem;
+}
 .menu {
 	width: 100%;
 	display: flex;
 	justify-content: center;
-	margin: 0;
-	padding: 0;
 }
-
 .menu > li {
 	width: 20%; /* グローバルナビ5つの場合 */
   line-height: 50px;
   background: rgb(29, 33, 19);
 }
-
-.menu {
-  *zoom: 1;
-}
 .menu > li.menu__single {
   position: relative;
 }
-
 li.menu__single  {
   position: absolute;
-  top: 40px;
+  top: 0px;
   width: 100%;
   background: #072A24;
   -webkit-transition: all .2s ease;
@@ -136,24 +136,18 @@ li.menu__single  {
 	display: flex;
 	justify-content: center;
 }
-
 li.menu__single:hover {
-  top: 50px;
-  visibility: visible;
-  opacity: 1;
+  top: 10px;
 }
-
 li.menu__single a {
   text-decoration: none;
   color: #fff;
   width: 100%;
   height: auto;
 }
-
 li.menu__single a:hover {
   color: #999;
 }
-
 li.menu__single .init-bottom {
 	display: flex;
 	justify-content: center;

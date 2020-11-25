@@ -1,19 +1,20 @@
 <template>
   <div class="container">
     <div class="login">
-      <h1>ログイン</h1>
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
-	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
-	    <p><input type="text" placeholder="Password" v-model="password"></p>
-	    <p><button @click="login">ログイン</button></p>
-	    <router-link to="/signup"><small>新規登録はこちらから</small></router-link>
+      <div class="form">
+	      <h1>原価計算システム</h1>
+	      <p v-if="errMsg" class="err-msg">{{ message }}</p>
+		    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
+		    <p><input type="text" placeholder="Password" v-model="password"></p>
+		    <p><button @click="login">ログイン</button></p>
+		    <router-link to="/signup"><small>新規登録はこちらから</small></router-link>
+		  </div>
  		</div>
   </div>
 </template>
 
 <script>
 import { isMailAdress, isPassword } from '~/plugins/definiton';
-
 export default {
   layout: 'home', 
 	data: function() {
@@ -58,19 +59,50 @@ export default {
 
 <style>
 .login {
-  width: 70%;
-  margin: 0 auto;
+  margin-top: 100px;
 }
 .login h1 {
-  font-size: 1.5rem;
+  font-weight: normal;
+  font-size: 1.2rem;
+  text-align: center;
 }
-.login h2 {
-  font-size: 1.3rem;
+.login .form {
+  background:#fafafa;
+  border-radius:6px;
+  box-shadow:15px 15px 0px rgba(0,0,0,.1);
+  padding: 30px;
+}
+.login input {
+  line-height: 1.7rem;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border:1px solid #eee;
+  padding: 5px;
+}
+.login input:focus {
+  outline: none;
 }
 .login small {
+  display: block;
+  padding-top: 30px;
   color: blue;
+  font-size: 0.7rem;
 }
 .login .err-msg {
   color: red;
+}
+.login button {
+  background-color: #2196F3;
+  width: 100%;
+  cursor: pointer;
+  border:0;
+  box-shadow:0px 3px 0px #c1524e;
+  line-height: 2rem;
+  color:#fff;
+}
+.login button:active {
+  top:3px;
+  box-shadow:none;
 }
 </style>

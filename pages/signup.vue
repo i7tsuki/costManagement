@@ -1,13 +1,15 @@
 <template>
   <div class="container">
     <div class="signup">
-      <h1>新規登録</h1>
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
-	    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
-	    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
-	    <p><input type="text" placeholder="Password" v-model="password"></p>
-	    <p><button @click="signup">新規登録</button></p>
-	    <router-link to="/login"><small>ログインはこちらから</small></router-link>
+      <div class="form">
+	      <h1>原価計算システム</h1>
+	      <p v-if="errMsg" class="err-msg">{{ message }}</p>
+		    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
+		    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
+		    <p><input type="text" placeholder="Password" v-model="password"></p>
+		    <p><button @click="signup">新規登録</button></p>
+		    <router-link to="/login"><small>ログインはこちらから</small></router-link>
+	    </div>
  		</div>
   </div>
 </template>
@@ -64,19 +66,50 @@ export default {
 
 <style>
 .signup {
-  width: 70%;
-  margin: 0 auto;
+  margin-top: 100px;
 }
 .signup h1 {
-  font-size: 1.5rem;
+  font-weight: normal;
+  font-size: 1.2rem;
+  text-align: center;
 }
-.signup h2 {
-  font-size: 1.3rem;
+.signup .form {
+  background:#fafafa;
+  border-radius:6px;
+  box-shadow:15px 15px 0px rgba(0,0,0,.1);
+  padding: 30px;
+}
+.signup input {
+  line-height: 1.7rem;
+  width: 100%;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border:1px solid #eee;
+  padding: 5px;
+}
+.signup input:focus {
+  outline: none;
 }
 .signup small {
+  display: block;
+  padding-top: 30px;
   color: blue;
+  font-size: 0.7rem;
 }
 .signup .err-msg {
   color: red;
+}
+.signup button {
+  background-color: #2196F3;
+  width: 100%;
+  cursor: pointer;
+  border:0;
+  box-shadow:0px 3px 0px #c1524e;
+  line-height: 2rem;
+  color:#fff;
+}
+.signup button:active {
+  top:3px;
+  box-shadow:none;
 }
 </style>
