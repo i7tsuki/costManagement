@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="orderDetails">
-      <button @click="commit()">登録</button>
+      <button @click="commit()" class="add-button">登録</button>
       <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class>
 	      <label>注文日</label>
@@ -22,14 +22,14 @@
       		<th>製品番号</th>
       	</tr>
       	<tr v-for="(o, index) in orderDetails" v-bind:key="index">
-      	  <td>{{ index + 1 }}</td>
-      		<td>{{ o.materialAndManufacturingName }}</td>
-      		<td>{{ o.unitPrice }}</td>
-      		<td>{{ o.num }}</td>
-      		<td>{{ o.money }}
-  		    <td>{{ o.classification }}
-      		<td>{{ o.constructionNo }}</td>
-      		<td><button @click="edit(index)">編集</button></td>
+      	  <td class="td-data">{{ index + 1 }}</td>
+      		<td class="td-data">{{ o.materialAndManufacturingName }}</td>
+      		<td class="td-data">{{ o.unitPrice }}</td>
+      		<td class="td-data">{{ o.num }}</td>
+      		<td class="td-data">{{ o.money }}
+  		    <td class="td-data">{{ o.classification }}
+      		<td class="td-data">{{ o.constructionNo }}</td>
+      		<td><button @click="edit(index)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header"></h3>
       		  <h3 slot="body">
@@ -48,11 +48,11 @@
       		    <p><input type="text" v-model="editConstructionNo"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(index)">更新</button>
-              <button @click="editCancel">キャンセル</button>
+              <button @click="editOK(index)" class="add-button">更新</button>
+              <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
-      		<td><button @click="del(index)">削除</button></td>
+      		<td><button @click="del(index)" class="panel-button">削除</button></td>
       	</tr>
       </table>
       <div class="input-form">
@@ -72,7 +72,7 @@
 		      <label>製品番号</label>
 	      	<input type="text" v-model="newConstructionNo">
 	      </div>
-	      <p><button @click="addOrder">明細追加</button></p>
+	      <p><button @click="addOrder" class="add-button">明細追加</button></p>
       </div>
     </div>
   </div>

@@ -38,6 +38,19 @@ a {
   text-decoration: none;
   color: #000;
 }
+.login-button {
+  cursor: pointer;
+  border:0;
+  background-color: #2196F3;
+  width: 100%;
+  box-shadow:0px 3px 0px #c1524e;
+  line-height: 2rem;
+  color:#fff;
+}
+.login-button:active {
+  top:3px;
+  box-shadow:none;
+}
 *,
 *::before,
 *::after {

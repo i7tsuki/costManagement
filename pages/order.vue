@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="order">
-      <router-link to="/orderDetails"><button @click="newOrder">新規</button></router-link>
+      <router-link to="/orderDetails"><button @click="newOrder" class="add-button">新規</button></router-link>
       <table>
       	<tr>
       	  <th>注文番号</th>
@@ -10,11 +10,11 @@
       		<th>納品日</th>
       	</tr>
       	<tr v-for="o in order" v-bind:key="o.orderNo">
-	      	<td>{{ o.orderNo }}</td>
-	      	<td>{{ o.orderDay }}</td>
-      		<td>{{ o.orderName }}</td>
-      		<td>{{ o.deliveryDay }}</td>
-      		<td><button @click="deliver(o.deliveryDay)">納品</button></td>
+	      	<td class="td-data">{{ o.orderNo }}</td>
+	      	<td class="td-data">{{ o.orderDay }}</td>
+      		<td class="td-data">{{ o.orderName }}</td>
+      		<td class="td-data">{{ o.deliveryDay }}</td>
+      		<td><button @click="deliver(o.deliveryDay)" class="panel-button">納品</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header">注文番号: {{ o.orderNo }}</h3>
       		  <h3 slot="body">
@@ -22,14 +22,14 @@
       		    <p><input type="date" v-model="editDeliveryDay"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(o.orderNo)">更新</button>
-              <button @click="editCancel">キャンセル</button>
+              <button @click="editOK(o.orderNo)" class="add-button">更新</button>
+              <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
       		<td>
-      		  <router-link to="/orderDetails"><button @click="orderEdit(o.orderNo)">注文変更</button></router-link>
+      		  <router-link to="/orderDetails"><button @click="orderEdit(o.orderNo)" class="panel-button">注文変更</button></router-link>
       		</td>
-      		<td><button @click="del(o.orderNo)">削除</button></td>
+      		<td><button @click="del(o.orderNo)" class="panel-button">削除</button></td>
       	</tr>
       </table>
     </div>
@@ -78,6 +78,11 @@ export default {
   	  this.$store.commit('orderDetails/setOrderNo', orderNo);
   	}, 
   	async del(orderNo) {
+			const message = "削除して良いですか？";
+			if(!confirm(message)) {
+			  return;
+			}
+			console.log('b');
     	await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/delOrder', {
   	    orderNo: orderNo,

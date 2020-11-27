@@ -11,7 +11,7 @@
 		    <label>金額</label><input type="text" v-model="money">
 		    <input type="radio" value="材料" name="class" v-model="classification">材料
 		    <input type="radio" value="外注" name="class" v-model="classification">外注
-	    	<button @click="add">追加</button>
+	    	<button @click="add" class="add-button">追加</button>
 	    </div>
 	    <table>
 	    	<tr>
@@ -24,14 +24,14 @@
 	    		<th>区分</th>
 	    	</tr>
 	    	<tr v-for="m in materialAndManufacturing" v-bind:key="m.materialAndManufacturingNo">
-	       	<td>{{ m.orderNo }}</td>
-	    		<td>{{ m.constructionNo }}</td>
-	    		<td>{{ m.materialAndManufacturingName }}</td>
-	    		<td>{{ m.unitPrice }}
-	    		<td>{{ m.num }}
-	    		<td>{{ m.money }}
-	    		<td>{{ m.classification }}</td>
-	    		<td><button @click="edit(m.materialAndManufacturingNo, m.orderNo, m.constructionNo, m.materialAndManufacturingName, m.unitPrice, m.num, m.money, m.classification)">編集</button></td>
+	       	<td class="td-data">{{ m.orderNo }}</td>
+	    		<td class="td-data">{{ m.constructionNo }}</td>
+	    		<td class="td-data">{{ m.materialAndManufacturingName }}</td>
+	    		<td class="td-data">{{ m.unitPrice }}
+	    		<td class="td-data">{{ m.num }}
+	    		<td class="td-data">{{ m.money }}
+	    		<td class="td-data">{{ m.classification }}</td>
+	    		<td><button @click="edit(m.materialAndManufacturingNo, m.orderNo, m.constructionNo, m.materialAndManufacturingName, m.unitPrice, m.num, m.money, m.classification)" class="panel-button">編集</button></td>
 	    		<EditModal v-if="isShowModal" @close="isShowModal = false">
 	    		  <h3 slot="header">No: {{ editNo }}</h3>
 	    		  <h3 slot="body">
@@ -52,11 +52,11 @@
 				      <input type="radio" value="外注" name="editClass" v-model="editClassification">外注
 				    </h3>
 	          <h3 slot="footer">
-	            <button @click="editOK(m.materialAndManufacturingNo)">更新</button>
-	            <button @click="editCancel">キャンセル</button>
+	            <button @click="editOK(m.materialAndManufacturingNo)" class="add-button">更新</button>
+	            <button @click="editCancel" class="add-button">キャンセル</button>
 	          </h3>
 	        </EditModal>
-	    		<td><button @click="del(m.materialAndManufacturingNo)">削除</button></td>
+	    		<td><button @click="del(m.materialAndManufacturingNo)" class="panel-button">削除</button></td>
 	    	</tr>
 	    </table>
 	  </div>

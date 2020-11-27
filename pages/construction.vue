@@ -7,7 +7,7 @@
 	      <label>名称</label><input type="text" v-model="constructionName">
 	      <label>受注金額</label><input type="text" v-model="money">
 	      <label>出荷日</label><input type="date" v-model="shipDay">
-	      <button @click="add">追加</button>
+	      <button @click="add" class="add-button">追加</button>
 	    </div>
       <table>
       	<tr>
@@ -17,12 +17,12 @@
       		<th>出荷日</th>
       	</tr>
       	<tr v-for="c in construction" v-bind:key="c.constructionNo">
-      		<td>{{ c.constructionNo }}</td>
-      		<td>{{ c.constructionName }}</td>
-      		<td>{{ c.money }}
-      		<td>{{ c.shipDay }}
-      		<td><router-link to="/costDetails"><button @click="costDetail(c.constructionNo)">原価</button></router-link></td>
-      		<td><button @click="edit(c.constructionNo, c.constructionName, c.money, c.shipDay)">編集</button></td>
+      		<td class="td-data">{{ c.constructionNo }}</td>
+      		<td class="td-data">{{ c.constructionName }}</td>
+      		<td class="td-data">{{ c.money }}
+      		<td class="td-data">{{ c.shipDay }}
+      		<td><router-link to="/costDetails"><button @click="costDetail(c.constructionNo)" class="panel-button">原価</button></router-link></td>
+      		<td><button @click="edit(c.constructionNo, c.constructionName, c.money, c.shipDay)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
       		  <h3 slot="header">
       		    <p></p>
@@ -38,11 +38,11 @@
       		    <p><input type="date" v-model="editShipDay"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(c.constructionNo)">更新</button>
-              <button @click="editCancel">キャンセル</button>
+              <button @click="editOK(c.constructionNo)" class="add-button">更新</button>
+              <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
-      		<td><button @click="del(c.constructionNo)">削除</button></td>
+      		<td><button @click="del(c.constructionNo)" class="panel-button">削除</button></td>
       	</tr>
       </table>
     </div>

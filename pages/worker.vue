@@ -8,7 +8,7 @@
 	      <label>実働時間</label><input type="text" v-model="workTime">
 	      <input type="radio" value="直接工" name="class" v-model="classification">直接工
 	      <input type="radio" value="間接工" name="class" v-model="classification">間接工
-	      <button @click="add">追加</button>
+	      <button @click="add" class="add-button">追加</button>
 	    </div>
       <table>
       	<tr>
@@ -18,11 +18,11 @@
       		<th>区分</th>
       	</tr>
       	<tr v-for="w in worker" v-bind:key="w.id">
-      	  <td>{{ w.year }}</td>
-      		<td>{{ w.salary }}</td>
-      		<td>{{ w.workTime }}</td>
-      		<td>{{ w.classification }}</td>
-      		<td><button @click="edit(w.id, w.year, w.salary, w.workTime, w.classification)">編集</button></td>
+      	  <td class="td-data">{{ w.year }}</td>
+      		<td class="td-data">{{ w.salary }}</td>
+      		<td class="td-data">{{ w.workTime }}</td>
+      		<td class="td-data">{{ w.classification }}</td>
+      		<td><button @click="edit(w.id, w.year, w.salary, w.workTime, w.classification)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header">{{ editId }}</h3>
       		  <h3 slot="body">
@@ -37,11 +37,11 @@
 				      <p><input type="radio" value="間接工" name="class" v-model="editClassification">間接工</p>
  				    </h3>
             <h3 slot="footer">
-              <button @click="editOK">更新</button>
-              <button @click="editCancel">キャンセル</button>
+              <button @click="editOK" class="add-button">更新</button>
+              <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
-          <td><button @click="del(w.id)">削除</button></td>
+          <td><button @click="del(w.id)" class="panel-button">削除</button></td>
         </tr>
       </table>
     </div>

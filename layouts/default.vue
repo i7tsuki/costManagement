@@ -6,7 +6,7 @@
         <div class="info">
 	        <p>ユーザーID:{{ userId }}</p>
 	        <p>{{ userName }}様</p>
-	        <button @click="logout">ログアウト</button>
+	        <button @click="logout" class="logout-button">ログアウト</button>
 	      </div>
       </div>
 		  <ul class="menu">
@@ -62,7 +62,6 @@ html {
     'Helvetica Neue',
     Arial,
     sans-serif;
-  font-size: 6px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -73,6 +72,7 @@ html {
 .default {
   height: 100vh;
   background: #fff;
+  font-size: 0.8rem;
 }
 *,
 *::before,
@@ -93,10 +93,9 @@ a {
   text-decoration: none;
   color: #000;
 }
-.header {
-  height: 150px;
-  margin: 0 auto 30px auto;
-  padding-top: 5px;
+button {
+  cursor: pointer;
+  border:0;
 }
 #title {
   width: 100%;
@@ -151,5 +150,55 @@ li.menu__single a:hover {
 li.menu__single .init-bottom {
 	display: flex;
 	justify-content: center;
+}
+table {
+  border-collapse: collapse;
+  font-size: 0.7rem;
+}
+table th {
+  background-color: #167F92;
+  color:#fff;
+  padding: 1em 10px 1em 1em;
+  border-right: 2px solid #fff;
+}
+table .td-data {
+  padding: 1em 10px 1em 1em;
+  border-right: 2px solid #fff;
+  background-color: #e6f2f5;
+  border-bottom: 2px solid #fff;
+  height: 100%;
+}
+table .panel-button {
+  padding: 1.4em 10px 1.4em 1em;
+  border-right: 2px solid #fff;
+  background-color: #3498db;
+  border-bottom: 2px solid #fff;
+  color: #fff;
+}
+table .panel-button a {
+  color: #fff;
+}
+.add-button {
+  background-color: #3498db;
+  border-radius: 0.3em;
+  border: 2px solid #3498db;
+  color: #fff;
+  width: 3.5rem;
+  height: 1.5rem;
+  margin: 10px 10px 10px 0;
+}
+.logout-button {
+  background-color: #808000;
+  border-radius: 0.3em;
+  color: #fff;
+  width: 3.5rem;
+  height: 1.5rem;
+  margin: 10px 10px 10px 0;
+  outline: 0;
+  box-shadow:0px 3px 0px #c1524e;
+}
+.logout-button:active {
+  top:3px;
+  box-shadow:none;
 }
 </style>

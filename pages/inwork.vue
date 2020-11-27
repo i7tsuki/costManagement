@@ -7,7 +7,7 @@
 	      <label>作業日</label><input type="date" v-model="workDay">
 	      <label>作業内容</label><input type="text" v-model="workName">
 	      <label>作業時間[h]</label><input type="text" v-model="time">
-	      <button @click="add">追加</button>
+	      <button @click="add" class="add-button">追加</button>
 	    </div>
       <table>
       	<tr>
@@ -17,11 +17,11 @@
       		<th>作業時間[h]</th>
       	</tr>
       	<tr v-for="w in inWork" v-bind:key="w.workNo">
-      		<td>{{ w.constructionNo }}</td>
-      		<td>{{ w.workDay }}</td>
-      		<td>{{ w.workName }}</td>
-      		<td>{{ w.time }}</td>
-      		<td><button @click="edit(w.workNo, w.constructionNo, w.workDay, w.workName, w.time)">編集</button></td>
+      		<td class="td-data">{{ w.constructionNo }}</td>
+      		<td class="td-data">{{ w.workDay }}</td>
+      		<td class="td-data">{{ w.workName }}</td>
+      		<td class="td-data">{{ w.time }}</td>
+      		<td><button @click="edit(w.workNo, w.constructionNo, w.workDay, w.workName, w.time)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header">No: {{ editNo }}</h3>
       		  <h3 slot="body">
@@ -35,11 +35,11 @@
       		    <p><input type="text" v-model="editTime"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK">更新</button>
-              <button @click="editCancel">キャンセル</button>
+              <button @click="editOK" class="add-button">更新</button>
+              <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
-          <td><button @click="del(w.workNo)">削除</button></td>
+          <td><button @click="del(w.workNo)" class="panel-button">削除</button></td>
       	</tr>
       </table>
     </div>

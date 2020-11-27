@@ -7,7 +7,7 @@
 		    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
 		    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 		    <p><input type="text" placeholder="Password" v-model="password"></p>
-		    <p><button @click="signup">新規登録</button></p>
+		    <p><button @click="signup" class="login-button">新規登録</button></p>
 		    <router-link to="/login"><small>ログインはこちらから</small></router-link>
 	    </div>
  		</div>
@@ -98,18 +98,5 @@ export default {
 }
 .signup .err-msg {
   color: red;
-}
-.signup button {
-  background-color: #2196F3;
-  width: 100%;
-  cursor: pointer;
-  border:0;
-  box-shadow:0px 3px 0px #c1524e;
-  line-height: 2rem;
-  color:#fff;
-}
-.signup button:active {
-  top:3px;
-  box-shadow:none;
 }
 </style>

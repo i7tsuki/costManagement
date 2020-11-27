@@ -6,7 +6,7 @@
 	      <p v-if="errMsg" class="err-msg">{{ message }}</p>
 		    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
 		    <p><input type="text" placeholder="Password" v-model="password"></p>
-		    <p><button @click="login">ログイン</button></p>
+		    <p><button @click="login" class="login-button">ログイン</button></p>
 		    <router-link to="/signup"><small>新規登録はこちらから</small></router-link>
 		  </div>
  		</div>
@@ -91,18 +91,5 @@ export default {
 }
 .login .err-msg {
   color: red;
-}
-.login button {
-  background-color: #2196F3;
-  width: 100%;
-  cursor: pointer;
-  border:0;
-  box-shadow:0px 3px 0px #c1524e;
-  line-height: 2rem;
-  color:#fff;
-}
-.login button:active {
-  top:3px;
-  box-shadow:none;
 }
 </style>
