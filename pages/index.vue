@@ -36,15 +36,19 @@ export default {
 }
 .index .message {
   width: 40%;
-  padding-top: 15%;
+  height: 100%;
+  margin-top: 5%;
+  padding: 30px;
   line-height: 1.5rem;
+  background: #faf6e0;
+  box-shadow: 0 .25rem .25rem hsla(0, 0%, 0%, .1);
 }
 .index .message p {
   font-weight: bold;
-  text-decoration: underline;
 }
 .index .overview {
   width: 60%;
+  padding-top: 15px;
 }
 .index svg {
   height: 70%;

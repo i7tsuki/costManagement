@@ -47,7 +47,7 @@ export default {
         return;
       }
       if (!isPassword(this.password)) {
-        this.setMessage('パスワードが正しく入力されていません。');
+        this.setMessage('パスワードは8文字以上を入力してください。');
         return;
       }
       this.setMessage('');
