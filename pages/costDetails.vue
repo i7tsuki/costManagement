@@ -1,116 +1,128 @@
 <template>
   <div class="container">
     <div class="cost-details">
-      <h1 class="cost">製品番号：{{ constructionNo }}</h1>
-      <h3>受注金額：{{ constructionMoney }}</h3>
-      <h3>原価：{{ costAll }}</h3>
-      <h3>粗利：{{ costConstruction }}</h3>
-      <h2 class="material">材料</h2>
-      <div class="center">
-	      <table>
-	      	<tr>
-	      	  <th>注文番号</th>
-	      		<th>名称</th>
-	      		<th>単価</th>
-	      		<th>数量</th>
-	      		<th>金額</th>
-	      	</tr>
-	      	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
-	          <td>{{ material.orderNo }}</td>
-	      		<td>{{ material.materialName }}</td>
-	      		<td>{{ material.unitPrice }}</td>
-	      		<td>{{ material.num }}</td>
-	      		<td>{{ material.money }}</td>
-	      	</tr>
-	      </table>
+      <div class="card">
+	      <h1 class="cost">製品番号：{{ constructionNo }}</h1>
+	      <div class="cost-sum">
+		      <h3>受注金額：{{ constructionMoney }}</h3>
+		      <h3>原価：{{ costAll }}</h3>
+		      <h3>粗利：{{ costConstruction }}</h3>
+		    </div>
 	    </div>
-	    <h3 class="subtotal">小計：{{ costMaterial }}</h3>
-      <h2 class="manufacturing">外注</h2>
-      <div class="center">
-	      <table>
-	      	<tr>
-	      	  <th>注文番号</th>
-	      		<th>名称</th>
-	      		<th>単価</th>
-	      		<th>数量</th>
-	      		<th>金額</th>
-	      	</tr>
-	      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
-	      	  <td>{{ manufacturing.orderNo }}</td>
-	      		<td>{{ manufacturing.manufacturingName }}</td>
-	      		<td>{{ manufacturing.unitPrice }}</td>
-	      		<td>{{ manufacturing.num }}</td>
-	      		<td>{{ manufacturing.money }}</td>
-	      	</tr>
-	      </table>
+	    <div class="card">
+	      <h2 class="material">材料</h2>
+	      <div class="center">
+		      <table>
+		      	<tr>
+		      	  <th>注文番号</th>
+		      		<th>名称</th>
+		      		<th>単価</th>
+		      		<th>数量</th>
+		      		<th>金額</th>
+		      	</tr>
+		      	<tr v-for="material in costDetailMaterial" v-bind:key="material.materialNo">
+		          <td class="td-data">{{ material.orderNo }}</td>
+		      		<td class="td-data">{{ material.materialName }}</td>
+		      		<td class="td-data">{{ material.unitPrice }}</td>
+		      		<td class="td-data">{{ material.num }}</td>
+		      		<td class="td-data">{{ material.money }}</td>
+		      	</tr>
+		      </table>
+		    </div>
+		    <h3 class="subtotal">小計：{{ costMaterial }}</h3>
+		  </div>
+		  <div class="card">
+	      <h2 class="manufacturing">外注</h2>
+	      <div class="center">
+		      <table>
+		      	<tr>
+		      	  <th>注文番号</th>
+		      		<th>名称</th>
+		      		<th>単価</th>
+		      		<th>数量</th>
+		      		<th>金額</th>
+		      	</tr>
+		      	<tr v-for="manufacturing in costDetailManufacturing" v-bind:key="manufacturing.manufacturingNo">
+		      	  <td class="td-data">{{ manufacturing.orderNo }}</td>
+		      		<td class="td-data">{{ manufacturing.manufacturingName }}</td>
+		      		<td class="td-data">{{ manufacturing.unitPrice }}</td>
+		      		<td class="td-data">{{ manufacturing.num }}</td>
+		      		<td class="td-data">{{ manufacturing.money }}</td>
+		      	</tr>
+		      </table>
+		    </div>
+	      <h3 class="subtotal">小計：{{ costManufacturing }}</h3>
 	    </div>
-      <h3 class="subtotal">小計：{{ costManufacturing }}</h3>
-      <h2 class="direct-work">直接工</h2>
-      <div class="center">
-		    <table>
-		    	<tr>
-		    	  <th>作業日</th>
-		    		<th>作業内容</th>
-		    		<th>作業時間[h]</th>
-		    	</tr>
-		    	<tr v-for="dwork in costDetailDirectWork" v-bind:key="dwork.workNo">
-		    	  <td>{{ dwork.workDay }}</td>
-		    		<td>{{ dwork.workName }}</td>
-		    		<td>{{ dwork.time }}</td>
-		    	</tr>
-		    </table>
+	    <div class="card">
+	      <h2 class="direct-work">直接工</h2>
+	      <div class="center">
+			    <table>
+			    	<tr>
+			    	  <th>作業日</th>
+			    		<th>作業内容</th>
+			    		<th>作業時間[h]</th>
+			    	</tr>
+			    	<tr v-for="dwork in costDetailDirectWork" v-bind:key="dwork.workNo">
+			    	  <td class="td-data">{{ dwork.workDay }}</td>
+			    		<td class="td-data">{{ dwork.workName }}</td>
+			    		<td class="td-data">{{ dwork.time }}</td>
+			    	</tr>
+			    </table>
+		    </div>
+	      <div class="center">
+		      <table>
+		      	<tr>
+		      		<th>年</th>
+		      		<th>作業時間[h]</th>
+		      		<th>総給料</th>
+		      		<th>総作業時間[h]</th>
+		      		<th>作業時間＊総給料/総作業時間</th>
+		      	</tr>
+		      	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
+		      		<td class="td-data">{{ cdws.year }}</td>
+		      		<td class="td-data">{{ cdws.time }}</td>
+		      		<td class="td-data">{{ cdws.salary }}</td>
+		      		<td class="td-data">{{ cdws.workTime }}</td>
+		      		<td class="td-data">{{ cdws.time * cdws.salary / cdws.workTime }}</td>
+		      	</tr>
+		      </table>
+		    </div>
+	      <h3 class="subtotal">小計：{{ costDirectWork }}</h3>
 	    </div>
-      <div class="center">
-	      <table>
-	      	<tr>
-	      		<th>年</th>
-	      		<th>作業時間[h]</th>
-	      		<th>総給料</th>
-	      		<th>総作業時間[h]</th>
-	      		<th>作業時間＊総給料/総作業時間</th>
-	      	</tr>
-	      	<tr v-for="cdws in costDirectWorkSalary" v-bind:key="cdws.year">
-	      		<td>{{ cdws.year }}</td>
-	      		<td>{{ cdws.time }}</td>
-	      		<td>{{ cdws.salary }}</td>
-	      		<td>{{ cdws.workTime }}</td>
-	      		<td>{{ cdws.time * cdws.salary / cdws.workTime }}</td>
-	      	</tr>
-	      </table>
+	    <div class="card">
+	      <h2 class="in-direct-work">間接工</h2>
+	      <h3>出荷日に属する年に出荷した製品一覧</h3>
+	      <div class="center">
+		      <table>
+		      	<tr>
+		      	  <th>製品番号</th>
+		      	  <th>名称</th>
+		      		<th>出荷日</th>
+		      		<th>受注金額</th>
+		      	</tr>
+		      	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
+		      		<td class="td-data">{{ c.constructionNo }}</td>
+		      		<td class="td-data">{{ c.constructionName }}</td>
+		      		<td class="td-data">{{ c.shipDay }}</td>
+		      		<td class="td-data">{{ c.money }}</td>
+		      	</tr>
+		      </table>
+		    </div>
+	      <h3>間接工給料</h3>
+	      <div class="center">
+		      <table>
+		      	<tr>
+		      		<th>年</th>
+		      		<th>給料</th>
+		      	</tr>
+		      	<tr>
+		      		<td class="td-data">{{ shipYear }}</td>
+		      		<td class="td-data">{{ inDirectSalary }}</td>
+		      	</tr>
+		      </table>
+		    </div>
+	      <h3 class="subtotal">小計(按分金額)：{{ costInDirectWork }}</h3>
 	    </div>
-      <h3 class="subtotal">小計：{{ costDirectWork }}</h3>
-      <h2 class="in-direct-work">間接工</h2>
-      <h3>出荷日に属する年に出荷した製品一覧</h3>
-      <div class="center">
-	      <table>
-	      	<tr>
-	      	  <th>製品番号</th>
-	      	  <th>名称</th>
-	      		<th>出荷日</th>
-	      		<th>受注金額</th>
-	      	</tr>
-	      	<tr v-for="c in anotherConstruction" v-bind:key="c.constructionNo">
-	      		<td>{{ c.constructionNo }}</td>
-	      		<td>{{ c.constructionName }}</td>
-	      		<td>{{ c.shipDay }}</td>
-	      		<td>{{ c.money }}</td>
-	      	</tr>
-	      </table>
-	    </div>
-      <h3>間接工給料</h3>
-      <div class="center">
-	      <table>
-	      	<tr>
-	      		<th>年</th>
-	      		<th>給料</th>
-	      	</tr>
-	      	<tr>
-	      		<td>{{ shipYear }}</td>
-	      		<td>{{ inDirectSalary }}</td>
-	      	</tr>
-	      </table>
-	    </div>
-      <h3 class="subtotal">小計(按分金額)：{{ costInDirectWork }}</h3>
     </div>
   </div>
 </template>
@@ -209,23 +221,34 @@ export default {
   width: 70%;
   margin: 0 auto;
 }
+.cost-details .card {
+  background: #fffafa;
+  box-shadow: 10px 10px 15px -10px;
+  margin-bottom: 45px;
+}
 .cost-details .cost {
-  background-color: #75FF70;
+  border-left: 10px solid #75FF70;
+  padding: 15px;
+  font-size: 1.1rem;
 }
-.material, .manufacturing {
-  background-color: #00C1FF;
+.cost-details .material, 
+.cost-details .manufacturing {
+  border-left: 10px solid #00C1FF;
+  padding: 15px;
+  font-size: 1.0rem;
 }
-.direct-work {
-  background-color: #D2B51A;
+.cost-details .direct-work {
+  border-left: 10px solid #D2B51A;
+  padding: 15px;
+  font-size: 1.0rem;
 }
-.in-direct-work {
-  background-color: #FFFF1C;
+.cost-details .in-direct-work {
+  border-left: 10px solid #FFFF1C;
+  padding: 15px;
+  font-size: 1.0rem;
 }
 .cost-details h3 {
   text-align: center;
-}
-.subtotal {
-  margin-bottom: 30px;
 }
 .cost-details p,
 .center {
