@@ -14,15 +14,15 @@
 	      	<td class="td-data">{{ o.orderDay }}</td>
       		<td class="td-data">{{ o.orderName }}</td>
       		<td class="td-data">{{ o.deliveryDay }}</td>
-      		<td><button @click="deliver(o.deliveryDay)" class="panel-button">納品</button></td>
+      		<td><button @click="deliver(o.orderNo, o.deliveryDay)" class="panel-button">納品</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header">注文番号: {{ o.orderNo }}</h3>
+      		  <h3 slot="header">注文番号: {{ editOrderNo }}</h3>
       		  <h3 slot="body">
       		    <p>納品日</p>
       		    <p><input type="date" v-model="editDeliveryDay"></p>
 				    </h3>
             <h3 slot="footer">
-              <button @click="editOK(o.orderNo)" class="add-button">更新</button>
+              <button @click="editOK()" class="add-button">更新</button>
               <button @click="editCancel" class="add-button">キャンセル</button>
             </h3>
           </EditModal>
@@ -45,6 +45,7 @@ export default {
 			isShowModal: false,
 			editDeliveryDay: '',
 			order: [],
+			editOrderNo: null,
     }
   },
 	async created() {
@@ -57,14 +58,15 @@ export default {
     newOrder() {
       this.$store.commit('orderDetails/setOrderNo', '');
     },
-  	deliver(deliveryDay) {
+  	deliver(orderNo, deliveryDay) {
+  	  this.editOrderNo = orderNo;
   	  this.editDeliveryDay = deliveryDay;
   	  this.isShowModal = true;
   	}, 
-  	async editOK(orderNo) {
+  	async editOK() {
   	  await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/setDeliverDay', {
-  	    orderNo: orderNo, 
+  	    orderNo: this.editOrderNo, 
   	    userId: this.$store.state.user.userId,
   	    deliveryDay: this.editDeliveryDay,
   	  });
@@ -80,7 +82,6 @@ export default {
 			if(!confirm('削除しますか？')) {
 			  return;
 			}
-			console.log('b');
     	await this.$store.commit('order/clearOrder');
   	  await this.$store.dispatch('order/delOrder', {
   	    orderNo: orderNo,

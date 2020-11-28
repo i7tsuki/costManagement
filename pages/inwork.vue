@@ -148,7 +148,8 @@ export default {
   	  if(isNaN(this.editTime)) {
   		  this.setErrFormMsg('作業時間[h]を正しく入力してください。');
   			return;
-  	  }
+  	  }  	  
+  	  this.setErrFormMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
   	  await this.$store.dispatch('inWork/editInWork', {
@@ -169,6 +170,9 @@ export default {
   	  this.isShowModal = false;
   	},
   	async del(workNo) {
+			if(!confirm('削除しますか？')) {
+			  return;
+			}
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
   	  await this.$store.dispatch('inWork/delInWork', workNo);

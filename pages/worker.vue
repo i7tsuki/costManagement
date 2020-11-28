@@ -187,6 +187,9 @@ export default {
   	  this.isShowModal = false;
   	},
   	async del(id) {
+			if(!confirm('削除しますか？')) {
+			  return;
+			}
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
   	  await this.$store.dispatch('worker/delWorker', id);

@@ -207,7 +207,7 @@ export default {
   		  this.errEditMsg = true;
   			this.editMessage = msg;
   		} else {
-  		  this.editMessage = false;
+  		  this.errEditMsg = false;
   		}
   	},
   	del(index) {
@@ -225,6 +225,7 @@ export default {
   	},
   	editCancel() {
   	  this.isShowModal = false;
+  	  this.setErrMsgEdit('');
   	},
   	editOK(index) {
   	  if(this.editName.trim() === '') {

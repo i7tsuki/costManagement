@@ -227,6 +227,9 @@ export default {
   		this.isShowModal = false;
   	},
   	async del(materialAndManufacturingNo) {
+			if(!confirm('削除しますか？')) {
+			  return;
+			}
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   	  await this.$store.dispatch('materialAndManufacturing/delMaterialAndManufacturing', materialAndManufacturingNo);

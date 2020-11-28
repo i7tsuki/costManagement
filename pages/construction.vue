@@ -155,6 +155,7 @@ export default {
   		  this.setErrFormMsg('受注金額を正しく入力してください。');
   			return;
   	  }
+  	  this.setErrFormMsg('');
   	  await this.$store.commit('construction/clearConstruction');
   	  await this.$store.dispatch('construction/editConstructionNo', {
   	    userId: this.$store.state.user.userId, 
@@ -174,6 +175,9 @@ export default {
   		this.isShowEditModal = false;
   	},
   	async del(constructionNo) {
+			if(!confirm('削除しますか？')) {
+			  return;
+			}
   	  await this.$store.commit('construction/clearConstruction');
   	  await this.$store.dispatch('construction/delConstructionNo', {
   	    userId: this.$store.state.user.userId, 
