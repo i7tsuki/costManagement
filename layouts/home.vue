@@ -1,8 +1,51 @@
 <template>
   <div class="home">
-    <Nuxt />
+	  <div>
+	    <Nuxt />
+  	</div>
+  	<div>
+			<ul class="circles">
+		    <li><IconSpanner /></li>
+		    <li><IconPliers /></li>
+		    <li><IconImpactDriver /></li>
+		    <li><IconWrench /></li>
+		    <li><IconDriver2 /></li>
+		    <li><IconMinusDriver /></li>
+		    <li><IconMonkeyWrench /></li>
+		    <li><IconPliers2 /></li>
+		    <li><IconSaw /></li>
+		    <li><IconToolBox /></li>
+			</ul>
+	  </div>
   </div>
 </template>
+
+<script>
+import IconSpanner from '~/assets/home/spanner.svg';
+import IconPliers from '~/assets/home/needleNosePliers.svg';
+import IconImpactDriver from '~/assets/home/ImpactDriver.svg';
+import IconWrench from '~/assets/home/wrenchAndDriver.svg';
+import IconDriver2 from '~/assets/home/impactDriver2.svg';
+import IconMinusDriver from '~/assets/home/minusDriver.svg';
+import IconMonkeyWrench from '~/assets/home/monkeyWrench.svg';
+import IconPliers2 from '~/assets/home/pliers2.svg';
+import IconSaw from '~/assets/home/saw.svg';
+import IconToolBox from '~/assets/home/toolBox.svg';
+export default {
+  components: { 
+    IconSpanner,
+    IconPliers,
+    IconImpactDriver,
+    IconWrench,
+    IconDriver2,
+    IconMinusDriver,
+    IconMonkeyWrench,
+    IconPliers2,
+    IconSaw,
+    IconToolBox,
+  },
+}
+</script>
 
 <style>
 html {
@@ -24,8 +67,11 @@ html {
   box-sizing: border-box;
 }
 .home {
+  position: absolute;
+  z-index: 0;
   background: #e9e9e9;
   height: 100vh;
+  width: 100vw;
   display: flex;
   justify-content: center;
 }
@@ -114,4 +160,81 @@ a {
   } 
 }
 /* ********************************** */
+/* ***********アイコン********** */
+.circles{
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.circles li{
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  animation: animate 25s linear infinite;
+  bottom: -150px; 
+}
+.circles li:nth-child(1){
+  left: 25%;
+  animation-delay: 0s;
+}
+.circles li:nth-child(2){
+  left: 10%;
+  animation-delay: 2s;
+  animation-duration: 12s;
+}
+.circles li:nth-child(3){
+  left: 70%;
+  animation-delay: 4s;
+}
+.circles li:nth-child(4){
+  left: 40%;
+  animation-delay: 0s;
+  animation-duration: 18s;
+}
+.circles li:nth-child(5){
+  height: 20px;
+  animation-delay: 0s;
+}
+.circles li:nth-child(6){
+  height: 110px;
+  animation-delay: 3s;
+}
+.circles li:nth-child(7){
+  left: 35%;
+  animation-delay: 7s;
+}
+.circles li:nth-child(8){
+  left: 50%;
+  animation-delay: 15s;
+  animation-duration: 45s;
+}
+.circles li:nth-child(9){
+  left: 20%;
+  animation-delay: 2s;
+  animation-duration: 35s;
+}
+.circles li:nth-child(10){
+	left: 85%;
+	animation-delay: 0s;
+	animation-duration: 11s;
+}
+@keyframes animate {
+	0%{
+	  transform: translateY(0) rotate(0deg);
+	  opacity: 1;
+	  border-radius: 0;
+	}
+	100%{
+	  transform: translateY(-1000px) rotate(720deg);
+	  opacity: 0;
+	  border-radius: 50%;
+	}
+}
+/* ********************************* */
 </style>
