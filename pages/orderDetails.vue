@@ -33,6 +33,7 @@
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
       		  <h3 slot="header"></h3>
       		  <h3 slot="body">
+      		    <p v-if="errEditMsg" class="err-msg">{{ editMessage }}</p>
       		    <p>名称</p>
       		    <p><input type="text" v-model="editName"></p>
       		    <p>単価</p>
@@ -56,6 +57,7 @@
       	</tr>
       </table>
       <div class="input-form">
+        <p v-if="errFormMsg" class="err-msg">{{ formMessage }}</p>
         <div class="input-box">
 		      <label>名称</label>
 		      <input type="text" v-model="newName">
@@ -65,7 +67,6 @@
 		      <input type="text" v-model="newNum">
 		      <label>金額</label>
 		      <input type="text" v-model="newMoney">
-		      <label>区分</label>
 		      <input type="radio" value="材料" name="newClass" v-model="newClassification">材料
 		      <input type="radio" value="外注" name="newClass" v-model="newClassification">外注
 		      </select>
@@ -80,7 +81,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -98,7 +98,11 @@ export default {
 			selectRow: null,
 			orderDetails: [],
 		  errMsg: false,
+		  errFormMsg: false,
 		  message: null,
+		  formMessage: null,
+		  errEditMsg: false,
+		  editMessage: null,
     }
   },
   async created() {
@@ -122,6 +126,35 @@ export default {
   },
   methods: {
   	addOrder() {
+  	  if(this.newName.trim() === '') {
+  		  this.setErrMsgForm('名称が入力されていません。');
+  			return;
+  	  }
+  	  if(this.newUnitPrice === '') {
+  		  this.setErrMsgForm('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.newUnitPrice)) {
+  		  this.setErrMsgForm('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.newNum === '') {
+  		  this.setErrMsgForm('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.newNum)) {
+  		  this.setErrMsgForm('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.newMoney === '') {
+  		  this.setErrMsgForm('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.newMoney)) {
+  		  this.setErrMsgForm('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrMsgForm('');
   	  this.orderDetails.push({
   	    materialAndManufacturingName: this.newName,
   	    unitPrice: this.newUnitPrice,
@@ -133,11 +166,12 @@ export default {
   	},
   	async commit() {
   		if (this.orderNo === '') {
-  		  this.errMsg = true;
-  			this.message = '注文番号が入力されていません。';
+  		  this.setErrMsg('注文番号が入力されていません。');
   			return;
-  		} else {
-  		  this.errMsg = false;
+  		}
+  		if (this.orderName === '') {
+  		  this.setErrMsg('注文名が入力されていません。');
+  			return;
   		}
   		await this.$store.dispatch('orderDetails/commitOrder', {
   		  userId: this.$store.state.user.userId,
@@ -146,8 +180,35 @@ export default {
   		  orderName: this.orderName,
   		  orderDetails: this.orderDetails
   		});
-  		console.log('登録しました。');
+  		if(this.$store.state.orderDetails.cancelFlag === 1) {
+  		  console.log('注文データ更新をキャンセルしました。');
+  		  return;
+  		} 
   		this.$router.push('/order');
+  	},
+  	setErrMsg(msg) {
+  		if (msg !== '') {
+  		  this.errMsg = true;
+  			this.message = msg;
+  		} else {
+  		  this.errMsg = false;
+  		}
+  	},
+  	setErrMsgForm(msg) {
+  		if (msg !== '') {
+  		  this.errFormMsg = true;
+  			this.formMessage = msg;
+  		} else {
+  		  this.errFormMsg = false;
+  		}
+  	},
+  	setErrMsgEdit(msg) {
+  		if (msg !== '') {
+  		  this.errEditMsg = true;
+  			this.editMessage = msg;
+  		} else {
+  		  this.editMessage = false;
+  		}
   	},
   	del(index) {
   		this.orderDetails.splice(index, 1);
@@ -166,7 +227,34 @@ export default {
   	  this.isShowModal = false;
   	},
   	editOK(index) {
-  	  console.log(this.selectRow);
+  	  if(this.editName.trim() === '') {
+  		  this.setErrMsgEdit('名称が入力されていません。');
+  			return;
+  	  }
+  	  if(this.editUnitPrice === '') {
+  		  this.setErrMsgEdit('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editUnitPrice)) {
+  		  this.setErrMsgEdit('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editNum === '') {
+  		  this.setErrMsgEdit('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editNum)) {
+  		  this.setErrMsgEdit('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editMoney === '') {
+  		  this.setErrMsgEdit('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editMoney)) {
+  		  this.setErrMsgEdit('金額を正しく入力してください。');
+  			return;
+  	  }
 			this.orderDetails[this.selectRow].materialAndManufacturingName = this.editName;
 			this.orderDetails[this.selectRow].unitPrice = this.editUnitPrice;
 			this.orderDetails[this.selectRow].num = this.editNum;

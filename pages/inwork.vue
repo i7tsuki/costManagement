@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="inwork">
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
+        <p v-if="errMsg" class="err-msg">{{ message }}</p>
 	      <label>製品番号</label><input type="text" v-model="constructionNo">
 	      <label>作業日</label><input type="date" v-model="workDay">
 	      <label>作業内容</label><input type="text" v-model="workName">
@@ -23,8 +23,9 @@
       		<td class="td-data">{{ w.time }}</td>
       		<td><button @click="edit(w.workNo, w.constructionNo, w.workDay, w.workName, w.time)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header">No: {{ editNo }}</h3>
+      		  <h3 slot="header"></h3>
       		  <h3 slot="body">
+      		    <p v-if="errFormMsg" class="err-msg">{{ formMessage }}</p>
       		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>作業日</p>
@@ -48,7 +49,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -65,6 +65,8 @@ export default {
 		  isShowModal: false,
 		  errMsg: false,
 		  message: null,
+		  errFormMsg: false,
+		  formMessage: null,
     }
   },
 	async created() {
@@ -74,14 +76,41 @@ export default {
 		this.inWork = this.$store.state.inWork.inWork;
 	},
   methods: {
-  	async add() {
-  	  if (this.workName === '' || this.workDay === '') {
+  	setErrMsg(msg) {
+  	  if(msg !== '') {
   	    this.errMsg = true;
-  	    this.message = 'バリデーションエラー';
+  	    this.message = msg;
   	    return ;
   	  } else {
   	    this.errMsg = false;
   	  }
+  	},
+  	setErrFormMsg(msg) {
+  	  if (msg !== '') {
+  	    this.errFormMsg = true;
+  	    this.formMessage = msg;
+  	  } else {
+  	    this.errFormMsg = false;
+  	  }
+  	},
+  	async add() {
+  	  if (this.workDay === '') {
+  	    this.setErrMsg('作業日を入力してください。');
+  	    return ;
+  	  }
+  	  if (this.workName === '') {
+  	    this.setErrMsg('作業内容を入力してください。');
+  	    return ;
+  	  }
+  	  if(this.time === '') {
+  		  this.setErrMsg('作業時間[h]を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.time)) {
+  		  this.setErrMsg('作業時間[h]を正しく入力してください。');
+  			return;
+  	  }
+      this.setErrMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
   		await this.$store.dispatch('inWork/addInWork', {
@@ -104,6 +133,22 @@ export default {
   	  this.isShowModal = true;
   	},
   	async editOK() {
+  	  if (this.editWorkDay == '') {
+  	    this.setErrFormMsg('作業日が入力されていません。');
+  	    return ;
+  	  }
+  	  if (this.editWorkName == '') {
+  	    this.setErrFormMsg('名称が入力されていません。');
+  	    return ;
+  	  }
+  	  if(this.editTime === '') {
+  		  this.setErrFormMsg('作業時間[h]を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editTime)) {
+  		  this.setErrFormMsg('作業時間[h]を正しく入力してください。');
+  			return;
+  	  }
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('inWork/clearInWork');
   	  await this.$store.dispatch('inWork/editInWork', {
@@ -120,6 +165,7 @@ export default {
   		this.inWork = this.$store.state.inWork.inWork;
   	},
   	editCancel() {
+  	  this.setErrFormMsg('');
   	  this.isShowModal = false;
   	},
   	async del(workNo) {

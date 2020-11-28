@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="materialAndManufacturing">
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
+      　<p v-if="errMsg" class="err-msg">{{ message }}</p>
 		    <label>注文番号</label><input type="text" v-model="orderNo">
 		    <label>製品番号</label><input type="text" v-model="constructionNo">
 		    <label>名称</label><input type="text" v-model="materialAndManufacturingName">
@@ -33,8 +33,9 @@
 	    		<td class="td-data">{{ m.classification }}</td>
 	    		<td><button @click="edit(m.materialAndManufacturingNo, m.orderNo, m.constructionNo, m.materialAndManufacturingName, m.unitPrice, m.num, m.money, m.classification)" class="panel-button">編集</button></td>
 	    		<EditModal v-if="isShowModal" @close="isShowModal = false">
-	    		  <h3 slot="header">No: {{ editNo }}</h3>
+	    		  <h3 slot="header"></h3>
 	    		  <h3 slot="body">
+	    		    <p v-if="errFormMsg" class="err-msg">{{ formMessage }}</p>
 	    		    <p>注文番号</p>
 	    		    <p><input type="text" v-model="editOrderNo"></p>
 	    		    <p>製品番号</p>
@@ -65,7 +66,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -89,6 +89,8 @@ export default {
 			editClassification: '材料',
 		  errMsg: false,
 		  message: null,
+		  errFormMsg: false,
+		  formMessage: null,
     }
   },
 	async created() {
@@ -98,14 +100,52 @@ export default {
 		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
 	},
   methods: {
-  	async add() {
-  	  if (this.materialAndManufacturingName === '') {
+  	setErrMsg(msg) {
+  	  if (msg !== '') {
   	    this.errMsg = true;
-  	    this.message = 'バリデーションエラー';
-  	    return ;
+  	    this.message = msg;
   	  } else {
   	    this.errMsg = false;
   	  }
+  	},
+  	setErrFormMsg(msg) {
+  	  if (msg !== '') {
+  	    this.errFormMsg = true;
+  	    this.formMessage = msg;
+  	  } else {
+  	    this.errFormMsg = false;
+  	  }
+  	},
+  	async add() {
+  	  if (this.materialAndManufacturingName == '') {
+  	    this.setErrMsg('名称が入力されていません。');
+  	    return ;
+  	  }
+  	  if(this.unitPrice === '') {
+  		  this.setErrMsg('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.unitPrice)) {
+  		  this.setErrMsg('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.num === '') {
+  		  this.setErrMsg('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.num)) {
+  		  this.setErrMsg('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.money === '') {
+  		  this.setErrMsg('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.money)) {
+  		  this.setErrMsg('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   		await this.$store.dispatch('materialAndManufacturing/addMaterialAndManufacturing', {
@@ -134,6 +174,35 @@ export default {
   		this.isShowModal = true;
   	}, 
   	async editOK() {
+  	  if (this.editMaterialAndManufacturingName == '') {
+  	    this.setErrFormMsg('名称が入力されていません。');
+  	    return ;
+  	  }
+  	  if(this.editUnitPrice === '') {
+  		  this.setErrFormMsg('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editUnitPrice)) {
+  		  this.setErrFormMsg('単価を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editNum === '') {
+  		  this.setErrFormMsg('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editNum)) {
+  		  this.setErrFormMsg('数量を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editMoney === '') {
+  		  this.setErrFormMsg('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editMoney)) {
+  		  this.setErrFormMsg('金額を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrFormMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('materialAndManufacturing/clearMaterialAndManufacturing');
   	  await this.$store.dispatch('materialAndManufacturing/editMaterialAndManufacturing', {
@@ -154,6 +223,7 @@ export default {
   		this.materialAndManufacturing = this.$store.state.materialAndManufacturing.materialAndManufacturing;
   	},
   	editCancel() {
+  	  this.setErrFormMsg('');
   		this.isShowModal = false;
   	},
   	async del(materialAndManufacturingNo) {

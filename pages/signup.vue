@@ -3,6 +3,14 @@
     <div class="signup">
       <div class="form">
 	      <h1>原価計算システム</h1>
+				<div class="sk-chase" v-if="loading">
+				  <div class="sk-chase-dot"></div>
+				  <div class="sk-chase-dot"></div>
+				  <div class="sk-chase-dot"></div>
+				  <div class="sk-chase-dot"></div>
+				  <div class="sk-chase-dot"></div>
+				  <div class="sk-chase-dot"></div>
+				</div>
 	      <p v-if="errMsg" class="err-msg">{{ message }}</p>
 		    <p><input type="text" placeholder="ユーザー名" v-model="userName"></p>
 		    <p><input type="email" placeholder="E-mail" v-model="mail"></p>
@@ -16,7 +24,6 @@
 
 <script>
 import { isMailAdress, isPassword } from '~/plugins/definiton';
-
 export default {
   layout: 'home', 
 	data: function() {
@@ -26,18 +33,25 @@ export default {
 		  password: '',
 		  errMsg: false,
 		  message: null,
+		  loading: false,
 		}
   },
   methods: {
     async signup() {
-      if (
-        this.userName.trim().length < 1 ||
-        !isMailAdress(this.mail) ||
-        !isPassword(this.password)
-      ) {
-        this.setMessage('バリデーションエラー');
+      if (this.userName.trim().length < 1) {
+        this.setMessage('ユーザー名を入力してください。');
         return;
       }
+      if (!isMailAdress(this.mail)) {
+        this.setMessage('メールアドレスが正しく入力されていません。');
+        return;
+      }
+      if (!isPassword(this.password)) {
+        this.setMessage('パスワードが正しく入力されていません。');
+        return;
+      }
+      this.setMessage('');
+      this.loading = true;
       const user = {
         userName: this.userName.trim(), 
         mail: this.mail.trim(), 
@@ -50,6 +64,7 @@ export default {
       } catch(error) {
         console.log({ error });
         this.setMessage(this.$store.state.user.message);
+        this.loading = false;
       }
     },
     setMessage(msg) {
@@ -78,6 +93,7 @@ export default {
   border-radius:6px;
   box-shadow:15px 15px 0px rgba(0,0,0,.1);
   padding: 30px;
+  width: 400px;
 }
 .signup input {
   line-height: 1.7rem;
@@ -98,5 +114,7 @@ export default {
 }
 .signup .err-msg {
   color: red;
+  font-size: 0.7rem;
+  word-break:break-all;
 }
 </style>

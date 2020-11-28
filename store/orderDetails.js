@@ -7,6 +7,7 @@ export const state = () => ({
   orderDetails: [],
   orderDay: null,
   orderName: '',
+  cancelFlag: 0,
 })
 export const mutations = {
   setOrderOne(state, arg) {
@@ -30,11 +31,15 @@ export const mutations = {
   setOrderNo(state, orderNo) {
     state.orderNo = orderNo;
   },
+  setCancelFlag(state, status) {
+    state.cancelFlag = status;
+  },
 }
 export const actions = {
 	async commitOrder(context, arg) {
 	  let updateFlag = 0, orderDetailNo = 1;
 	  let key, keys = [];
+	  context.commit('setCancelFlag', 0);
 		await Firebase.database().ref(dbOrder)
 		  .orderByChild('orderNo')
 		  .startAt(arg.orderNo).endAt(arg.orderNo)
@@ -43,10 +48,16 @@ export const actions = {
 		      if(arg.userId === childSnapshot.val().userId && 
 		        arg.orderNo === childSnapshot.val().orderNo) {
 		      	  updateFlag = 1;
-		      	  console.log('既存の注文番号のため、注文データを更新します。');
+		      	  console.log('既存の注文番号が見つかりました。');
 		      }
 		    })
 		  });
+		if(updateFlag === 1) {
+			if(!confirm('既に同じ注文番号が存在します。更新しますか？')) {
+			  context.commit('setCancelFlag', 1);
+			  return;
+			}
+	  }
 		//既に登録されている場合、データを削除する。
 		if (updateFlag === 1) {
 		  //１　dbOrder

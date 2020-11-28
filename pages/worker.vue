@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="worker">
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
+        <p v-if="errMsg" class="err-msg">{{ message }}</p>
 	      <label>年（西暦）</label><input type="text" v-model="year">
 	      <label>給料</label><input type="text" v-model="salary">
 	      <label>実働時間</label><input type="text" v-model="workTime">
@@ -24,9 +24,10 @@
       		<td class="td-data">{{ w.classification }}</td>
       		<td><button @click="edit(w.id, w.year, w.salary, w.workTime, w.classification)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowModal" @close="isShowModal = false">
-      		  <h3 slot="header">{{ editId }}</h3>
+      		  <h3 slot="header"></h3>
       		  <h3 slot="body">
-      		    <p>年</p>
+      		    <p v-if="errFormMsg" class="err-msg">{{ formMessage }}</p>
+      		    <p>年（西暦）</p>
       		    <p><input type="text" v-model="editYear"></p>
       		    <p>給料</p>
       		    <p><input type="text" v-model="editSalary"></p>
@@ -50,7 +51,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -67,6 +67,8 @@ export default {
 		  isShowModal: false,
 		  errMsg: false,
 		  message: null,
+		  errFormMsg: false,
+		  formMessage: null,
     }
   },
 	async created() {
@@ -75,15 +77,49 @@ export default {
 		this.worker = this.$store.state.worker.worker;
 	},
   methods: {
-  	async add() {
-  	  if(this.year === '' || this.salary === '' || 
-  	    this.workTime === '' || this.classification === '') {
-	  	    this.errMsg = true;
-	  	    this.message = 'バリデーションエラー';
-	  	    return ;
+  	setErrMsg(msg) {
+  	  if(msg !== '') {
+  	    this.errMsg = true;
+  	    this.message = msg;
+  	    return ;
   	  } else {
   	    this.errMsg = false;
   	  }
+  	},
+  	setErrFormMsg(msg) {
+  	  if (msg !== '') {
+  	    this.errFormMsg = true;
+  	    this.formMessage = msg;
+  	  } else {
+  	    this.errFormMsg = false;
+  	  }
+  	},
+  	async add() {
+  	  if(this.year === '') {
+  		  this.setErrMsg('年（西暦）を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.year)) {
+  		  this.setErrMsg('年（西暦）を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.salary === '') {
+  		  this.setErrMsg('給料を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.salary)) {
+  		  this.setErrMsg('給料を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.workTime === '') {
+  		  this.setErrMsg('実働時間を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.workTime)) {
+  		  this.setErrMsg('実働時間を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
   		await this.$store.dispatch('worker/addWorker', {
@@ -106,6 +142,31 @@ export default {
   	  this.isShowModal = true;
   	},
   	async editOK() {
+  	  if(this.editYear === '') {
+  		  this.setErrFormMsg('年（西暦）を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editYear)) {
+  		  this.setErrFormMsg('年（西暦）を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editSalary === '') {
+  		  this.setErrFormMsg('給料を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editSalary)) {
+  		  this.setErrFormMsg('給料を正しく入力してください。');
+  			return;
+  	  }
+  	  if(this.editWorkTime === '') {
+  		  this.setErrFormMsg('実働時間を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editWorkTime)) {
+  		  this.setErrFormMsg('実働時間を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrFormMsg('');
   	  //データ更新前にローカルデータリセット：Duplicate keys detected対策
   	  await this.$store.commit('worker/clearWorker');
   	  await this.$store.dispatch('worker/editWorker', {
@@ -122,6 +183,7 @@ export default {
   		this.worker = this.$store.state.worker.worker;
   	},
   	editCancel() {
+  	  this.setErrFormMsg('');
   	  this.isShowModal = false;
   	},
   	async del(id) {

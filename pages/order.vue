@@ -38,7 +38,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -78,8 +77,7 @@ export default {
   	  this.$store.commit('orderDetails/setOrderNo', orderNo);
   	}, 
   	async del(orderNo) {
-			const message = "削除して良いですか？";
-			if(!confirm(message)) {
+			if(!confirm('削除しますか？')) {
 			  return;
 			}
 			console.log('b');

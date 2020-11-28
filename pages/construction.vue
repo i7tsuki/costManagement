@@ -1,8 +1,8 @@
 <template>
   <div class="container">
     <div class="construction">
-      <p v-if="errMsg" class="err-msg">{{ message }}</p>
       <div class="input-form">
+        <p v-if="errMsg" class="err-msg">{{ message }}</p>
 	      <label>製品番号</label><input type="text" v-model="constructionNo">
 	      <label>名称</label><input type="text" v-model="constructionName">
 	      <label>受注金額</label><input type="text" v-model="money">
@@ -24,10 +24,9 @@
       		<td><router-link to="/costDetails"><button @click="costDetail(c.constructionNo)" class="panel-button">原価</button></router-link></td>
       		<td><button @click="edit(c.constructionNo, c.constructionName, c.money, c.shipDay)" class="panel-button">編集</button></td>
       		<EditModal v-if="isShowEditModal" @close="isShowEditModal = false">
-      		  <h3 slot="header">
-      		    <p></p>
-      		  </h3>
+      		  <h3 slot="header"></h3>
       		  <h3 slot="body">
+      		    <p v-if="errFormMsg" class="err-msg">{{ formMessage }}</p>
       		    <p>製品番号</p>
       		    <p><input type="text" v-model="editConstructionNo"></p>
       		    <p>名称</p>
@@ -51,7 +50,6 @@
 
 <script>
 import EditModal from '~/components/EditModal';
-
 export default {
   components: { EditModal },
 	data: function() {
@@ -68,6 +66,8 @@ export default {
 			isShowEditModal: false,
 		  errMsg: false,
 		  message: null,
+		  errFormMsg: false,
+		  formMessage: null
     }
   },
 	async created() {
@@ -76,13 +76,41 @@ export default {
 		this.construction = this.$store.state.construction.construction;
 	},
   methods: {
-  	async add() {
-  	  if (this.constructionNo === '' || this.constructionName === '') {
-  	    this.checkErrMessage('バリデーションエラー');
-  	    return;
+  	setErrMsg(msg) {
+  	  if(msg !== '') {
+  	    this.errMsg = true;
+  	    this.message = msg;
+  	    return ;
   	  } else {
-  	    this.checkErrMessage('');
+  	    this.errMsg = false;
   	  }
+  	},
+  	setErrFormMsg(msg) {
+  	  if (msg !== '') {
+  	    this.errFormMsg = true;
+  	    this.formMessage = msg;
+  	  } else {
+  	    this.errFormMsg = false;
+  	  }
+  	},
+  	async add() {
+  	  if (this.constructionNo === '') {
+  	    this.setErrMsg('製品番号が入力されていません。');
+  	    return;
+  	  }
+  	  if (this.constructionName === '') {
+  	    this.setErrMsg('名称が入力されていません。');
+  	    return;
+  	  }
+  	  if(this.money === '') {
+  		  this.setErrMsg('受注金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.money)) {
+  		  this.setErrMsg('受注金額を正しく入力してください。');
+  			return;
+  	  }
+  	  this.setErrMsg('');
   	  await this.$store.commit('construction/clearConstruction');
   	  try {
 	  		await this.$store.dispatch('construction/addConstructionNo', {
@@ -93,7 +121,7 @@ export default {
 	  			shipDay: this.shipDay,
 	  		});
 	    } catch (error) {
-	      this.checkErrMessage(error);
+	      this.setErrMsg(error);
 	      return;
       }
   		await this.$store.commit('construction/clearConstruction');
@@ -111,6 +139,22 @@ export default {
   		this.isShowEditModal = true;
   	}, 
   	async editOK(constructionNo) {
+  	  if (this.editConstructionNo === '') {
+  	    this.setErrFormMsg('製品番号が入力されていません。');
+  	    return;
+  	  }
+  	  if (this.editConstructionName === '') {
+  	    this.setErrFormMsg('名称が入力されていません。');
+  	    return;
+  	  }
+  	  if(this.editMoney === '') {
+  		  this.setErrFormMsg('受注金額を正しく入力してください。');
+  			return;
+  	  }
+  	  if(isNaN(this.editMoney)) {
+  		  this.setErrFormMsg('受注金額を正しく入力してください。');
+  			return;
+  	  }
   	  await this.$store.commit('construction/clearConstruction');
   	  await this.$store.dispatch('construction/editConstructionNo', {
   	    userId: this.$store.state.user.userId, 
@@ -126,6 +170,7 @@ export default {
   		this.construction = this.$store.state.construction.construction;
   	},
   	editCancel() {
+  	  this.setErrFormMsg('');
   		this.isShowEditModal = false;
   	},
   	async del(constructionNo) {
@@ -141,14 +186,6 @@ export default {
   	costDetail(constructionNo) {
   		this.$store.commit('construction/setConstructionNo', constructionNo);
   	},
-  	checkErrMessage(msg) {
-  	  if (msg !== '') {
-  	    this.errMsg = true;
-  	    this.message = msg;
-  	  } else {
-  	    this.errMsg = false;
-  	  }
-  	}
   },
 }
 </script>

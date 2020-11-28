@@ -105,8 +105,9 @@ button {
 }
 #title h1 {
   font-size: 1.2rem;
-  text-align: left;
-  padding-left: 30px;
+  text-align: center;
+  padding-left: 50px;
+  padding-top: 30px;
 }
 #title .info {
   margin-right: 50px;
